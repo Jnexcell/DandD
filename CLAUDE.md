@@ -126,7 +126,47 @@ citations back to the PDFs (the PDFs remain the source of truth).
 - `characters/` — **generated level-1 character packets** (from the Character Creation Helper) + `_CHOOSER.md` (the print-once "circle your character" worksheet) + `_TEMPLATE.md` + `README.md`
 - `sessions/` — **live session-state files** (kept by the DM Assistant while you play; pause/resume) + `_TEMPLATE.md` + `README.md`
 - `PROGRESS.md` — build tracker / resume guide (see "Build status" below)
-- `.build/` — regenerable page-tagged text dumps of each PDF (for live lookups)
+- `.build/` — regenerable page-tagged text dumps of each PDF (for live lookups) — **gitignored** (copyrighted text)
+- **Web / hosting:** `index.html` (players' landing page) + `modules/the-weeping-grove/site/` (interactive
+  **character builder** + the **DM screen**), published via **GitHub Pages** — see the next section.
+
+## Player-facing web pages, hosting & source control
+
+This project is **version-controlled and published with GitHub Pages** so players can build a character from a
+link, and so the work is backed up.
+
+### Git / remote
+- **Repo root** = this folder (`dnd/`). **Remote:** `https://github.com/Jnexcell/DandD.git` · branch **`main`**.
+- **NEVER commit (gitignored, see `.gitignore`):** the source rulebook **PDFs** (`*.pdf`) and their text dumps
+  (**`.build/`**). They are **WotC-copyrighted** — they stay on local disk only. Regenerate `.build/` per
+  `PROGRESS.md` if needed. Everything else (the markdown KB, the module, the HTML) is safe to publish.
+- **To update the live site:** `git add -A && git commit -m "…" && git push` → Pages redeploys in ~1 min.
+  End commit messages with the `Co-Authored-By: Claude …` trailer.
+- **Auth here:** no `gh` CLI and no SSH key are set up; push over **HTTPS with a fine-grained PAT**
+  (Repository → Contents: Read and write) used as the password (username `Jnexcell`). `gh auth login` would
+  need `gh` installed (sudo).
+
+### GitHub Pages (the live site)
+- **Settings → Pages → Deploy from a branch → `main` / `/ (root)`.**
+- **Player link (share this one): https://jnexcell.github.io/DandD/** → landing page → "Build Your Character".
+- Direct builder URL: `https://jnexcell.github.io/DandD/modules/the-weeping-grove/site/character-builder.html`.
+
+### The HTML pages
+- **`index.html`** (repo root) — players' **landing page** (grove-themed; the public quest hook + a big button
+  to the builder). Intentionally **does not link the DM screen**.
+- **`modules/the-weeping-grove/site/character-builder.html`** — the **interactive player character builder**:
+  the HTML, click-through version of `characters/_CHOOSER.md`. Beginner-friendly; collects the **big picks**
+  (race + subrace, class + its level-1 sub-choice, background) + **ability scores** (Standard Array / Point Buy
+  with live 27-pt math / dice roller / manual), applies **race bonuses live**, captures name + personality,
+  autosaves to the device, and **exports Markdown** via Copy / Download / Print / **Email** (the DM's address is
+  the `DM_EMAIL` constant near the top of its `<script>`). Its output is the **intake** for
+  `tools/character-creator.md` — it deliberately stops at level-1-style picks + raw scores; **the DM runs the
+  Character Creator to do the full math and level the hero to 3.**
+- **`modules/the-weeping-grove/site/index.html`** — the offline **DM screen** (full spoilers: every scene, the
+  Key, stat blocks, trackers). ⚠️ **It is reachable on the public Pages site** at
+  `…/DandD/modules/the-weeping-grove/site/index.html` (not linked from the landing, but not truly hidden) — do
+  **not** share that URL with players. (If true privacy is wanted later: move it off the published path or to a
+  separate private deploy.)
 
 ## Build status (what's done vs. not)
 

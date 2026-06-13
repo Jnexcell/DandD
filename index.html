@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Weeping Grove — Players' Landing</title>
+<style>
+:root{
+  --bg:#e7dcc2; --panel:#f6efdd; --panel2:#efe6cf; --ink:#2a2316; --muted:#6a5f48;
+  --line:#cdbd99; --green:#3f6b3f; --green-d:#2c4d2c; --green-l:#5d8a52;
+  --accent:#8a5a2b; --gold:#9a7b2e; --ra-bg:#fbf6e6; --ra-line:#7c9a5c; --ra-ink:#241f12;
+  --shadow:0 2px 10px rgba(60,45,20,.22);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+html[data-theme="dark"]{
+  --bg:#13160e; --panel:#1d2216; --panel2:#232a1b; --ink:#ece8d6; --muted:#a7a48d;
+  --line:#3a4329; --green:#7fb46c; --green-d:#9ccb86; --green-l:#a9d293;
+  --accent:#d3a26a; --gold:#cdab5e; --ra-bg:#202a18; --ra-line:#7fb46c; --ra-ink:#f2efe0;
+  --shadow:0 2px 12px rgba(0,0,0,.5);
+}
+*{box-sizing:border-box} html,body{margin:0;padding:0}
+body{font-family:var(--sans); background:var(--bg); color:var(--ink); line-height:1.55; min-height:100vh;
+  background-image:radial-gradient(circle at 20% -10%, rgba(63,107,63,.16), transparent 45%),
+                   radial-gradient(circle at 110% 10%, rgba(138,90,43,.12), transparent 40%);}
+h1,h2,h3{font-family:var(--serif); line-height:1.15; margin:.2em 0 .4em}
+.themebtn{position:fixed; top:.8rem; right:.9rem; background:var(--panel); border:1px solid var(--line); color:var(--ink);
+  border-radius:8px; padding:.4rem .6rem; cursor:pointer; font-size:1rem; box-shadow:var(--shadow); z-index:10}
+.wrap{max-width:720px; margin:0 auto; padding:3.2rem 1.2rem 4rem; text-align:center}
+.eyebrow{text-transform:uppercase; letter-spacing:3px; font-size:.74rem; color:var(--accent); font-weight:700}
+h1{font-size:2.6rem; margin:.3rem 0 .2rem}
+h1 .tree{display:block; font-size:2.4rem; margin-bottom:.2rem}
+.tag{font-family:var(--serif); font-style:italic; font-size:1.15rem; color:var(--muted); margin:0 auto 1.6rem; max-width:34ch}
+.quest{background:var(--ra-bg); border-left:7px solid var(--ra-line); border-radius:10px; padding:1.1rem 1.2rem;
+  margin:1.4rem auto; max-width:560px; text-align:left; font-family:var(--serif); font-size:1.12rem; line-height:1.55;
+  color:var(--ra-ink); box-shadow:var(--shadow); position:relative}
+.quest::before{content:"🌲 YOUR QUEST"; position:absolute; top:-.7rem; left:1rem; background:var(--ra-line); color:#fff;
+  font-family:var(--sans); font-size:.66rem; font-weight:700; letter-spacing:1px; padding:.12rem .55rem; border-radius:20px}
+.quest b{color:var(--green-d)} html[data-theme="dark"] .quest b{color:var(--green-d)}
+.cta{display:inline-block; margin:1.4rem auto .4rem; background:linear-gradient(180deg,var(--green-l),var(--green));
+  color:#fff; text-decoration:none; font-size:1.25rem; font-weight:700; padding:.95rem 2rem; border-radius:14px;
+  box-shadow:var(--shadow); transition:transform .12s, filter .12s}
+.cta:hover{transform:translateY(-2px); filter:brightness(1.06)}
+.cta .sub{display:block; font-size:.78rem; font-weight:400; opacity:.92; letter-spacing:.5px; margin-top:.15rem}
+.note{font-size:.9rem; color:var(--muted); margin-top:1.2rem}
+.steps{display:grid; grid-template-columns:repeat(3,1fr); gap:.7rem; margin:2rem auto 0; max-width:560px}
+@media(max-width:520px){.steps{grid-template-columns:1fr}}
+.steps .s{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:.8rem .7rem; text-align:left}
+.steps .s .n{display:inline-flex; width:1.7rem; height:1.7rem; align-items:center; justify-content:center; border-radius:50%;
+  background:var(--green); color:#fff; font-weight:700; font-size:.9rem; margin-bottom:.4rem}
+.steps .s h3{font-size:1rem; margin:.1rem 0 .2rem} .steps .s p{font-size:.84rem; color:var(--muted); margin:0}
+footer{margin-top:2.6rem; font-size:.8rem; color:var(--muted)}
+footer a{color:var(--green)}
+</style>
+</head>
+<body>
+<button class="themebtn" id="themeBtn" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+<div class="wrap">
+  <div class="eyebrow">A Level-3 D&amp;D One-Shot</div>
+  <h1><span class="tree">🌲</span>The Weeping Grove</h1>
+  <p class="tag">Travelers keep vanishing on the old forest road. You are the ones brave enough to find out why.</p>
+
+  <div class="quest">
+    The village of <b>Greywater</b> has hired you to find what's taking travelers on the
+    <b>Briar Road</b> through the Mournwood — and to stop it. The woods feel <em>wrong</em>.
+    Before you set out, you'll need a hero to play.
+  </div>
+
+  <a class="cta" href="modules/the-weeping-grove/site/character-builder.html">
+    ⚔️ Build Your Character
+    <span class="sub">Takes ~10 minutes · no D&amp;D experience needed</span>
+  </a>
+  <p class="note">When you're done, send your result to your DM — they'll do all the math and hand you a ready-to-play sheet.</p>
+
+  <div class="steps">
+    <div class="s"><span class="n">1</span><h3>Make choices</h3><p>Click through Race, Class, Background, scores, and personality.</p></div>
+    <div class="s"><span class="n">2</span><h3>Send it in</h3><p>Copy, email, download, or print your result for the DM.</p></div>
+    <div class="s"><span class="n">3</span><h3>Show up &amp; play</h3><p>Your DM finishes the sheet. You bring the hero.</p></div>
+  </div>
+
+  <footer>
+    Made for the table 🌿 · <a href="modules/the-weeping-grove/site/character-builder.html">Character Builder</a>
+  </footer>
+</div>
+<script>
+const tb=document.getElementById("themeBtn");
+const set=t=>{document.documentElement.setAttribute("data-theme",t); tb.textContent=t==="dark"?"☀️":"🌙"; try{localStorage.setItem("wg-theme",t)}catch(e){}};
+tb.onclick=()=>set(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark");
+try{const s=localStorage.getItem("wg-theme"); if(s)set(s); else if(matchMedia&&matchMedia("(prefers-color-scheme:dark)").matches)set("dark");}catch(e){}
+</script>
+</body>
+</html>

@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Weeping Grove — Build Your Hero</title>
+<style>
+/* ============================== THEME (matches the DM screen) ============================== */
+:root{
+  --bg:#e7dcc2; --panel:#f6efdd; --panel2:#efe6cf; --ink:#2a2316; --muted:#6a5f48;
+  --line:#cdbd99; --line2:#dfd2b0;
+  --green:#3f6b3f; --green-d:#2c4d2c; --green-l:#5d8a52;
+  --accent:#8a5a2b; --gold:#9a7b2e;
+  --ra-bg:#fbf6e6; --ra-line:#7c9a5c; --ra-ink:#241f12;
+  --danger:#9c2f25; --good:#3f6b3f; --warn:#9a6a1f;
+  --chip:#e4d8b8;
+  --shadow:0 2px 8px rgba(60,45,20,.18);
+  --radius:12px;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+html[data-theme="dark"]{
+  --bg:#13160e; --panel:#1d2216; --panel2:#232a1b; --ink:#ece8d6; --muted:#a7a48d;
+  --line:#3a4329; --line2:#2c3320;
+  --green:#7fb46c; --green-d:#9ccb86; --green-l:#a9d293;
+  --accent:#d3a26a; --gold:#cdab5e;
+  --ra-bg:#202a18; --ra-line:#7fb46c; --ra-ink:#f2efe0;
+  --danger:#e07a6e; --good:#8fcf7c; --warn:#d8b15e;
+  --chip:#2a321d;
+  --shadow:0 2px 10px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--sans); background:var(--bg); color:var(--ink); line-height:1.5; font-size:16px; -webkit-text-size-adjust:100%}
+h1,h2,h3,h4{line-height:1.2; margin:.2em 0 .4em; font-family:var(--serif)}
+a{color:var(--green)}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--gold); outline-offset:2px; border-radius:6px}
+
+/* ============================== TOP BAR ============================== */
+.topbar{
+  position:sticky; top:0; z-index:60; display:flex; align-items:center; gap:.6rem;
+  padding:.5rem .9rem; background:linear-gradient(180deg,var(--green-d),var(--green));
+  color:#f5efdc; box-shadow:var(--shadow);
+}
+html[data-theme="dark"] .topbar{background:linear-gradient(180deg,#101509,#1f3018)}
+.topbar .title{font-family:var(--serif); font-weight:700; font-size:1.15rem; white-space:nowrap; letter-spacing:.3px}
+.topbar .title .sub{font-size:.72rem; opacity:.85; font-weight:400; letter-spacing:1px; text-transform:uppercase; margin-left:.35rem}
+.spacer{flex:1 1 auto}
+.tbtn{background:rgba(0,0,0,.18); color:#f5efdc; border:1px solid rgba(255,255,255,.22); border-radius:8px; padding:.4rem .65rem; font-size:.82rem; cursor:pointer; white-space:nowrap}
+.tbtn:hover{background:rgba(0,0,0,.32)}
+
+/* progress bar under the topbar */
+.progwrap{position:sticky; top:48px; z-index:55; background:var(--panel2); border-bottom:1px solid var(--line); padding:.35rem .9rem}
+.progbar{height:8px; border-radius:6px; background:var(--line); overflow:hidden}
+.progbar>i{display:block; height:100%; background:linear-gradient(90deg,var(--green-l),var(--green)); width:0; transition:width .25s ease}
+.progmeta{display:flex; justify-content:space-between; font-size:.7rem; color:var(--muted); margin-top:.2rem; letter-spacing:.3px}
+
+/* ============================== LAYOUT ============================== */
+.layout{display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:1.2rem; max-width:1180px; margin:0 auto; padding:1rem 1rem 5rem; align-items:start}
+.main{min-width:0}
+.rail{position:sticky; top:96px; align-self:start}
+
+/* ============================== STEP NAV (chips) ============================== */
+.stepnav{display:flex; flex-wrap:wrap; gap:.35rem; margin-bottom:1rem}
+.stepnav button{
+  display:inline-flex; align-items:center; gap:.35rem; border:1px solid var(--line); background:var(--panel);
+  color:var(--ink); border-radius:20px; padding:.3rem .7rem; font-size:.8rem; cursor:pointer;
+}
+.stepnav button .num{display:inline-flex; align-items:center; justify-content:center; width:1.25rem; height:1.25rem; border-radius:50%; background:var(--chip); font-size:.72rem; font-weight:700; color:var(--muted)}
+.stepnav button.active{background:var(--green); color:#fff; border-color:var(--green)}
+.stepnav button.active .num{background:rgba(255,255,255,.25); color:#fff}
+.stepnav button.done .num{background:var(--good); color:#fff}
+.stepnav button.done .num::after{content:"✓"}
+.stepnav button.done .num span{display:none}
+
+/* ============================== STEP PANELS ============================== */
+.step{display:none; animation:fade .2s ease}
+.step.active{display:block}
+@keyframes fade{from{opacity:.25; transform:translateY(4px)}to{opacity:1; transform:none}}
+.step-head{border-bottom:2px solid var(--line); padding-bottom:.5rem; margin-bottom:1rem}
+.step-head h2{font-size:1.7rem; margin:0}
+.step-head .lede{color:var(--muted); font-style:italic; font-family:var(--serif); margin:.3rem 0 0}
+
+/* welcome */
+.hero-quest{background:var(--ra-bg); border-left:7px solid var(--ra-line); border-radius:8px; padding:1rem 1.1rem; margin:.9rem 0; font-family:var(--serif); font-size:1.12rem; line-height:1.55; color:var(--ra-ink); box-shadow:var(--shadow); position:relative}
+.hero-quest::before{content:"🌲 THE QUEST"; position:absolute; top:-.72rem; left:.9rem; background:var(--ra-line); color:#fff; font-family:var(--sans); font-size:.66rem; font-weight:700; letter-spacing:1px; padding:.12rem .55rem; border-radius:20px}
+.howto{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:.8rem 1rem; margin:.9rem 0}
+.howto h3{margin-top:0; color:var(--green-d)}
+html[data-theme="dark"] .howto h3{color:var(--green-d)}
+.howto ol{margin:.4rem 0 .2rem 1.2rem} .howto li{margin:.3rem 0}
+.jargon{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.5rem; margin:.8rem 0}
+.jargon div{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:.5rem .65rem; font-size:.85rem}
+.jargon b{color:var(--green-d)}
+html[data-theme="dark"] .jargon b{color:var(--green-d)}
+
+/* ============================== CHOICE CARDS ============================== */
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:.7rem}
+.card{
+  position:relative; text-align:left; background:var(--panel); border:2px solid var(--line); border-radius:var(--radius);
+  padding:.7rem .8rem .75rem; cursor:pointer; transition:transform .12s, border-color .15s, box-shadow .15s; color:var(--ink);
+}
+.card:hover{transform:translateY(-2px); box-shadow:var(--shadow)}
+.card.sel{border-color:var(--green); box-shadow:0 0 0 2px var(--green) inset, var(--shadow); background:linear-gradient(180deg,var(--panel),rgba(63,107,63,.08))}
+.card .c-name{font-family:var(--serif); font-weight:700; font-size:1.08rem; display:flex; align-items:center; gap:.4rem}
+.card .c-emoji{font-size:1.2rem}
+.card .c-tag{font-size:.7rem; color:var(--muted); font-weight:600; margin:.1rem 0 .35rem; letter-spacing:.2px}
+.card .c-desc{font-size:.86rem; color:var(--ink)}
+.card .c-desc b{color:var(--green-d)}
+html[data-theme="dark"] .card .c-desc b{color:var(--green-d)}
+.card .c-pick{font-size:.8rem; color:var(--accent); font-style:italic; margin-top:.4rem}
+.card.sel::after{content:"✓ Chosen"; position:absolute; top:.5rem; right:.55rem; background:var(--green); color:#fff; font-size:.66rem; font-weight:700; padding:.1rem .45rem; border-radius:20px; font-family:var(--sans)}
+
+/* sub-choice block (subrace, fighting style, etc.) */
+.subchoice{margin:1rem 0 0; background:var(--panel2); border:1px dashed var(--green-l); border-radius:var(--radius); padding:.8rem .9rem}
+.subchoice>h4{margin:0 0 .5rem; color:var(--green-d); font-size:1rem}
+html[data-theme="dark"] .subchoice>h4{color:var(--green-d)}
+.subchoice .hint{font-size:.82rem; color:var(--muted); margin:-.3rem 0 .6rem}
+.chips{display:flex; flex-wrap:wrap; gap:.4rem}
+.chip-opt{border:1.5px solid var(--line); background:var(--panel); color:var(--ink); border-radius:10px; padding:.4rem .7rem; cursor:pointer; font-size:.85rem; text-align:left}
+.chip-opt:hover{border-color:var(--green-l)}
+.chip-opt.sel{background:var(--green); color:#fff; border-color:var(--green)}
+.chip-opt small{display:block; font-size:.72rem; opacity:.85; margin-top:.1rem}
+.chip-opt.sel small{opacity:.92}
+
+/* ============================== ABILITY SCORES ============================== */
+.method-tabs{display:inline-flex; flex-wrap:wrap; gap:.3rem; border:2px solid var(--green); border-radius:12px; padding:3px; margin:.2rem 0 1rem}
+.method-tabs button{border:none; background:transparent; color:var(--green-d); font-weight:700; padding:.45rem .8rem; border-radius:9px; cursor:pointer; font-size:.88rem}
+html[data-theme="dark"] .method-tabs button{color:var(--ink)}
+.method-tabs button.on{background:var(--green); color:#fff}
+.method-help{font-size:.86rem; color:var(--muted); margin-bottom:.7rem}
+.pool{display:flex; flex-wrap:wrap; gap:.4rem; align-items:center; margin:.3rem 0 .9rem}
+.pool .poolchip{background:var(--chip); border:1px solid var(--line); border-radius:8px; padding:.3rem .6rem; font-weight:700; font-variant-numeric:tabular-nums}
+.pool .poolchip.used{opacity:.35; text-decoration:line-through}
+.points-left{font-weight:700; color:var(--green-d)}
+html[data-theme="dark"] .points-left{color:var(--green-d)}
+.points-left.over{color:var(--danger)}
+.ab-table{width:100%; border-collapse:collapse; margin:.4rem 0}
+.ab-table th,.ab-table td{border:1px solid var(--line); padding:.4rem .5rem; text-align:center; vertical-align:middle}
+.ab-table th{background:var(--panel2); font-size:.78rem; text-transform:uppercase; letter-spacing:.4px; color:var(--muted)}
+.ab-table td.ab-name{text-align:left; font-weight:700}
+.ab-table td.ab-name small{display:block; font-weight:400; color:var(--muted); font-size:.72rem}
+.ab-table .prim{color:var(--accent); font-weight:700; font-size:.7rem}
+.ab-table select,.ab-table input.scorein{width:4.2rem; font-size:.95rem; padding:.25rem; text-align:center; border:1px solid var(--line); border-radius:6px; background:var(--panel); color:var(--ink)}
+.ab-table .step-btns{display:inline-flex; gap:.2rem; align-items:center}
+.ab-table .step-btns button{width:1.7rem; height:1.7rem; border:1px solid var(--line); background:var(--panel2); border-radius:6px; cursor:pointer; font-size:1rem; color:var(--ink)}
+.ab-table .step-btns button:hover{background:var(--green); color:#fff}
+.ab-table .bonus{color:var(--green-d); font-weight:700}
+html[data-theme="dark"] .ab-table .bonus{color:var(--green-d)}
+.ab-table .final{font-size:1.1rem; font-weight:700; font-variant-numeric:tabular-nums}
+.ab-table .mod{font-weight:700; color:var(--green-d); font-variant-numeric:tabular-nums}
+html[data-theme="dark"] .ab-table .mod{color:var(--green-d)}
+.ab-table tr.is-primary td{background:rgba(154,123,46,.10)}
+.roll-tools{display:flex; flex-wrap:wrap; gap:.5rem; margin:.2rem 0 .8rem}
+.asi-choice{background:var(--panel2); border:1px dashed var(--accent); border-radius:10px; padding:.6rem .8rem; margin:.6rem 0; font-size:.86rem}
+.asi-choice b{color:var(--accent)}
+.asi-choice .chips{margin-top:.4rem}
+
+/* ============================== PERSONALITY ============================== */
+.field{margin:.8rem 0}
+.field label{display:block; font-weight:700; margin-bottom:.25rem; font-size:.92rem}
+.field label .q{font-weight:400; color:var(--muted); font-size:.82rem}
+.field .row{display:flex; gap:.5rem; align-items:stretch}
+.field input[type=text],.field textarea,.field select{
+  flex:1 1 auto; width:100%; font-size:.95rem; padding:.5rem .6rem; border:1px solid var(--line); border-radius:8px;
+  background:var(--panel); color:var(--ink); font-family:inherit;
+}
+.field textarea{min-height:2.6rem; resize:vertical}
+.surprise{flex:0 0 auto; background:var(--accent); color:#fff; border:none; border-radius:8px; padding:0 .7rem; cursor:pointer; font-size:.82rem; white-space:nowrap}
+.surprise:hover{filter:brightness(1.08)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:.8rem}
+@media(max-width:560px){.grid2{grid-template-columns:1fr}}
+
+/* ============================== RAIL — HERO SO FAR ============================== */
+.rail .summ{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+.rail .summ h3{margin:0; padding:.6rem .8rem; background:linear-gradient(180deg,var(--green-d),var(--green)); color:#f5efdc; font-size:1rem; display:flex; align-items:center; gap:.4rem}
+.rail .summ-body{padding:.7rem .8rem}
+.summ-name{font-family:var(--serif); font-size:1.15rem; font-weight:700; margin-bottom:.1rem}
+.summ-line{font-size:.92rem; color:var(--muted); font-style:italic; margin-bottom:.6rem; min-height:1.2em}
+.summ-kv{display:grid; grid-template-columns:max-content 1fr; gap:.25rem .6rem; font-size:.86rem}
+.summ-kv dt{font-weight:700; color:var(--green-d)}
+html[data-theme="dark"] .summ-kv dt{color:var(--green-d)}
+.summ-kv dd{margin:0}
+.summ-kv dd.empty{color:var(--muted); font-style:italic; opacity:.7}
+.summ-abils{display:grid; grid-template-columns:repeat(6,1fr); gap:.25rem; margin:.7rem 0 .2rem; text-align:center}
+.summ-abils div{background:var(--panel2); border:1px solid var(--line); border-radius:7px; padding:.25rem .1rem}
+.summ-abils .a{font-size:.62rem; font-weight:700; color:var(--muted)}
+.summ-abils .s{font-size:.95rem; font-weight:700; font-variant-numeric:tabular-nums}
+.summ-abils .m{font-size:.66rem; color:var(--green-d)}
+html[data-theme="dark"] .summ-abils .m{color:var(--green-d)}
+.summ-abils div.prim{border-color:var(--gold); background:rgba(154,123,46,.12)}
+
+/* ============================== NAV BUTTONS ============================== */
+.navbtns{display:flex; gap:.6rem; margin-top:1.5rem; flex-wrap:wrap}
+.btn{background:var(--green); color:#fff; border:none; border-radius:9px; padding:.6rem 1.1rem; cursor:pointer; font-size:.95rem; font-weight:600}
+.btn:hover{background:var(--green-d)}
+.btn.ghost{background:transparent; color:var(--ink); border:1.5px solid var(--line)}
+.btn.ghost:hover{background:var(--panel)}
+.btn.big{font-size:1.05rem; padding:.7rem 1.4rem}
+.btn.accent{background:var(--accent)} .btn.accent:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.4; cursor:not-allowed}
+.warnline{color:var(--warn); font-size:.85rem; margin-top:.6rem; min-height:1.2em}
+
+/* ============================== FINISH / EXPORT ============================== */
+.finish-grid{display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin:.8rem 0}
+@media(max-width:560px){.finish-grid{grid-template-columns:1fr}}
+.checklist{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:.7rem .9rem; margin:.8rem 0}
+.checklist .ck{display:flex; align-items:center; gap:.5rem; padding:.25rem 0; font-size:.92rem; border-bottom:1px dotted var(--line)}
+.checklist .ck:last-child{border-bottom:none}
+.checklist .ck .mk{width:1.4rem; text-align:center}
+.checklist .ck.ok .mk{color:var(--good)} .checklist .ck.miss .mk{color:var(--warn)}
+.checklist .ck.miss{color:var(--warn)}
+.export-box{width:100%; min-height:240px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.8rem; padding:.7rem; border:1px solid var(--line); border-radius:10px; background:var(--panel2); color:var(--ink); white-space:pre; overflow:auto}
+.toast{position:fixed; bottom:1.2rem; left:50%; transform:translateX(-50%) translateY(120%); background:var(--green-d); color:#fff; padding:.6rem 1.1rem; border-radius:30px; box-shadow:var(--shadow); font-size:.9rem; z-index:200; transition:transform .25s ease}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ============================== RESPONSIVE ============================== */
+@media(max-width:920px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .rail{position:static; order:-1}
+  .rail .summ-body{max-height:none}
+}
+@media print{
+  .topbar,.progwrap,.stepnav,.navbtns,.method-tabs,.surprise,.rail .summ h3 .clr{display:none !important}
+  .step{display:block !important}
+  body{background:#fff; color:#000}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="title">🌲 The Weeping Grove<span class="sub">Build Your Hero</span></div>
+  <div class="spacer"></div>
+  <button class="tbtn" id="startOver" title="Erase everything and start fresh">↺ Start over</button>
+  <button class="tbtn" id="themeBtn" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+</header>
+
+<div class="progwrap">
+  <div class="progbar"><i id="progFill"></i></div>
+  <div class="progmeta"><span id="progStep">Welcome</span><span id="progPct">0%</span></div>
+</div>
+
+<div class="layout">
+  <main class="main">
+    <nav class="stepnav" id="stepnav" aria-label="Steps"></nav>
+
+    <!-- ===== STEP 0 — WELCOME ===== -->
+    <section class="step active" data-step="0">
+      <div class="step-head">
+        <h2>Welcome, hero-to-be 🌿</h2>
+        <p class="lede">New to D&amp;D? You don't need to know a single rule. Just make some choices you like.</p>
+      </div>
+      <div class="hero-quest">
+        Travelers keep vanishing on the old <b>Briar Road</b> through the Mournwood. The village of
+        <b>Greywater</b> has scraped together a bounty and hired you to find what's taking them — and put a
+        stop to it. The woods feel <em>wrong</em>. Something is out there. You and your companions are the
+        ones brave (or foolish) enough to go in.
+      </div>
+      <div class="howto">
+        <h3>How this works</h3>
+        <ol>
+          <li>Click your way through five quick choices: <b>Race</b>, <b>Class</b>, <b>Background</b>,
+            <b>Ability Scores</b>, and a little <b>Personality</b>.</li>
+          <li>Everything is explained in plain language as you go. Stuck? Pick whatever <em>sounds</em> fun —
+            there are no wrong answers.</li>
+          <li>At the end, hit <b>Finish</b> and send the result to your DM. They'll do all the math and hand
+            you a ready-to-play character sheet.</li>
+        </ol>
+        <p style="margin:.5rem 0 0; font-size:.86rem; color:var(--muted)">You'll start the adventure as a
+          <b>level&nbsp;3</b> hero — but here you just pick the bones of who you are. Your DM levels you up the
+          rest of the way. Your progress saves automatically on this device.</p>
+      </div>
+      <h3 style="color:var(--green-d)">A few words you'll see</h3>
+      <div class="jargon">
+        <div><b>AC</b> — Armor Class: how hard you are to hit.</div>
+        <div><b>HP</b> — Hit Points: your health.</div>
+        <div><b>d20</b> — a 20-sided die; most rolls use it.</div>
+        <div><b>Modifier</b> — the +/− you add to a roll.</div>
+        <div><b>Race</b> — what you <em>are</em>.</div>
+        <div><b>Class</b> — what you <em>do</em>.</div>
+      </div>
+      <div class="navbtns">
+        <button class="btn big" data-go="1">Let's begin →</button>
+      </div>
+    </section>
+
+    <!-- ===== STEP 1 — RACE ===== -->
+    <section class="step" data-step="1">
+      <div class="step-head">
+        <h2>Step 1 · Choose a Race</h2>
+        <p class="lede">What you are. It gives small ability boosts, a speed, and a few always-on traits.</p>
+      </div>
+      <div class="cards" id="raceCards"></div>
+      <div id="subraceWrap"></div>
+      <div id="raceAsiWrap"></div>
+      <div class="warnline" id="raceWarn"></div>
+      <div class="navbtns">
+        <button class="btn ghost" data-go="0">← Back</button>
+        <button class="btn" data-go="2">Next: Class →</button>
+      </div>
+    </section>
+
+    <!-- ===== STEP 2 — CLASS ===== -->
+    <section class="step" data-step="2">
+      <div class="step-head">
+        <h2>Step 2 · Choose a Class</h2>
+        <p class="lede">What you actually do. "Hit Die" hints at toughness (d12 = very tough … d6 = fragile).</p>
+      </div>
+      <div class="cards" id="classCards"></div>
+      <div id="classChoiceWrap"></div>
+      <div class="warnline" id="classWarn"></div>
+      <div class="navbtns">
+        <button class="btn ghost" data-go="1">← Back</button>
+        <button class="btn" data-go="3">Next: Background →</button>
+      </div>
+    </section>
+
+    <!-- ===== STEP 3 — BACKGROUND ===== -->
+    <section class="step" data-step="3">
+      <div class="step-head">
+        <h2>Step 3 · Choose a Background</h2>
+        <p class="lede">Your past life. It grants two skills, some gear, and a handy non-combat perk.</p>
+      </div>
+      <div class="cards" id="bgCards"></div>
+      <div class="navbtns">
+        <button class="btn ghost" data-go="2">← Back</button>
+        <button class="btn" data-go="4">Next: Ability Scores →</button>
+      </div>
+    </section>
+
+    <!-- ===== STEP 4 — ABILITY SCORES ===== -->
+    <section class="step" data-step="4">
+      <div class="step-head">
+        <h2>Step 4 · Ability Scores</h2>
+        <p class="lede">Your raw talent. We add your race's bonuses for you, live.</p>
+      </div>
+      <div class="method-tabs" id="methodTabs">
+        <button data-method="standard" class="on">Standard Array</button>
+        <button data-method="pointbuy">Point Buy</button>
+        <button data-method="roll">Roll the Dice</button>
+        <button data-method="manual">Type My Own</button>
+      </div>
+      <p class="method-help" id="methodHelp"></p>
+      <div id="poolWrap"></div>
+      <div class="roll-tools" id="rollTools" style="display:none">
+        <button class="btn accent" id="rollBtn">🎲 Roll 4d6 (drop lowest) × 6</button>
+        <button class="btn ghost" id="rerollBtn" style="display:none">↺ Reroll</button>
+      </div>
+      <div id="asiChoiceWrap"></div>
+      <table class="ab-table" id="abTable">
+        <thead>
+          <tr><th style="text-align:left">Ability</th><th>Your number</th><th>Race bonus</th><th>Total</th><th>Modifier</th></tr>
+        </thead>
+        <tbody id="abBody"></tbody>
+      </table>
+      <p class="method-help" id="primaryHint"></p>
+      <div class="warnline" id="abWarn"></div>
+      <div class="navbtns">
+        <button class="btn ghost" data-go="3">← Back</button>
+        <button class="btn" data-go="5">Next: Personality →</button>
+      </div>
+    </section>
+
+    <!-- ===== STEP 5 — PERSONALITY ===== -->
+    <section class="step" data-step="5">
+      <div class="step-head">
+        <h2>Step 5 · Who Are You?</h2>
+        <p class="lede">The fun part. Give your hero a name and a soul. Stuck on any of these? Hit ✨ Surprise me.</p>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="fName">Character name</label>
+          <div class="row">
+            <input type="text" id="fName" placeholder="e.g. Lyra Shadowleaf">
+            <button class="surprise" data-sg="name">✨</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fPlayer">Your (player) name <span class="q">— so your DM knows whose this is</span></label>
+          <input type="text" id="fPlayer" placeholder="e.g. Sam">
+        </div>
+      </div>
+      <div class="field">
+        <label for="fAlign">Alignment <span class="q">— optional moral compass</span></label>
+        <select id="fAlign">
+          <option value="">— Not sure / let the DM help —</option>
+          <option>Lawful Good</option><option>Neutral Good</option><option>Chaotic Good</option>
+          <option>Lawful Neutral</option><option>True Neutral</option><option>Chaotic Neutral</option>
+          <option>Lawful Evil</option><option>Neutral Evil</option><option>Chaotic Evil</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="fTrait">Personality trait <span class="q">— a quirky, specific habit</span></label>
+        <div class="row"><textarea id="fTrait" placeholder="Something you always do…"></textarea><button class="surprise" data-sg="trait">✨</button></div>
+      </div>
+      <div class="field">
+        <label for="fIdeal">Ideal <span class="q">— what you believe in</span></label>
+        <div class="row"><textarea id="fIdeal" placeholder="A principle that drives you…"></textarea><button class="surprise" data-sg="ideal">✨</button></div>
+      </div>
+      <div class="field">
+        <label for="fBond">Bond <span class="q">— a person, place, or thing you care about</span></label>
+        <div class="row"><textarea id="fBond" placeholder="Who or what matters to you…"></textarea><button class="surprise" data-sg="bond">✨</button></div>
+      </div>
+      <div class="field">
+        <label for="fFlaw">Flaw <span class="q">— a weakness or vice (these make great stories)</span></label>
+        <div class="row"><textarea id="fFlaw" placeholder="Where you fall short…"></textarea><button class="surprise" data-sg="flaw">✨</button></div>
+      </div>
+      <div class="field">
+        <label for="fNotes">Anything else for your DM? <span class="q">— optional</span></label>
+        <textarea id="fNotes" placeholder="A concept, a question, a request… or leave blank."></textarea>
+      </div>
+      <div class="navbtns">
+        <button class="btn ghost" data-go="4">← Back</button>
+        <button class="btn big" data-go="6">Finish & Review →</button>
+      </div>
+    </section>
+
+    <!-- ===== STEP 6 — FINISH ===== -->
+    <section class="step" data-step="6">
+      <div class="step-head">
+        <h2>🎉 Your hero is ready!</h2>
+        <p class="lede">Send this to your DM. They'll turn it into a full, ready-to-play character sheet.</p>
+      </div>
+      <div class="checklist" id="checklist"></div>
+      <h3 style="color:var(--green-d)">Send it to your DM</h3>
+      <div class="finish-grid">
+        <button class="btn big" id="copyBtn">📋 Copy to clipboard</button>
+        <button class="btn big accent" id="emailBtn">✉️ Email to my DM</button>
+        <button class="btn big ghost" id="downloadBtn">⬇️ Download (.md)</button>
+        <button class="btn big ghost" id="printBtn">🖨️ Print / Save PDF</button>
+      </div>
+      <p style="font-size:.86rem; color:var(--muted)">This is exactly what your DM needs. Copy it into a
+        message, or use the email button to send it straight to them.</p>
+      <textarea class="export-box" id="exportBox" readonly></textarea>
+      <div class="navbtns">
+        <button class="btn ghost" data-go="5">← Back to edit</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== RAIL: HERO SO FAR ===== -->
+  <aside class="rail">
+    <div class="summ">
+      <h3>🛡️ Your Hero So Far <span class="spacer" style="flex:1"></span></h3>
+      <div class="summ-body">
+        <div class="summ-name" id="sName">Unnamed Hero</div>
+        <div class="summ-line" id="sLine">Make some choices and watch your hero take shape…</div>
+        <dl class="summ-kv">
+          <dt>Race</dt><dd id="sRace" class="empty">—</dd>
+          <dt>Class</dt><dd id="sClass" class="empty">—</dd>
+          <dt>Background</dt><dd id="sBg" class="empty">—</dd>
+        </dl>
+        <div class="summ-abils" id="sAbils"></div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   THE WEEPING GROVE — player-facing character builder.
+   Static, offline, single file. Collects the "big picks" + raw
+   ability scores (the HTML version of characters/_CHOOSER.md) and
+   exports a clean handback the DM feeds into the Character Creator.
+   ============================================================ */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const mod = s => Math.floor((s-10)/2);
+const fmtMod = m => (m>=0?"+"+m:""+m);
+const ABILS = ["STR","DEX","CON","INT","WIS","CHA"];
+const ABIL_NAME = {STR:"Strength",DEX:"Dexterity",CON:"Constitution",INT:"Intelligence",WIS:"Wisdom",CHA:"Charisma"};
+const ABIL_SUB = {STR:"raw muscle",DEX:"agility, aim",CON:"toughness",INT:"knowledge",WIS:"awareness, willpower",CHA:"force of personality"};
+
+/* ====================== DATA: RACES ====================== */
+const RACES = [
+  {id:"dwarf", name:"Dwarf", emoji:"⛏️", tag:"Sturdy & hard to kill", speed:25,
+   desc:"Stout, tough, traditional. See in the dark, shrug off poison, and sense stonework.",
+   asi:{CON:2},
+   subraces:[
+     {id:"hill", name:"Hill Dwarf", asi:{WIS:1}, note:"Extra durable — +1 HP every level"},
+     {id:"mountain", name:"Mountain Dwarf", asi:{STR:2}, note:"Can wear light & medium armor"},
+   ]},
+  {id:"elf", name:"Elf", emoji:"🏹", tag:"Nimble & perceptive", speed:30,
+   desc:"Graceful and long-lived. Darkvision, hard to charm, sharp-eyed, and meditate instead of sleep.",
+   asi:{DEX:2},
+   subraces:[
+     {id:"high", name:"High Elf", asi:{INT:1}, note:"A free wizard cantrip + extra language"},
+     {id:"wood", name:"Wood Elf", asi:{WIS:1}, speed:35, note:"Speed 35, hide in nature"},
+     {id:"drow", name:"Drow (Dark Elf)", asi:{CHA:1}, note:"Darkvision 120 + innate magic; sunlight is a problem"},
+   ]},
+  {id:"halfling", name:"Halfling", emoji:"🍀", tag:"Lucky underdog", speed:25,
+   desc:"Small, lucky, plucky. Reroll natural 1s, hard to frighten, slips through bigger foes.",
+   asi:{DEX:2},
+   subraces:[
+     {id:"lightfoot", name:"Lightfoot", asi:{CHA:1}, note:"Naturally stealthy — hide behind bigger creatures"},
+     {id:"stout", name:"Stout", asi:{CON:1}, note:"Poison-resistant"},
+   ]},
+  {id:"human", name:"Human", emoji:"🧑", tag:"Flexible all-rounder", speed:30,
+   desc:"Good at any class, plus a bonus language. The dependable choice.",
+   asi:{STR:1,DEX:1,CON:1,INT:1,WIS:1,CHA:1},
+   subraces:[
+     {id:"standard", name:"Standard Human", asi:{}, inheritsAll:true, note:"+1 to ALL six abilities"},
+     {id:"variant", name:"Variant Human", asi:{}, chooseAsi:{count:2,amount:1}, note:"+1 to two abilities you choose, a skill, AND a feat (special talent) right away"},
+   ]},
+  {id:"dragonborn", name:"Dragonborn", emoji:"🐲", tag:"Strong warrior + breath blast", speed:30,
+   desc:"Proud dragon-blood. A Breath Weapon (a cone/line of elemental damage) and resistance to that type.",
+   asi:{STR:2,CHA:1}, subraces:[]},
+  {id:"gnome", name:"Gnome", emoji:"🔧", tag:"Brainy & magical (small)", speed:25,
+   desc:"Tiny, clever, curious. Darkvision and a strong mind against magic.",
+   asi:{INT:2},
+   subraces:[
+     {id:"forest", name:"Forest Gnome", asi:{DEX:1}, note:"The minor illusion cantrip; talk to small animals"},
+     {id:"rock", name:"Rock Gnome", asi:{CON:1}, note:"Build tiny clockwork gadgets"},
+   ]},
+  {id:"halfelf", name:"Half-Elf", emoji:"🎭", tag:"Charismatic do-it-all (face)", speed:30,
+   desc:"Charming and adaptable. Darkvision, resist charm, and two skills of your choice.",
+   asi:{CHA:2}, chooseAsi:{count:2,amount:1}, subraces:[]},
+  {id:"halforc", name:"Half-Orc", emoji:"💪", tag:"Tough frontline brawler", speed:30,
+   desc:"Powerful and relentless. Drop to 1 HP instead of 0 once per rest, hit harder on crits, intimidating.",
+   asi:{STR:2,CON:1}, subraces:[]},
+  {id:"tiefling", name:"Tiefling", emoji:"😈", tag:"Charismatic outsider w/ magic", speed:30,
+   desc:"Fiendish heritage, magnetic and mysterious. Darkvision, fire resistance, innate magic.",
+   asi:{INT:1,CHA:2}, subraces:[]},
+];
+
+/* ====================== DATA: CLASSES ====================== */
+const CLASSES = [
+  {id:"barbarian", name:"Barbarian", emoji:"🪓", hd:"d12", prim:["STR"], primTxt:"Strength",
+   desc:"Front-line bruiser (toughest). You <b>Rage</b>: bonus damage and take half damage from weapons. Simple and durable.",
+   pick:"to soak hits and smash things."},
+  {id:"bard", name:"Bard", emoji:"🎵", hd:"d8", prim:["CHA"], primTxt:"Charisma",
+   desc:"Versatile support &amp; \"face\" — full spellcaster. <b>Inspire</b> allies, talk past problems, cast a flexible list.",
+   pick:"magic + social skills + a bit of everything."},
+  {id:"cleric", name:"Cleric", emoji:"✨", hd:"d8", prim:["WIS"], primTxt:"Wisdom",
+   desc:"Divine healer/leader in armor — full spellcaster. <b>Heal and buff</b> the party, blast with divine magic, hold the line.",
+   pick:"to keep everyone alive with flexible magic.",
+   choice:{label:"Divine Domain", hint:"Your god's flavour. Life = best healer; War/Tempest = armored fighter; Light = fire & radiance.",
+     options:[
+       {id:"life", name:"Life", note:"The classic healer — heavy armor + bonus healing"},
+       {id:"war", name:"War", note:"Armored holy fighter — extra attacks of faith"},
+       {id:"light", name:"Light", note:"Fire & radiance blaster; ward against damage"},
+       {id:"tempest", name:"Tempest", note:"Thunder & lightning; punish attackers"},
+       {id:"trickery", name:"Trickery", note:"Stealth & illusions; bless allies' strikes"},
+       {id:"knowledge", name:"Knowledge", note:"Skills, languages, and lore"},
+       {id:"nature", name:"Nature", note:"Druid-flavored; nature magic + heavy armor"},
+     ]}},
+  {id:"druid", name:"Druid", emoji:"🍃", hd:"d8", prim:["WIS"], primTxt:"Wisdom",
+   desc:"Nature caster &amp; shapeshifter — full spellcaster. Control the field, heal, and soon <b>Wild Shape</b> into animals.",
+   pick:"a nature theme with lots of versatility."},
+  {id:"fighter", name:"Fighter", emoji:"⚔️", hd:"d10", prim:["STR","DEX"], primTxt:"Strength or Dexterity",
+   desc:"Weapon master, the most flexible warrior (very tough). Reliable, deadly, customizable; <b>self-heals</b> with Second Wind.",
+   pick:"straightforward, deadly, customizable combat.",
+   choice:{label:"Fighting Style", hint:"How you fight. Pick to match your weapon.",
+     options:[
+       {id:"defense", name:"Defense", note:"+1 AC while wearing armor (safe default)"},
+       {id:"dueling", name:"Dueling", note:"+2 damage with a one-handed weapon (sword & board)"},
+       {id:"archery", name:"Archery", note:"+2 to hit with ranged weapons (bows)"},
+       {id:"great-weapon", name:"Great Weapon Fighting", note:"Reroll low damage with a two-handed weapon"},
+       {id:"two-weapon", name:"Two-Weapon Fighting", note:"Add your mod to the off-hand attack"},
+       {id:"protection", name:"Protection", note:"Use a shield to impose disadvantage on foes hitting allies"},
+     ]}},
+  {id:"monk", name:"Monk", emoji:"👊", hd:"d8", prim:["DEX","WIS"], primTxt:"Dexterity & Wisdom",
+   desc:"Mobile martial artist. Fast and unarmored, a flurry of unarmed strikes; Ki powers from level 2.",
+   pick:"an agile striker who needs no weapons or armor."},
+  {id:"paladin", name:"Paladin", emoji:"🛡️", hd:"d10", prim:["STR","CHA"], primTxt:"Strength & Charisma",
+   desc:"Holy warrior (tough) — half spellcaster. <b>Smite</b> foes with radiant bursts, protect with auras, <b>Lay on Hands</b> to heal.",
+   pick:"a durable hero who deals damage AND supports."},
+  {id:"ranger", name:"Ranger", emoji:"🌲", hd:"d10", prim:["DEX","WIS"], primTxt:"Dexterity & Wisdom",
+   desc:"Wilderness skirmisher (tough) — half spellcaster. Track and hunt, fight at range or two-weapon, light nature magic.",
+   pick:"an outdoorsy striker with skills and a little magic."},
+  {id:"rogue", name:"Rogue", emoji:"🗡️", hd:"d8", prim:["DEX"], primTxt:"Dexterity",
+   desc:"Skill &amp; stealth expert. Big burst damage with <b>Sneak Attack</b>, the best skills in the game, <b>Expertise</b> doubles two of them.",
+   pick:"sneaky, skillful, big single hits."},
+  {id:"sorcerer", name:"Sorcerer", emoji:"🔥", hd:"d6", prim:["CHA"], primTxt:"Charisma",
+   desc:"Innate blaster (fragile) — full spellcaster. Magic in your blood: a focused list, plus Metamagic later.",
+   pick:"flashy, dramatic magic.",
+   choice:{label:"Sorcerous Origin", hint:"Where your magic comes from.",
+     options:[
+       {id:"draconic", name:"Draconic Bloodline", note:"Dragon ancestry — tougher, +1 AC, elemental affinity"},
+       {id:"wild-magic", name:"Wild Magic", note:"Chaos — random surges of extra magic"},
+     ]}},
+  {id:"warlock", name:"Warlock", emoji:"👁️", hd:"d8", prim:["CHA"], primTxt:"Charisma",
+   desc:"Pact caster. A few <b>powerful</b> slots that recharge on a short rest, an at-will blast (Eldritch Blast), customizable Invocations.",
+   pick:"a signature ranged blast + utility, fewer-but-stronger spells.",
+   choice:{label:"Otherworldly Patron", hint:"The being that grants your power.",
+     options:[
+       {id:"fiend", name:"The Fiend", note:"Hellish power — temp HP on kills, fire & flame"},
+       {id:"archfey", name:"The Archfey", note:"Faerie tricks — charm & escape"},
+       {id:"great-old-one", name:"The Great Old One", note:"Cosmic mind — telepathy & madness"},
+     ]}},
+  {id:"wizard", name:"Wizard", emoji:"📖", hd:"d6", prim:["INT"], primTxt:"Intelligence",
+   desc:"Scholar with the biggest toolbox (fragile) — full spellcaster. A spellbook, prepare the right tools each day, ritual utility for free.",
+   pick:"a versatile problem-solver with an answer for everything."},
+];
+
+/* ====================== DATA: BACKGROUNDS ====================== */
+const BACKGROUNDS = [
+  {id:"acolyte", name:"Acolyte", emoji:"⛪", skills:"Insight, Religion", feature:"Shelter of the Faithful", desc:"Free care & welcome at temples of your faith.", fits:"served in a temple or holy order."},
+  {id:"charlatan", name:"Charlatan", emoji:"🎩", skills:"Deception, Sleight of Hand", feature:"False Identity", desc:"A believable second persona; can forge papers.", fits:"a con artist or grifter."},
+  {id:"criminal", name:"Criminal", emoji:"🗝️", skills:"Deception, Stealth", feature:"Criminal Contact", desc:"A reliable link to the underworld.", fits:"a thief, smuggler, or ex-outlaw."},
+  {id:"entertainer", name:"Entertainer", emoji:"🎻", skills:"Acrobatics, Performance", feature:"By Popular Demand", desc:"Welcome to perform for food & lodging.", fits:"a bard-at-heart, actor, or acrobat."},
+  {id:"folk-hero", name:"Folk Hero", emoji:"🌾", skills:"Animal Handling, Survival", feature:"Rustic Hospitality", desc:"Common folk shelter and hide you.", fits:"a humble local who stood up for the little guy."},
+  {id:"guild-artisan", name:"Guild Artisan", emoji:"⚒️", skills:"Insight, Persuasion", feature:"Guild Membership", desc:"Guild backing, lodging, and clout.", fits:"a skilled craftsperson or merchant."},
+  {id:"hermit", name:"Hermit", emoji:"🕯️", skills:"Medicine, Religion", feature:"Discovery", desc:"You learned a unique, powerful secret in seclusion.", fits:"a recluse, mystic, or seeker."},
+  {id:"noble", name:"Noble", emoji:"👑", skills:"History, Persuasion", feature:"Position of Privilege", desc:"Treated as high-born; easy audiences.", fits:"highborn, wealthy, or well-connected."},
+  {id:"outlander", name:"Outlander", emoji:"🏔️", skills:"Athletics, Survival", feature:"Wanderer", desc:"Flawless geographic memory; find food & water for the party.", fits:"a tribesperson, explorer, or frontier wanderer."},
+  {id:"sage", name:"Sage", emoji:"📚", skills:"Arcana, History", feature:"Researcher", desc:"If you don't know it, you know where to find it.", fits:"a scholar, librarian, or academic."},
+  {id:"sailor", name:"Sailor", emoji:"⚓", skills:"Athletics, Perception", feature:"Ship's Passage", desc:"Free passage by sea for you and friends.", fits:"a deckhand, navigator, or pirate."},
+  {id:"soldier", name:"Soldier", emoji:"🎖️", skills:"Athletics, Intimidation", feature:"Military Rank", desc:"Soldiers recognize your authority; military access.", fits:"a veteran, guard, or mercenary."},
+  {id:"urchin", name:"Urchin", emoji:"🐀", skills:"Sleight of Hand, Stealth", feature:"City Secrets", desc:"Move through any city at double speed via hidden ways.", fits:"a street kid who grew up rough."},
+];
+
+/* ====================== DATA: PERSONALITY SUGGESTIONS ====================== */
+const SUGG = {
+  name:["Lyra Shadowleaf","Bram Oakenshield","Sera Thornwhistle","Kael Ashmoor","Wren Fennick","Doran Greymantle",
+    "Isolde Vance","Pike Underbough","Mira Holloway","Thessaly Rook","Garrick Stone","Nyx Emberhollow"],
+  trait:[
+    "I always have a plan for what to do when things go wrong.",
+    "I notice the smallest details everyone else misses.",
+    "A simple, direct solution is always the best path.",
+    "I'm full of bad jokes, especially when things look grim.",
+    "I can find common ground between the fiercest enemies.",
+    "I quote (and sometimes misquote) old sayings for every occasion.",
+    "I'm slow to trust strangers, but fierce for those I do.",
+    "I can't walk past someone in trouble without stopping to help.",
+  ],
+  ideal:[
+    "Protection. The weak deserve a shield against the strong.",
+    "Truth. I will uncover what really happened, whatever it costs.",
+    "Freedom. Chains — of any kind — are meant to be broken.",
+    "Nature. The wild world matters more than the works of folk.",
+    "Glory. I mean to earn the renown of a true hero.",
+    "Redemption. There's a spark of good in almost everyone.",
+    "Greater Good. My talents are meant to serve others.",
+  ],
+  bond:[
+    "I'm searching for someone I lost, and won't stop until I find them.",
+    "I owe everything to a mentor who took me in.",
+    "My home village will always come first.",
+    "I carry a token from someone who believed in me.",
+    "An ancient wood, river, or shrine is sacred to me.",
+    "I will repay a debt I can never fully settle.",
+    "I made a promise to a dying friend, and I mean to keep it.",
+  ],
+  flaw:[
+    "I can't resist a good mystery, even when I should walk away.",
+    "Once I pick a goal, I ignore everyone and everything else.",
+    "I have a weakness for the vices of the road: drink, dice, and dares.",
+    "I speak my mind without thinking — especially to people in charge.",
+    "I'd rather make a new friend than admit I was wrong.",
+    "I trust too easily, and it's burned me before.",
+    "I freeze up when I'm truly afraid for someone I love.",
+  ],
+};
+
+/* ====================== STATE ====================== */
+// DM's email for the "Email to my DM" button. Change this to your address,
+// or set it to "" to let players type the recipient themselves.
+const DM_EMAIL = "josh.n.excell@gmail.com";
+const SAVE_KEY = "weeping-grove-character-v1";
+let S = {
+  step:0,
+  race:null, subrace:null, raceAsiPick:[],
+  cls:null, clsChoice:null,
+  bg:null,
+  method:"standard",
+  rolled:null,                 // array of 6 numbers when method=roll
+  scores:{STR:null,DEX:null,CON:null,INT:null,WIS:null,CHA:null}, // base (pre-race) the player assigns
+  name:"", player:"", align:"", trait:"", ideal:"", bond:"", flaw:"", notes:"",
+};
+const STANDARD_ARRAY = [15,14,13,12,10,8];
+const PB_COST = {8:0,9:1,10:2,11:3,12:4,13:5,14:7,15:9};
+const STEP_NAMES = ["Welcome","Race","Class","Background","Abilities","Personality","Finish"];
+
+function load(){ try{const r=JSON.parse(localStorage.getItem(SAVE_KEY)); if(r) S=Object.assign(S,r);}catch(e){} }
+function save(){ try{localStorage.setItem(SAVE_KEY, JSON.stringify(S));}catch(e){} }
+
+/* ====================== HELPERS ====================== */
+function raceObj(){ return RACES.find(r=>r.id===S.race)||null; }
+function subraceObj(){ const r=raceObj(); if(!r) return null; return (r.subraces||[]).find(s=>s.id===S.subrace)||null; }
+function classObj(){ return CLASSES.find(c=>c.id===S.cls)||null; }
+function bgObj(){ return BACKGROUNDS.find(b=>b.id===S.bg)||null; }
+
+// total ASI bonus per ability from race + subrace + chosen ASIs
+function raceBonuses(){
+  const b={STR:0,DEX:0,CON:0,INT:0,WIS:0,CHA:0};
+  const r=raceObj(); if(!r) return b;
+  const sr=subraceObj();
+  // Standard Human special: subrace "standard" inherits the +1 to all
+  const useBaseAsi = !(r.id==="human") || (sr && sr.inheritsAll);
+  if(useBaseAsi){ for(const k in r.asi) b[k]+=r.asi[k]; }
+  if(sr && sr.asi){ for(const k in sr.asi) b[k]+=sr.asi[k]; }
+  // chosen ASIs (variant human, half-elf)
+  const ch = chooseAsiConfig();
+  if(ch){ (S.raceAsiPick||[]).forEach(k=>{ if(b[k]!==undefined) b[k]+=ch.amount; }); }
+  return b;
+}
+// returns {count,amount} if this race/subrace lets you choose ASIs
+function chooseAsiConfig(){
+  const r=raceObj(); if(!r) return null;
+  if(r.chooseAsi) return r.chooseAsi;          // half-elf
+  const sr=subraceObj();
+  if(sr && sr.chooseAsi) return sr.chooseAsi;  // variant human
+  return null;
+}
+function speed(){ const sr=subraceObj(); if(sr&&sr.speed) return sr.speed; const r=raceObj(); return r?r.speed:30; }
+
+function finalScore(ab){ const base=S.scores[ab]; if(base==null) return null; return base + raceBonuses()[ab]; }
+
+/* ====================== RENDER: CARDS ====================== */
+function renderRaceCards(){
+  const wrap=$("#raceCards"); wrap.innerHTML="";
+  RACES.forEach(r=>{
+    const asiTxt = Object.entries(r.asi).map(([k,v])=>`${k} +${v}`).join(", ") || "you choose";
+    const c=document.createElement("button"); c.className="card"+(S.race===r.id?" sel":"");
+    c.innerHTML=`<div class="c-name"><span class="c-emoji">${r.emoji}</span>${r.name}</div>
+      <div class="c-tag">${asiTxt} · speed ${r.speed} ft</div>
+      <div class="c-desc">${r.desc}</div>
+      <div class="c-pick">Pick if you want: ${r.tag}.</div>`;
+    c.onclick=()=>{ if(S.race!==r.id){ S.race=r.id; S.subrace=null; S.raceAsiPick=[]; } commit(); };
+    wrap.appendChild(c);
+  });
+  renderSubrace(); renderRaceAsi();
+}
+function renderSubrace(){
+  const wrap=$("#subraceWrap"); wrap.innerHTML="";
+  const r=raceObj(); if(!r || !r.subraces || !r.subraces.length){ return; }
+  const box=document.createElement("div"); box.className="subchoice";
+  box.innerHTML=`<h4>Now pick your ${r.name} subrace</h4><div class="hint">A small extra boost and a trait or two.</div>`;
+  const chips=document.createElement("div"); chips.className="chips";
+  r.subraces.forEach(sr=>{
+    const asiTxt = sr.inheritsAll ? "+1 to all" : (Object.entries(sr.asi||{}).map(([k,v])=>`${k} +${v}`).join(", ")||"—");
+    const b=document.createElement("button"); b.className="chip-opt"+(S.subrace===sr.id?" sel":"");
+    b.innerHTML=`${sr.name} <small>${asiTxt} · ${sr.note}</small>`;
+    b.onclick=()=>{ S.subrace=sr.id; if(!chooseAsiConfig()) S.raceAsiPick=[]; commit(); };
+    chips.appendChild(b);
+  });
+  box.appendChild(chips); wrap.appendChild(box);
+}
+function renderRaceAsi(){
+  const wrap=$("#raceAsiWrap"); wrap.innerHTML="";
+  const ch=chooseAsiConfig(); if(!ch) return;
+  const box=document.createElement("div"); box.className="asi-choice";
+  box.innerHTML=`<b>Bonus picks:</b> choose <b>${ch.count}</b> abilities to get +${ch.amount} each (your race lets you choose).`;
+  const chips=document.createElement("div"); chips.className="chips";
+  ABILS.forEach(ab=>{
+    const on=S.raceAsiPick.includes(ab);
+    const b=document.createElement("button"); b.className="chip-opt"+(on?" sel":"");
+    b.textContent=ab;
+    b.onclick=()=>{
+      const i=S.raceAsiPick.indexOf(ab);
+      if(i>=0) S.raceAsiPick.splice(i,1);
+      else { if(S.raceAsiPick.length>=ch.count) S.raceAsiPick.shift(); S.raceAsiPick.push(ab); }
+      commit();
+    };
+    chips.appendChild(b);
+  });
+  box.appendChild(chips); wrap.appendChild(box);
+  $("#raceWarn").textContent = S.raceAsiPick.length<ch.count ? `Pick ${ch.count-S.raceAsiPick.length} more bonus ability${ch.count-S.raceAsiPick.length>1?"ies":"y"}.` : "";
+}
+
+function renderClassCards(){
+  const wrap=$("#classCards"); wrap.innerHTML="";
+  CLASSES.forEach(c=>{
+    const el=document.createElement("button"); el.className="card"+(S.cls===c.id?" sel":"");
+    el.innerHTML=`<div class="c-name"><span class="c-emoji">${c.emoji}</span>${c.name}</div>
+      <div class="c-tag">${c.hd} Hit Die · key: ${c.primTxt}</div>
+      <div class="c-desc">${c.desc}</div>
+      <div class="c-pick">Pick if you want: ${c.pick}</div>`;
+    el.onclick=()=>{ if(S.cls!==c.id){ S.cls=c.id; S.clsChoice=null; } commit(); };
+    wrap.appendChild(el);
+  });
+  renderClassChoice();
+}
+function renderClassChoice(){
+  const wrap=$("#classChoiceWrap"); wrap.innerHTML="";
+  const c=classObj(); if(!c || !c.choice) return;
+  const box=document.createElement("div"); box.className="subchoice";
+  box.innerHTML=`<h4>${c.name}: choose your ${c.choice.label} now</h4><div class="hint">${c.choice.hint}</div>`;
+  const chips=document.createElement("div"); chips.className="chips";
+  c.choice.options.forEach(o=>{
+    const b=document.createElement("button"); b.className="chip-opt"+(S.clsChoice===o.id?" sel":"");
+    b.innerHTML=`${o.name} <small>${o.note}</small>`;
+    b.onclick=()=>{ S.clsChoice=o.id; commit(); };
+    chips.appendChild(b);
+  });
+  box.appendChild(chips); wrap.appendChild(box);
+  $("#classWarn").textContent = (c.choice && !S.clsChoice) ? `Don't forget to pick a ${c.choice.label}.` : "";
+}
+
+function renderBgCards(){
+  const wrap=$("#bgCards"); wrap.innerHTML="";
+  BACKGROUNDS.forEach(b=>{
+    const el=document.createElement("button"); el.className="card"+(S.bg===b.id?" sel":"");
+    el.innerHTML=`<div class="c-name"><span class="c-emoji">${b.emoji}</span>${b.name}</div>
+      <div class="c-tag">Skills: ${b.skills}</div>
+      <div class="c-desc"><b>${b.feature}:</b> ${b.desc}</div>
+      <div class="c-pick">Fits: ${b.fits}</div>`;
+    el.onclick=()=>{ S.bg=b.id; commit(); };
+    wrap.appendChild(el);
+  });
+}
+
+/* ====================== RENDER: ABILITY SCORES ====================== */
+function methodHelpText(m){
+  return ({
+    standard:"Use these six fixed numbers — assign one to each ability. Fast and balanced. (Recommended if you're new.)",
+    pointbuy:"You have 27 points. Raise each score from 8 up to 15 — higher scores cost more. Spend it all.",
+    roll:"Roll 4d6 and drop the lowest die, six times. Then assign your six numbers however you like. Swingy but exciting.",
+    manual:"Type whatever six numbers your DM told you to use.",
+  })[m];
+}
+function poolValues(){
+  if(S.method==="standard") return STANDARD_ARRAY.slice();
+  if(S.method==="roll") return (S.rolled||[]).slice();
+  return null;
+}
+function renderMethod(){
+  $$("#methodTabs button").forEach(b=>b.classList.toggle("on", b.dataset.method===S.method));
+  $("#methodHelp").textContent=methodHelpText(S.method);
+  $("#rollTools").style.display = S.method==="roll" ? "flex":"none";
+  $("#rerollBtn").style.display = (S.method==="roll" && S.rolled) ? "inline-block":"none";
+  $("#rollBtn").textContent = S.rolled ? "🎲 Roll again" : "🎲 Roll 4d6 (drop lowest) × 6";
+  renderPool();
+  renderAsiChoiceMini();
+  renderAbTable();
+}
+function renderPool(){
+  const wrap=$("#poolWrap"); wrap.innerHTML="";
+  if(S.method==="pointbuy"){
+    const spent = ABILS.reduce((t,ab)=>t+(PB_COST[S.scores[ab]??8]||0),0);
+    const left=27-spent;
+    const p=document.createElement("div"); p.className="pool";
+    p.innerHTML=`Points left: <span class="points-left ${left<0?'over':''}">${left}</span> / 27 &nbsp; <span style="font-size:.78rem;color:var(--muted)">(8=0 · 9=1 · 10=2 · 11=3 · 12=4 · 13=5 · 14=7 · 15=9)</span>`;
+    wrap.appendChild(p);
+    return;
+  }
+  const vals=poolValues(); if(!vals||!vals.length) return;
+  const used = ABILS.map(ab=>S.scores[ab]).filter(v=>v!=null);
+  const usedCopy=used.slice();
+  const p=document.createElement("div"); p.className="pool";
+  p.innerHTML=`<span style="font-size:.82rem;color:var(--muted)">Your numbers:</span> `;
+  vals.forEach(v=>{
+    const i=usedCopy.indexOf(v); const isUsed=i>=0; if(isUsed) usedCopy.splice(i,1);
+    const c=document.createElement("span"); c.className="poolchip"+(isUsed?" used":""); c.textContent=v;
+    p.appendChild(c);
+  });
+  wrap.appendChild(p);
+}
+function renderAsiChoiceMini(){
+  // re-show the chosen-ASI reminder on the abilities step if unresolved
+  const wrap=$("#asiChoiceWrap"); wrap.innerHTML="";
+  const ch=chooseAsiConfig();
+  if(ch && S.raceAsiPick.length<ch.count){
+    const d=document.createElement("div"); d.className="asi-choice";
+    d.innerHTML=`<b>Heads up:</b> back on the Race step you still need to choose ${ch.count-S.raceAsiPick.length} bonus +${ch.amount} ability${ch.count-S.raceAsiPick.length>1?"ies":"y"}. Your totals below assume those.`;
+    wrap.appendChild(d);
+  }
+}
+function abilityOptions(ab){
+  // build <select> options for standard/roll from the pool, disabling values already used elsewhere
+  const vals=poolValues()||[];
+  const usedElsewhere={};
+  ABILS.forEach(a=>{ if(a!==ab && S.scores[a]!=null) usedElsewhere[S.scores[a]]=(usedElsewhere[S.scores[a]]||0)+1; });
+  // count availability per value
+  const avail={}; vals.forEach(v=>avail[v]=(avail[v]||0)+1);
+  const cur=S.scores[ab];
+  let html=`<option value="">—</option>`;
+  // unique sorted desc
+  [...new Set(vals)].sort((a,b)=>b-a).forEach(v=>{
+    const remaining=(avail[v]||0)-(usedElsewhere[v]||0);
+    const disabled = remaining<=0 && cur!==v;
+    html+=`<option value="${v}" ${cur===v?"selected":""} ${disabled?"disabled":""}>${v}</option>`;
+  });
+  return html;
+}
+function renderAbTable(){
+  const tb=$("#abBody"); tb.innerHTML="";
+  const c=classObj();
+  const bon=raceBonuses();
+  ABILS.forEach(ab=>{
+    const isPrim = c && c.prim.includes(ab);
+    const tr=document.createElement("tr"); if(isPrim) tr.className="is-primary";
+    let inputCell="";
+    if(S.method==="pointbuy"){
+      const v=S.scores[ab]??8;
+      inputCell=`<div class="step-btns"><button data-dec="${ab}">−</button><span style="min-width:2ch;display:inline-block;font-weight:700">${v}</span><button data-inc="${ab}">+</button></div>`;
+    } else if(S.method==="manual"){
+      inputCell=`<input class="scorein" type="number" min="1" max="20" data-manual="${ab}" value="${S.scores[ab]??""}">`;
+    } else {
+      inputCell=`<select data-assign="${ab}">${abilityOptions(ab)}</select>`;
+    }
+    const fin=finalScore(ab);
+    tr.innerHTML=`
+      <td class="ab-name">${ABIL_NAME[ab]} ${isPrim?'<span class="prim">★ your key ability</span>':''}<small>${ABIL_SUB[ab]}</small></td>
+      <td>${inputCell}</td>
+      <td class="bonus">${bon[ab]?("+"+bon[ab]):"—"}</td>
+      <td class="final">${fin==null?"—":fin}</td>
+      <td class="mod">${fin==null?"—":fmtMod(mod(fin))}</td>`;
+    tb.appendChild(tr);
+  });
+  // wire inputs
+  $$('#abBody select[data-assign]').forEach(sel=>sel.onchange=e=>{ const ab=e.target.dataset.assign; S.scores[ab]= e.target.value===""?null:+e.target.value; commit(); });
+  $$('#abBody input[data-manual]').forEach(inp=>inp.oninput=e=>{ const ab=e.target.dataset.manual; const v=e.target.value; S.scores[ab]= v===""?null:clampInt(+v,1,20); commit(false); });
+  $$('#abBody button[data-inc]').forEach(b=>b.onclick=e=>pbStep(e.target.dataset.inc,+1));
+  $$('#abBody button[data-dec]').forEach(b=>b.onclick=e=>pbStep(e.target.dataset.dec,-1));
+  renderPrimaryHint();
+}
+function clampInt(n,a,b){ if(isNaN(n)) return a; return Math.max(a,Math.min(b,n)); }
+function pbStep(ab,dir){
+  let v=S.scores[ab]??8; let nv=clampInt(v+dir,8,15);
+  // check budget
+  const others=ABILS.reduce((t,a)=>t+(a===ab?0:(PB_COST[S.scores[a]??8]||0)),0);
+  if(others + PB_COST[nv] > 27){ toast("Not enough points for that."); return; }
+  S.scores[ab]=nv; commit();
+}
+function renderPrimaryHint(){
+  const el=$("#primaryHint"); const c=classObj();
+  if(!c){ el.textContent="Pick a class first and we'll tell you where your highest score should go."; return; }
+  // find highest final
+  let hi=null,hiAb=null;
+  ABILS.forEach(ab=>{ const f=finalScore(ab); if(f!=null && (hi==null||f>hi)){hi=f;hiAb=ab;} });
+  let msg=`💡 As a ${c.name}, put your highest number in <b>${c.primTxt}</b>.`;
+  if(hiAb && !c.prim.includes(hiAb)){
+    msg+=` Right now your highest (${hi}) is in ${ABIL_NAME[hiAb]} — consider swapping it into ${c.prim.map(p=>ABIL_NAME[p]).join(" or ")}.`;
+  } else if(hiAb){ msg+=` ✅ Looking good — your highest is in the right place.`; }
+  el.innerHTML=msg;
+}
+function rollDice(){
+  const out=[];
+  for(let i=0;i<6;i++){
+    const d=[0,0,0,0].map(()=>1+Math.floor(Math.random()*6)).sort((a,b)=>a-b);
+    out.push(d[1]+d[2]+d[3]); // drop lowest
+  }
+  S.rolled=out; S.scores={STR:null,DEX:null,CON:null,INT:null,WIS:null,CHA:null};
+  toast("Rolled: "+out.join(", "));
+  commit();
+}
+
+/* ====================== RENDER: SUMMARY RAIL ====================== */
+function renderSummary(){
+  const r=raceObj(),sr=subraceObj(),c=classObj(),b=bgObj();
+  $("#sName").textContent = S.name?.trim() || "Unnamed Hero";
+  // one-liner
+  const bits=[];
+  if(r) bits.push((sr?sr.name:r.name));
+  if(c){ let t=c.name; if(c.choice&&S.clsChoice){ const o=c.choice.options.find(x=>x.id===S.clsChoice); if(o) t+=` (${o.name})`; } bits.push(t); }
+  $("#sLine").textContent = bits.length? ("A "+bits.join(" ")+(b?(", the "+b.name.toLowerCase()):"")+".") : "Make some choices and watch your hero take shape…";
+  setKv("sRace", r?(sr?`${sr.name}`:r.name):"", "");
+  let clsTxt=""; if(c){ clsTxt=c.name; if(c.choice&&S.clsChoice){ const o=c.choice.options.find(x=>x.id===S.clsChoice); if(o) clsTxt+=" — "+o.name; } }
+  setKv("sClass", clsTxt, "");
+  setKv("sBg", b?b.name:"", "");
+  // abilities
+  const ab=$("#sAbils"); ab.innerHTML="";
+  ABILS.forEach(a=>{
+    const f=finalScore(a); const isPrim=c&&c.prim.includes(a);
+    const d=document.createElement("div"); if(isPrim) d.className="prim";
+    d.innerHTML=`<div class="a">${a}</div><div class="s">${f==null?"—":f}</div><div class="m">${f==null?"":fmtMod(mod(f))}</div>`;
+    ab.appendChild(d);
+  });
+}
+function setKv(id,val){ const el=$("#"+id); if(val){ el.textContent=val; el.classList.remove("empty"); } else { el.textContent="—"; el.classList.add("empty"); } }
+
+/* ====================== PROGRESS + STEP NAV ====================== */
+function renderStepNav(){
+  const nav=$("#stepnav"); nav.innerHTML="";
+  STEP_NAMES.forEach((nm,i)=>{
+    const done=isStepComplete(i);
+    const b=document.createElement("button");
+    b.className=(i===S.step?"active ":"")+(done&&i!==S.step?"done":"");
+    b.innerHTML=`<span class="num"><span>${i}</span></span>${nm}`;
+    b.onclick=()=>goStep(i);
+    nav.appendChild(b);
+  });
+  // progress = fraction of the 5 core steps complete
+  const core=[1,2,3,4,5]; const n=core.filter(isStepComplete).length;
+  const pct=Math.round(n/core.length*100);
+  $("#progFill").style.width=pct+"%";
+  $("#progPct").textContent=pct+"%";
+  $("#progStep").textContent="Step "+S.step+" · "+STEP_NAMES[S.step];
+}
+function isStepComplete(i){
+  switch(i){
+    case 0: return true;
+    case 1: { if(!S.race) return false; const r=raceObj(); if(r.subraces&&r.subraces.length&&!S.subrace) return false; const ch=chooseAsiConfig(); if(ch&&S.raceAsiPick.length<ch.count) return false; return true; }
+    case 2: { if(!S.cls) return false; const c=classObj(); if(c.choice&&!S.clsChoice) return false; return true; }
+    case 3: return !!S.bg;
+    case 4: return ABILS.every(a=>S.scores[a]!=null) && (S.method!=="pointbuy" || pbValid());
+    case 5: return !!(S.name&&S.name.trim());
+    case 6: return false;
+  }
+}
+function pbValid(){ const spent=ABILS.reduce((t,a)=>t+(PB_COST[S.scores[a]??8]||0),0); return spent<=27; }
+
+function goStep(i){ S.step=Math.max(0,Math.min(6,i)); save(); showStep(); window.scrollTo({top:0,behavior:"smooth"}); }
+function showStep(){
+  $$(".step").forEach(s=>s.classList.toggle("active", +s.dataset.step===S.step));
+  if(S.step===6) buildExport();
+  renderStepNav();
+}
+
+/* ====================== COMMIT (re-render + save) ====================== */
+function commit(rerenderInputs=true){
+  save();
+  // re-render the active step's dynamic bits
+  if(S.step===1){ renderRaceCards(); }
+  if(S.step===2){ renderClassCards(); }
+  if(S.step===3){ renderBgCards(); }
+  if(S.step===4){ if(rerenderInputs) renderMethod(); else { renderPool(); renderPrimaryHint(); } }
+  renderSummary(); renderStepNav();
+}
+
+/* ====================== EXPORT ====================== */
+function exportText(){
+  const r=raceObj(),sr=subraceObj(),c=classObj(),b=bgObj();
+  const raceLine = r ? (sr?`${sr.name}`:`${r.name}`) : "(not chosen)";
+  let clsLine = c ? c.name : "(not chosen)";
+  if(c&&c.choice&&S.clsChoice){ const o=c.choice.options.find(x=>x.id===S.clsChoice); if(o) clsLine+= ` — ${c.choice.label}: ${o.name}`; }
+  const bgLine = b ? `${b.name} (skills: ${b.skills}; feature: ${b.feature})` : "(not chosen)";
+  const methodName={standard:"Standard Array",pointbuy:"Point Buy (27)",roll:"Rolled (4d6 drop lowest)",manual:"Custom"}[S.method];
+  const bon=raceBonuses();
+  const ch=chooseAsiConfig();
+  const asiNote = ch ? ` (chosen +${ch.amount}: ${(S.raceAsiPick||[]).join(", ")||"none yet"})` : "";
+
+  let scoreRows=ABILS.map(a=>{
+    const base=S.scores[a]; const fin=finalScore(a);
+    return `| ${a} | ${base==null?"—":base} | ${bon[a]?("+"+bon[a]):"—"} | ${fin==null?"—":fin} | ${fin==null?"—":fmtMod(mod(fin))} |`;
+  }).join("\n");
+
+  const L=[];
+  L.push(`# Character Chooser — ${S.name||"(unnamed)"}`);
+  L.push("");
+  L.push(`*Built in the Weeping Grove player builder. Hand to the DM → run the Character Creator (\`tools/character-creator.md\`) to generate the full packet.*`);
+  L.push("");
+  if(S.player) L.push(`- **Player:** ${S.player}`);
+  L.push(`- **Race:** ${raceLine}${asiNote}  ·  speed ${speed()} ft`);
+  L.push(`- **Class:** ${clsLine}  ·  key ability ${c?c.primTxt:"—"}  ·  Hit Die ${c?c.hd:"—"}`);
+  L.push(`- **Background:** ${bgLine}`);
+  L.push(`- **Alignment:** ${S.align||"(let the DM help)"}`);
+  L.push("");
+  L.push(`## Ability scores — method: ${methodName}`);
+  L.push("");
+  L.push(`| Ability | Base | Race | Total | Mod |`);
+  L.push(`|---|:---:|:---:|:---:|:---:|`);
+  L.push(scoreRows);
+  if(S.method==="roll" && S.rolled) L.push(`\n*Rolled pool: ${S.rolled.join(", ")}*`);
+  L.push("");
+  L.push(`## Personality`);
+  L.push(`- **Trait:** ${S.trait||"(you pick)"}`);
+  L.push(`- **Ideal:** ${S.ideal||"(you pick)"}`);
+  L.push(`- **Bond:** ${S.bond||"(you pick)"}`);
+  L.push(`- **Flaw:** ${S.flaw||"(you pick)"}`);
+  if(S.notes&&S.notes.trim()){ L.push(""); L.push(`## Notes for the DM`); L.push(S.notes.trim()); }
+  L.push("");
+  L.push(`---`);
+  L.push(`*The Weeping Grove · level-3 one-shot. The DM will finish the math (HP, AC, skills, spells, attacks) and level this hero to 3.*`);
+  return L.join("\n");
+}
+function buildExport(){
+  $("#exportBox").value=exportText();
+  renderChecklist();
+}
+function renderChecklist(){
+  const items=[
+    ["Race chosen", isStepComplete(1)],
+    ["Class chosen", isStepComplete(2)],
+    ["Background chosen", isStepComplete(3)],
+    ["Ability scores set", isStepComplete(4)],
+    ["Name given", !!(S.name&&S.name.trim())],
+    ["Personality (optional but fun)", !!(S.trait||S.ideal||S.bond||S.flaw)],
+  ];
+  const wrap=$("#checklist"); wrap.innerHTML="";
+  items.forEach(([label,ok])=>{
+    const d=document.createElement("div"); d.className="ck "+(ok?"ok":"miss");
+    d.innerHTML=`<span class="mk">${ok?"✓":"⚠"}</span><span>${label}</span>`;
+    wrap.appendChild(d);
+  });
+}
+
+/* ====================== ACTIONS ====================== */
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),1900); }
+async function copyExport(){
+  const txt=$("#exportBox").value;
+  try{ await navigator.clipboard.writeText(txt); toast("Copied! Paste it to your DM 📨"); }
+  catch(e){ const ta=$("#exportBox"); ta.focus(); ta.select(); document.execCommand&&document.execCommand("copy"); toast("Copied!"); }
+}
+function downloadExport(){
+  const txt=exportText();
+  const slug=(S.name||"character").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"")||"character";
+  const blob=new Blob([txt],{type:"text/markdown"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=slug+".md"; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000); toast("Downloaded "+slug+".md");
+}
+function emailExport(){
+  const subj=`D&D character for The Weeping Grove — ${S.name||"(unnamed)"}`;
+  const body=exportText();
+  // mailto bodies must be reasonably short; trim if needed
+  const url=`mailto:${DM_EMAIL}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+  window.location.href=url;
+}
+
+/* ====================== INIT ====================== */
+function bindStatic(){
+  // theme
+  const themeBtn=$("#themeBtn");
+  const setTheme=t=>{ document.documentElement.setAttribute("data-theme",t); themeBtn.textContent=t==="dark"?"☀️":"🌙"; try{localStorage.setItem("wg-theme",t);}catch(e){} };
+  themeBtn.onclick=()=>setTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark");
+  try{ const saved=localStorage.getItem("wg-theme"); if(saved) setTheme(saved); else if(matchMedia&&matchMedia("(prefers-color-scheme:dark)").matches) setTheme("dark"); }catch(e){}
+
+  // nav buttons
+  $$('[data-go]').forEach(b=>b.onclick=()=>goStep(+b.dataset.go));
+
+  // method tabs
+  $$('#methodTabs button').forEach(b=>b.onclick=()=>{ S.method=b.dataset.method; S.scores={STR:null,DEX:null,CON:null,INT:null,WIS:null,CHA:null}; if(S.method==="pointbuy"){ABILS.forEach(a=>S.scores[a]=8);} commit(); });
+  $("#rollBtn").onclick=rollDice; $("#rerollBtn").onclick=rollDice;
+
+  // personality fields
+  const fld=(id,key)=>{ const el=$(id); el.value=S[key]||""; el.oninput=()=>{ S[key]=el.value; save(); renderSummary(); renderStepNav(); }; };
+  fld("#fName","name"); fld("#fPlayer","player"); fld("#fTrait","trait"); fld("#fIdeal","ideal"); fld("#fBond","bond"); fld("#fFlaw","flaw"); fld("#fNotes","notes");
+  const al=$("#fAlign"); al.value=S.align||""; al.onchange=()=>{ S.align=al.value; save(); };
+
+  // surprise-me
+  $$('.surprise').forEach(b=>b.onclick=()=>{
+    const g=b.dataset.sg; const list=SUGG[g]; const pick=list[Math.floor(Math.random()*list.length)];
+    const map={name:"#fName",trait:"#fTrait",ideal:"#fIdeal",bond:"#fBond",flaw:"#fFlaw"};
+    const el=$(map[g]); el.value=pick; S[g==="name"?"name":g]=pick; save(); renderSummary(); renderStepNav();
+  });
+
+  // finish actions
+  $("#copyBtn").onclick=copyExport;
+  $("#downloadBtn").onclick=downloadExport;
+  $("#emailBtn").onclick=emailExport;
+  $("#printBtn").onclick=()=>window.print();
+
+  // start over
+  $("#startOver").onclick=()=>{
+    if(confirm("Erase this character and start fresh?")){
+      try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+      S={step:0,race:null,subrace:null,raceAsiPick:[],cls:null,clsChoice:null,bg:null,method:"standard",rolled:null,
+         scores:{STR:null,DEX:null,CON:null,INT:null,WIS:null,CHA:null},name:"",player:"",align:"",trait:"",ideal:"",bond:"",flaw:"",notes:""};
+      bindStatic(); init(); toast("Fresh start! 🌱");
+    }
+  };
+}
+function init(){
+  // restore personality field values
+  ["name","player","align","trait","ideal","bond","flaw","notes"].forEach(()=>{});
+  renderRaceCards(); renderClassCards(); renderBgCards(); renderMethod(); renderSummary(); showStep();
+}
+load(); bindStatic(); init();
+</script>
+</body>
+</html>

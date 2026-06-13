@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Weeping Grove — DM Screen</title>
+<style>
+/* ============================== THEME ============================== */
+:root{
+  --bg:#e7dcc2; --panel:#f6efdd; --panel2:#efe6cf; --ink:#2a2316; --muted:#6a5f48;
+  --line:#cdbd99; --line2:#dfd2b0;
+  --green:#3f6b3f; --green-d:#2c4d2c; --green-l:#5d8a52;
+  --accent:#8a5a2b; --gold:#9a7b2e;
+  --ra-bg:#fbf6e6; --ra-line:#7c9a5c; --ra-ink:#241f12;
+  --dm-bg:#efe7d2; --dm-line:#c4b690;
+  --danger:#9c2f25; --good:#3f6b3f; --warn:#9a6a1f;
+  --chip:#e4d8b8;
+  --shadow:0 2px 8px rgba(60,45,20,.18);
+  --radius:10px;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+html[data-theme="dark"]{
+  --bg:#13160e; --panel:#1d2216; --panel2:#232a1b; --ink:#ece8d6; --muted:#a7a48d;
+  --line:#3a4329; --line2:#2c3320;
+  --green:#7fb46c; --green-d:#9ccb86; --green-l:#a9d293;
+  --accent:#d3a26a; --gold:#cdab5e;
+  --ra-bg:#202a18; --ra-line:#7fb46c; --ra-ink:#f2efe0;
+  --dm-bg:#1a2012; --dm-line:#46512f;
+  --danger:#e07a6e; --good:#8fcf7c; --warn:#d8b15e;
+  --chip:#2a321d;
+  --shadow:0 2px 10px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--sans); background:var(--bg); color:var(--ink);
+  line-height:1.5; font-size:16px; -webkit-text-size-adjust:100%;
+}
+a{color:var(--green); text-decoration:none}
+button{font-family:inherit}
+h1,h2,h3,h4{line-height:1.2; margin:.2em 0 .4em}
+:focus-visible{outline:3px solid var(--gold); outline-offset:2px; border-radius:4px}
+
+/* ============================== TOP BAR ============================== */
+.topbar{
+  position:sticky; top:0; z-index:60; display:flex; align-items:center; gap:.6rem;
+  padding:.5rem .8rem; background:linear-gradient(180deg,var(--green-d),var(--green));
+  color:#f5efdc; box-shadow:var(--shadow);
+}
+html[data-theme="dark"] .topbar{background:linear-gradient(180deg,#101509,#1f3018)}
+.topbar .title{font-family:var(--serif); font-weight:700; font-size:1.15rem; white-space:nowrap; letter-spacing:.3px}
+.topbar .title .sub{font-size:.72rem; opacity:.8; font-weight:400; letter-spacing:1px; text-transform:uppercase; margin-left:.3rem}
+.scene-now{
+  font-family:var(--serif); font-style:italic; font-size:.95rem; opacity:.95;
+  padding:.1rem .55rem; background:rgba(0,0,0,.18); border-radius:20px; white-space:nowrap;
+}
+.glance{display:flex; gap:.35rem; flex-wrap:wrap; margin-left:.2rem}
+.glance .chip{
+  font-size:.72rem; background:rgba(0,0,0,.2); color:#f5efdc; border:1px solid rgba(255,255,255,.18);
+  padding:.12rem .5rem; border-radius:20px; cursor:pointer; white-space:nowrap;
+}
+.glance .chip.key-on{background:var(--gold); color:#241c08; border-color:var(--gold); font-weight:700}
+.glance .chip.clock-done{background:var(--danger); color:#fff; border-color:var(--danger); font-weight:700}
+.spacer{flex:1 1 auto}
+.topbar-actions{display:flex; gap:.35rem; flex-wrap:wrap}
+.tbtn{
+  background:rgba(0,0,0,.18); color:#f5efdc; border:1px solid rgba(255,255,255,.22);
+  border-radius:8px; padding:.4rem .6rem; font-size:.82rem; cursor:pointer; white-space:nowrap;
+}
+.tbtn:hover{background:rgba(0,0,0,.32)}
+.tbtn.on{background:var(--gold); color:#241c08; border-color:var(--gold); font-weight:700}
+.icon-btn{display:none}
+
+/* ============================== LAYOUT ============================== */
+.layout{display:grid; grid-template-columns:230px minmax(0,1fr) 350px; align-items:start}
+.nav{position:sticky; top:54px; align-self:start; max-height:calc(100vh - 54px); overflow:auto;
+  background:var(--panel2); border-right:1px solid var(--line); padding:.6rem .5rem}
+.main{padding:1rem 1.3rem 4rem; min-width:0; max-width:980px; margin:0 auto}
+.rail{position:sticky; top:54px; align-self:start; max-height:calc(100vh - 54px); overflow:auto;
+  background:var(--panel2); border-left:1px solid var(--line); padding:.7rem .6rem}
+
+/* ---- NAV ---- */
+.nav .navhead{font-size:.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin:.4rem .4rem .3rem; font-weight:700}
+.nav a.navitem{
+  display:flex; align-items:center; gap:.5rem; padding:.45rem .5rem; border-radius:8px;
+  color:var(--ink); cursor:pointer; font-size:.92rem; margin-bottom:1px; border:1px solid transparent;
+}
+.nav a.navitem:hover{background:var(--panel)}
+.nav a.navitem.active{background:var(--green); color:#fff; box-shadow:var(--shadow)}
+.nav a.navitem.active .ni-tag{color:#f5efdc}
+.nav .ni-ico{width:1.2em; text-align:center; font-size:.95em}
+.nav .ni-label{flex:1 1 auto; min-width:0}
+.nav .ni-tag{font-size:.66rem; opacity:.8; letter-spacing:.5px}
+.nav a.navitem.st-done .ni-ico{color:var(--good)}
+.nav a.navitem.st-current .ni-ico{color:var(--gold)}
+.nav a.navitem.st-skipped{opacity:.62}
+
+/* ============================== BEATS / CARDS ============================== */
+.beat{display:none}
+.beat.active{display:block; animation:fade .18s ease}
+@keyframes fade{from{opacity:.3}to{opacity:1}}
+.beat-head{display:flex; align-items:center; flex-wrap:wrap; gap:.5rem .7rem; border-bottom:2px solid var(--line); padding-bottom:.5rem; margin-bottom:.9rem}
+.beat-head h2{font-family:var(--serif); font-size:1.7rem; margin:0; flex:1 1 auto; min-width:0}
+.beat-head .meta-line{flex-basis:100%; font-size:.8rem; color:var(--muted); margin-top:-.2rem}
+.subtitle{font-family:var(--serif); font-style:italic; color:var(--muted); margin:-.4rem 0 1rem}
+
+.badge{font-size:.72rem; font-weight:700; padding:.16rem .5rem; border-radius:20px; white-space:nowrap; letter-spacing:.4px}
+.badge.core{background:var(--gold); color:#241c08}
+.badge.modular{background:transparent; color:var(--green-d); border:1.5px solid var(--green-l)}
+html[data-theme="dark"] .badge.modular{color:var(--green-d)}
+.badge.type{background:var(--chip); color:var(--muted); border:1px solid var(--line)}
+
+/* status control */
+.statusctl{display:inline-flex; gap:2px; background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:2px}
+.statusctl button{border:none; background:transparent; cursor:pointer; font-size:.8rem; padding:.18rem .42rem; border-radius:6px; color:var(--muted)}
+.statusctl button.sel{background:var(--green); color:#fff}
+.statusctl button:hover{background:var(--panel)}
+
+/* read-aloud */
+.ra{
+  background:var(--ra-bg); border-left:7px solid var(--ra-line); border-radius:6px;
+  padding:.9rem 1.1rem .95rem 1.2rem; margin:.9rem 0; position:relative; box-shadow:var(--shadow);
+  font-family:var(--serif); font-size:1.16rem; line-height:1.55; color:var(--ra-ink);
+}
+.ra::before{content:"📖 READ ALOUD"; position:absolute; top:-.72rem; left:.9rem;
+  background:var(--ra-line); color:#fff; font-family:var(--sans); font-size:.66rem; font-weight:700;
+  letter-spacing:1px; padding:.12rem .55rem; border-radius:20px}
+.ra .ra-label{display:block; font-family:var(--sans); font-style:normal; font-size:.74rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.6px; color:var(--green-d); margin-bottom:.35rem}
+html[data-theme="dark"] .ra .ra-label{color:var(--green-d)}
+.ra em{font-style:italic}
+.ra.reveal::before{content:"📖 READ ON REVEAL"}
+.ra p{margin:.4rem 0}
+.ra ol,.ra ul{margin:.3rem 0 .3rem 1.2rem}
+
+/* dm-only zones */
+.dm-only{}
+body.read-aloud .dm-only{display:none !important}
+.zone{background:var(--dm-bg); border:1px solid var(--dm-line); border-radius:var(--radius); padding:.7rem .9rem; margin:.7rem 0}
+.zone>h4:first-child{margin-top:0}
+.zone h4{font-size:.95rem; color:var(--green-d); display:flex; align-items:center; gap:.4rem; letter-spacing:.2px}
+html[data-theme="dark"] .zone h4{color:var(--green-d)}
+.zone.secret{border-style:dashed; border-color:var(--accent); background:linear-gradient(0deg,var(--dm-bg),var(--dm-bg))}
+.zone.secret>h4{color:var(--accent)}
+.dm-tag{font-size:.64rem; background:var(--accent); color:#fff; padding:.08rem .4rem; border-radius:4px; letter-spacing:.6px; font-weight:700}
+
+.lbl{font-size:.72rem; text-transform:uppercase; letter-spacing:.7px; color:var(--muted); font-weight:700; margin:.6rem 0 .2rem}
+
+/* NPC card */
+.npc{background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:8px; padding:.6rem .8rem; margin:.6rem 0}
+.npc h5{margin:0 0 .25rem; font-size:1.02rem; font-family:var(--serif)}
+.npc .wvt{display:flex; flex-wrap:wrap; gap:.3rem .5rem; margin:.35rem 0}
+.npc .wvt span{font-size:.82rem; background:var(--chip); border:1px solid var(--line); border-radius:6px; padding:.12rem .45rem}
+.npc .wvt b{color:var(--green-d)}
+html[data-theme="dark"] .npc .wvt b{color:var(--green-d)}
+
+/* checks */
+.check{background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:.55rem .75rem; margin:.5rem 0}
+.check .ck-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:.4rem}
+.check .ck-name{font-weight:700}
+.dc{display:inline-block; font-weight:700; background:var(--green); color:#fff; border-radius:6px; padding:.05rem .4rem; font-size:.8rem; white-space:nowrap}
+.dc.hard{background:var(--danger)} .dc.easy{background:var(--green-l)}
+.hit{border-left:3px solid var(--good); padding-left:.55rem; margin:.35rem 0; font-size:.92rem}
+.miss{border-left:3px solid var(--muted); padding-left:.55rem; margin:.35rem 0; font-size:.92rem; color:var(--muted)}
+.hit .q,.miss .q,.read-inline{font-family:var(--serif); font-style:italic}
+.hit b,.miss b{color:var(--green-d)}
+html[data-theme="dark"] .hit b,html[data-theme="dark"] .miss b{color:var(--green-d)}
+
+/* generic */
+.beat p{margin:.55rem 0}
+.beat ul,.beat ol{margin:.5rem 0 .5rem 1.3rem}
+.beat li{margin:.2rem 0}
+.pill{display:inline-block; font-size:.74rem; background:var(--chip); border:1px solid var(--line); border-radius:20px; padding:.1rem .55rem; margin:.1rem .15rem .1rem 0}
+.budget{background:var(--panel); border:1px dashed var(--green-l); border-radius:8px; padding:.5rem .8rem; margin:.6rem 0; font-size:.92rem}
+.budget b{color:var(--green-d)}
+html[data-theme="dark"] .budget b{color:var(--green-d)}
+.callout{background:var(--panel); border:1px solid var(--warn); border-left:4px solid var(--warn); border-radius:8px; padding:.55rem .8rem; margin:.6rem 0; font-size:.93rem}
+.callout.danger{border-color:var(--danger); border-left-color:var(--danger)}
+table.tbl{border-collapse:collapse; width:100%; margin:.6rem 0; font-size:.9rem}
+table.tbl th,table.tbl td{border:1px solid var(--line); padding:.35rem .5rem; text-align:left; vertical-align:top}
+table.tbl th{background:var(--panel2)}
+table.tbl td.dmonly{font-style:italic; color:var(--muted)}
+.kv{display:grid; grid-template-columns:max-content 1fr; gap:.2rem .8rem; font-size:.93rem; margin:.5rem 0}
+.kv dt{font-weight:700; color:var(--green-d)}
+html[data-theme="dark"] .kv dt{color:var(--green-d)}
+.kv dd{margin:0}
+
+/* stat block */
+details.sb{border:1px solid var(--line); border-radius:8px; margin:.55rem 0; background:var(--panel); overflow:hidden}
+details.sb>summary{cursor:pointer; padding:.55rem .8rem; list-style:none; display:flex; flex-wrap:wrap; align-items:baseline; gap:.5rem; background:var(--panel2)}
+details.sb>summary::-webkit-details-marker{display:none}
+details.sb>summary::before{content:"▸"; color:var(--green); font-weight:700}
+details.sb[open]>summary::before{content:"▾"}
+.sb .sb-name{font-family:var(--serif); font-weight:700; font-size:1.05rem}
+.sb .sb-rf{font-style:italic; color:var(--muted); font-size:.85rem}
+.sb .sb-quick{margin-left:auto; font-size:.8rem; color:var(--muted)}
+.sb .sb-body{padding:.6rem .85rem .8rem}
+.sb hr{border:none; border-top:1px solid var(--line); margin:.45rem 0}
+.sb .abilities{display:grid; grid-template-columns:repeat(6,1fr); gap:.3rem; text-align:center; margin:.5rem 0}
+.sb .abilities div{background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:.25rem}
+.sb .abilities .ab{font-size:.68rem; font-weight:700; color:var(--muted)}
+.sb .abilities .sc{font-size:.92rem}
+.sb .meta-row{font-size:.88rem; margin:.2rem 0}
+.sb .trait{margin:.35rem 0; font-size:.9rem}
+.sb .trait b,.sb .meta-row b{color:var(--green-d)}
+html[data-theme="dark"] .sb .trait b,html[data-theme="dark"] .sb .meta-row b{color:var(--green-d)}
+.sb .usage{font-size:.78rem; color:var(--accent); font-weight:700}
+.sb-add{margin-top:.5rem; font-size:.8rem; background:var(--green); color:#fff; border:none; border-radius:6px; padding:.35rem .65rem; cursor:pointer}
+.sb-add:hover{background:var(--green-d)}
+.sb-toolbar{display:flex; gap:.5rem; margin:.5rem 0}
+.btn{background:var(--green); color:#fff; border:none; border-radius:7px; padding:.4rem .7rem; cursor:pointer; font-size:.85rem}
+.btn:hover{background:var(--green-d)}
+.btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--panel)}
+.btn.danger{background:var(--danger)}
+
+/* Showdown version toggle */
+.ver-toggle{display:inline-flex; border:2px solid var(--green); border-radius:10px; overflow:hidden; margin:.3rem 0 .8rem}
+.ver-toggle button{border:none; background:transparent; padding:.5rem .9rem; cursor:pointer; font-weight:700; color:var(--green-d); font-size:.92rem}
+html[data-theme="dark"] .ver-toggle button{color:var(--ink)}
+.ver-toggle button.on{background:var(--green); color:#fff}
+.ver-block{display:none}
+.ver-block.show{display:block}
+.ver-hint{font-size:.84rem; color:var(--muted); margin-bottom:.4rem}
+
+/* ============================== RAIL (DM TOOLS) ============================== */
+.rail h3{font-family:var(--serif); font-size:1rem; margin:.2rem 0 .5rem; display:flex; align-items:center; gap:.4rem}
+.rail .tool{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:.6rem .7rem; margin-bottom:.7rem}
+.rail .tool>h3{border-bottom:1px solid var(--line); padding-bottom:.35rem; margin-bottom:.5rem}
+.railhead{display:flex; align-items:center; justify-content:space-between; margin-bottom:.4rem}
+.railhead .close{display:none; background:none; border:1px solid var(--line); border-radius:6px; padding:.1rem .45rem; cursor:pointer; color:var(--ink)}
+
+/* clue tracker */
+.clue{display:flex; align-items:flex-start; gap:.5rem; padding:.3rem 0; border-bottom:1px dotted var(--line); font-size:.86rem}
+.clue:last-child{border-bottom:none}
+.clue input{margin-top:.2rem; width:1.1rem; height:1.1rem; accent-color:var(--green)}
+.clue .where{display:block; font-size:.72rem; color:var(--muted)}
+.clue .cnum{font-weight:700; color:var(--green-d)}
+html[data-theme="dark"] .clue .cnum{color:var(--green-d)}
+.key-banner{background:var(--gold); color:#241c08; border-radius:8px; padding:.5rem .6rem; font-size:.84rem; font-weight:700; margin-top:.5rem; text-align:center; line-height:1.35}
+.key-banner.off{background:var(--chip); color:var(--muted); font-weight:600}
+
+/* clock */
+.clock-pips{display:flex; gap:.25rem; margin:.4rem 0}
+.clock-pips .pip{flex:1; height:14px; border-radius:4px; background:var(--chip); border:1px solid var(--line)}
+.clock-pips .pip.on{background:var(--warn)}
+.clock-pips .pip.full{background:var(--danger)}
+.clock-label{font-size:.86rem; min-height:2.2em}
+.clock-label.done{color:var(--danger); font-weight:700}
+.row-btns{display:flex; gap:.4rem; margin-top:.4rem}
+.mini{font-size:.78rem; padding:.28rem .5rem; border-radius:6px; border:1px solid var(--line); background:var(--panel2); cursor:pointer; color:var(--ink)}
+.mini:hover{background:var(--panel)}
+
+/* party */
+.party-row{display:grid; grid-template-columns:1fr auto auto; gap:.3rem; align-items:center; margin-bottom:.35rem}
+.party-row input.pname{width:100%; font-size:.84rem; padding:.25rem .35rem; border:1px solid var(--line); border-radius:6px; background:var(--panel2); color:var(--ink)}
+.party-row .hpbox{font-size:.82rem; white-space:nowrap}
+.party-row input.num{width:3rem; font-size:.82rem; padding:.2rem; text-align:center; border:1px solid var(--line); border-radius:5px; background:var(--panel2); color:var(--ink)}
+.party-row .pbtns{display:flex; gap:.15rem}
+.hpbar{height:5px; border-radius:3px; background:var(--line); overflow:hidden; margin-top:2px; grid-column:1 / -1}
+.hpbar>i{display:block; height:100%; background:var(--good)}
+.hpbar>i.low{background:var(--warn)} .hpbar>i.crit{background:var(--danger)}
+
+/* combat tracker */
+.ct-add{display:grid; grid-template-columns:1fr 3.2rem 3.2rem auto; gap:.3rem; margin-bottom:.4rem}
+.ct-add input{font-size:.82rem; padding:.28rem .35rem; border:1px solid var(--line); border-radius:6px; background:var(--panel2); color:var(--ink); min-width:0}
+.ct-quick{display:flex; flex-wrap:wrap; gap:.25rem; margin-bottom:.5rem}
+.ct-quick button{font-size:.72rem; padding:.2rem .4rem; border:1px solid var(--line); border-radius:6px; background:var(--panel2); cursor:pointer; color:var(--ink)}
+.ct-quick button:hover{background:var(--panel)}
+.ct-list{margin:.3rem 0}
+.ct-row{border:1px solid var(--line); border-radius:8px; padding:.4rem .45rem; margin-bottom:.4rem; background:var(--panel2)}
+.ct-row.down{opacity:.6; border-color:var(--danger)}
+.ct-r1{display:grid; grid-template-columns:2.4rem 1fr auto; gap:.35rem; align-items:center}
+.ct-init{width:2.4rem; text-align:center; font-weight:700; font-size:.95rem; padding:.2rem; border:1px solid var(--line); border-radius:6px; background:var(--panel); color:var(--ink)}
+.ct-name{font-size:.86rem; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.ct-name.pc{color:var(--green-d)}
+html[data-theme="dark"] .ct-name.pc{color:var(--green-d)}
+.ct-rm{background:none; border:none; cursor:pointer; color:var(--danger); font-size:.95rem; padding:0 .2rem}
+.ct-r2{display:grid; grid-template-columns:auto 3rem auto auto; gap:.25rem; align-items:center; margin-top:.3rem}
+.ct-hp{font-size:.82rem; white-space:nowrap}
+.ct-amt{width:3rem; font-size:.8rem; padding:.18rem; text-align:center; border:1px solid var(--line); border-radius:5px; background:var(--panel); color:var(--ink)}
+.ct-r2 .mini{padding:.2rem .45rem}
+.ct-cond{width:100%; margin-top:.3rem; font-size:.78rem; padding:.22rem .35rem; border:1px solid var(--line); border-radius:6px; background:var(--panel); color:var(--ink)}
+.ct-empty{font-size:.82rem; color:var(--muted); font-style:italic; padding:.4rem 0}
+
+/* scene board */
+.sb-board .sbrow{display:flex; align-items:center; gap:.4rem; padding:.25rem 0; font-size:.85rem; border-bottom:1px dotted var(--line)}
+.sb-board .sbrow:last-child{border-bottom:none}
+.sb-board .sbrow .nm{flex:1; cursor:pointer}
+.sb-board .sbrow .nm:hover{text-decoration:underline}
+.sb-board .seg{display:inline-flex; gap:1px}
+.sb-board .seg button{border:1px solid var(--line); background:var(--panel2); cursor:pointer; font-size:.72rem; padding:.1rem .3rem; color:var(--muted)}
+.sb-board .seg button:first-child{border-radius:5px 0 0 5px}
+.sb-board .seg button:last-child{border-radius:0 5px 5px 0}
+.sb-board .seg button.sel{background:var(--green); color:#fff}
+
+/* ============================== QUICK-REF DRAWER ============================== */
+.qr-backdrop{display:none; position:fixed; inset:0; background:rgba(20,15,5,.45); z-index:70}
+.qr-backdrop.open{display:block}
+.qr-drawer{
+  position:fixed; top:0; right:0; height:100vh; width:min(420px,92vw); z-index:80;
+  background:var(--panel); border-left:2px solid var(--green); box-shadow:var(--shadow);
+  transform:translateX(102%); transition:transform .22s ease; overflow:auto; padding:1rem 1.1rem 3rem;
+}
+.qr-drawer.open{transform:translateX(0)}
+.qr-drawer h2{font-family:var(--serif); border-bottom:2px solid var(--line); padding-bottom:.3rem}
+.qr-drawer .qr-close{position:absolute; top:.7rem; right:.8rem; background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:.2rem .5rem; cursor:pointer; color:var(--ink)}
+.qr-sec{margin:1rem 0}
+.qr-sec h3{font-size:1rem; color:var(--green-d); margin-bottom:.4rem}
+html[data-theme="dark"] .qr-sec h3{color:var(--green-d)}
+.dc-ladder{display:flex; gap:.5rem; flex-wrap:wrap}
+.dc-ladder .step{flex:1 1 30%; text-align:center; border:1px solid var(--line); border-radius:8px; padding:.4rem; background:var(--panel2)}
+.dc-ladder .step b{display:block; font-size:1.3rem; color:var(--green-d)}
+html[data-theme="dark"] .dc-ladder .step b{color:var(--green-d)}
+.budget-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:.4rem; text-align:center}
+.budget-grid div{border:1px solid var(--line); border-radius:8px; padding:.4rem; background:var(--panel2); font-size:.85rem}
+.budget-grid div.deadly{border-color:var(--danger)}
+.budget-grid b{display:block; font-size:1.05rem}
+.cond-list{columns:2; font-size:.84rem; margin:0; padding-left:1.1rem}
+.cond-list li{break-inside:avoid; margin:.15rem 0}
+.cond-list b{color:var(--green-d)}
+html[data-theme="dark"] .cond-list b{color:var(--green-d)}
+
+/* backdrop for off-canvas */
+.backdrop{display:none; position:fixed; inset:0 0 0 0; top:54px; background:rgba(20,15,5,.4); z-index:40}
+.backdrop.open{display:block}
+
+/* ============================== RESPONSIVE ============================== */
+@media(max-width:1200px){
+  .layout{grid-template-columns:230px minmax(0,1fr)}
+  .rail{position:fixed; top:54px; right:0; bottom:0; width:min(360px,90vw); z-index:55;
+    transform:translateX(102%); transition:transform .22s ease; box-shadow:var(--shadow); border-left:2px solid var(--green)}
+  body.rail-open .rail{transform:translateX(0)}
+  .railhead .close{display:inline-block}
+}
+@media(max-width:860px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .icon-btn{display:inline-flex; align-items:center; justify-content:center; background:rgba(0,0,0,.18);
+    color:#f5efdc; border:1px solid rgba(255,255,255,.22); border-radius:8px; width:2.1rem; height:2.1rem; font-size:1.1rem; cursor:pointer}
+  .nav{position:fixed; top:54px; left:0; bottom:0; width:min(280px,82vw); z-index:55;
+    transform:translateX(-103%); transition:transform .22s ease; box-shadow:var(--shadow)}
+  body.nav-open .nav{transform:translateX(0)}
+  .topbar .title .sub{display:none}
+  .glance{display:none}
+  .main{padding:.9rem .9rem 4rem}
+  .beat-head h2{font-size:1.4rem}
+}
+@media(max-width:560px){
+  .scene-now{display:none}
+  .topbar-actions .tbtn{padding:.4rem .5rem; font-size:.74rem}
+  .ra{font-size:1.06rem}
+}
+
+/* ============================== RUN-THE-FIGHT PANEL ============================== */
+.runfight{background:var(--dm-bg); border:1px solid var(--dm-line); border-left:4px solid var(--green); border-radius:var(--radius); padding:.7rem .9rem; margin:.8rem 0}
+.runfight>h4{margin-top:0; color:var(--green-d); display:flex; align-items:center; gap:.4rem}
+html[data-theme="dark"] .runfight>h4{color:var(--green-d)}
+.initline{display:flex; flex-wrap:wrap; gap:.4rem; margin:.5rem 0}
+.initline .ini{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:.22rem .55rem; font-size:.84rem; white-space:nowrap}
+.initline .ini b{color:var(--green-d); font-variant-numeric:tabular-nums}
+html[data-theme="dark"] .initline .ini b{color:var(--green-d)}
+.initline .ini .die{font-size:.74rem; color:var(--muted)}
+.turns{display:grid; gap:.55rem; margin:.6rem 0}
+.turn-card{background:var(--panel); border:1px solid var(--line); border-radius:8px; border-left:3px solid var(--accent); padding:.5rem .7rem}
+.turn-card h5{margin:0 0 .25rem; font-family:var(--serif); font-size:1.02rem; display:flex; flex-wrap:wrap; gap:.4rem; align-items:baseline}
+.turn-card h5 .pri{font-size:.7rem; background:var(--chip); border:1px solid var(--line); border-radius:20px; padding:.05rem .45rem; color:var(--muted); font-family:var(--sans); font-weight:600}
+.turn-card ol{margin:.3rem 0 .15rem 1.15rem}
+.turn-card ul{margin:.3rem 0 .15rem 1.15rem}
+.turn-card li{margin:.18rem 0; font-size:.9rem}
+.turn-card b{color:var(--green-d)}
+html[data-theme="dark"] .turn-card b{color:var(--green-d)}
+.rounds{display:flex; gap:.45rem; flex-wrap:wrap; margin:.5rem 0}
+.rounds .rd{flex:1 1 28%; min-width:130px; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:.45rem .6rem; font-size:.86rem}
+.rounds .rd b{color:var(--accent); display:block; margin-bottom:.15rem; font-size:.78rem; text-transform:uppercase; letter-spacing:.4px}
+
+/* ============================== ROUND-COUNTER / TURN POINTER ============================== */
+.ct-roundbar{display:flex; align-items:center; gap:.4rem; margin-bottom:.45rem; flex-wrap:wrap}
+.ct-roundbar .rnum{font-weight:700; color:var(--green-d); font-size:.9rem}
+html[data-theme="dark"] .ct-roundbar .rnum{color:var(--green-d)}
+.ct-roundbar .turn-now{font-size:.78rem; color:var(--muted); flex:1 1 100%}
+.ct-roundbar .turn-now b{color:var(--gold)}
+.ct-row.active{border-color:var(--gold); box-shadow:0 0 0 2px var(--gold) inset; background:var(--panel)}
+.ct-row.active .ct-name::before{content:"▸ "; color:var(--gold); font-weight:700}
+
+/* ============================== PARTY HP (enhanced) ============================== */
+.party-row{display:block; border:1px solid var(--line2); border-radius:9px; padding:.45rem .5rem; margin-bottom:.5rem; background:var(--panel)}
+.party-row .pr-top{display:flex; align-items:center; gap:.35rem}
+.party-row input.pname{flex:1 1 auto; min-width:0; font-size:.86rem; padding:.25rem .35rem; border:1px solid var(--line); border-radius:6px; background:var(--panel2); color:var(--ink)}
+.party-row .ac-box{display:inline-flex; align-items:center; gap:.1rem; font-size:.72rem; color:var(--muted); white-space:nowrap}
+.party-row input.ac-in{width:2.5rem; font-size:.8rem; padding:.2rem; text-align:center; border:1px solid var(--line); border-radius:5px; background:var(--panel2); color:var(--ink)}
+.party-row .pr-hp{display:flex; align-items:center; gap:.3rem; margin-top:.4rem; flex-wrap:wrap}
+.party-row .hpbox{font-size:.82rem; white-space:nowrap; display:inline-flex; align-items:center; gap:.1rem}
+.party-row input.num{width:3rem; font-size:.82rem; padding:.2rem; text-align:center; border:1px solid var(--line); border-radius:5px; background:var(--panel2); color:var(--ink)}
+.party-row .tmp-box{font-size:.72rem; color:var(--green-d); display:inline-flex; align-items:center; gap:.1rem; white-space:nowrap}
+html[data-theme="dark"] .party-row .tmp-box{color:var(--green-d)}
+.party-row input.tmp-in{width:2.4rem; font-size:.78rem; padding:.18rem; text-align:center; border:1px solid var(--line); border-radius:5px; background:var(--panel2); color:var(--ink)}
+.party-row .pbtns{display:flex; gap:.15rem; margin-left:auto}
+.party-row .hpbar{height:5px; border-radius:3px; background:var(--line); overflow:hidden; margin-top:.4rem}
+.party-row .hpbar>i{display:block; height:100%; background:var(--good)}
+.party-row .hpbar>i.low{background:var(--warn)} .party-row .hpbar>i.crit{background:var(--danger)}
+.deathsaves{display:flex; align-items:center; gap:.5rem; margin-top:.45rem; font-size:.74rem; flex-wrap:wrap}
+.deathsaves .ds-lbl{font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--danger)}
+.ds-group{display:inline-flex; align-items:center; gap:.3rem}
+.ds-pips{display:inline-flex; gap:.2rem}
+.ds-pip{width:.95rem; height:.95rem; border-radius:50%; border:1.5px solid var(--line); cursor:pointer; background:var(--panel2)}
+.ds-pip.s.on{background:var(--good); border-color:var(--good)}
+.ds-pip.f.on{background:var(--danger); border-color:var(--danger)}
+.deathsaves.stable{color:var(--good)} .deathsaves.stable .ds-lbl{color:var(--good)}
+.deathsaves.dead .ds-lbl{color:var(--danger)}
+.deathsaves .ds-state{font-weight:700}
+
+/* ============================== CROWN PUZZLE (Scene 4) ============================== */
+.crown-puz{background:var(--ra-bg); border:2px solid var(--ra-line); border-radius:14px; padding:1rem .9rem .9rem; margin:.9rem 0; position:relative; box-shadow:var(--shadow)}
+.crown-puz::before{content:"🌿 THE WEEPING CROWN"; position:absolute; top:-.72rem; left:1rem; background:var(--ra-line); color:#fff; font-size:.66rem; font-weight:700; letter-spacing:1px; padding:.12rem .55rem; border-radius:20px}
+.crown-puz.mended{border-color:var(--gold); box-shadow:0 0 28px rgba(154,123,46,.45)}
+.crown-puz.mended::before{content:"👑 THE CROWN IS WHOLE"; background:var(--gold); color:#241c08}
+.crown-instr{font-size:.86rem; color:var(--muted); margin:.2rem 0 .5rem; text-align:center}
+.crown-ring{display:flex; justify-content:center; gap:.45rem; flex-wrap:wrap; margin:.6rem 0}
+.crown-slot{width:5.1rem; min-height:6rem; border:2px dashed var(--line); border-radius:12px; background:var(--panel2); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:.3rem .2rem; position:relative; cursor:pointer; transition:transform .12s, border-color .15s, background .15s}
+.crown-slot:hover{transform:translateY(-2px)}
+.crown-slot .slotno{position:absolute; top:3px; left:.4rem; font-size:.64rem; color:var(--muted); font-weight:700}
+.crown-slot.empty .slot-hint{font-size:1.4rem; color:var(--line); }
+.crown-slot.filled{border-style:solid; border-color:var(--green-l); background:var(--panel)}
+.crown-slot.correct{border-color:var(--good); background:linear-gradient(180deg,var(--panel),rgba(63,107,63,.14)); -webkit-print-color-adjust:exact; print-color-adjust:exact}
+.crown-slot.wrong{border-color:var(--danger)}
+.crown-slot.locked{border-style:solid; border-color:var(--accent); cursor:not-allowed; background:repeating-linear-gradient(45deg,var(--panel2),var(--panel2) 6px,var(--dm-bg) 6px,var(--dm-bg) 12px)}
+.crown-slot.locked .lock-mk{font-size:1.5rem; color:var(--accent)} .crown-slot.locked .lock-tx{font-size:.6rem; color:var(--accent); font-weight:700; text-align:center; margin-top:.2rem}
+.leaf-g{font-size:1.8rem; line-height:1.1}
+.leaf-n{font-size:.62rem; font-weight:700; color:var(--ink); text-align:center; margin-top:.15rem; line-height:1.15}
+.crown-reorder{display:flex; gap:.1rem; margin-top:.2rem}
+.crown-reorder button{border:1px solid var(--line); background:var(--panel2); color:var(--ink); border-radius:4px; cursor:pointer; font-size:.66rem; padding:0 .25rem; line-height:1.4}
+.crown-reorder button:hover{background:var(--green); color:#fff}
+.crown-tray{border-top:1px dashed var(--line); margin-top:.6rem; padding-top:.55rem}
+.crown-tray .tray-lbl{font-size:.7rem; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); font-weight:700; text-align:center; margin-bottom:.4rem}
+.crown-tray-row{display:flex; justify-content:center; gap:.4rem; flex-wrap:wrap}
+.tray-leaf{width:4.6rem; min-height:4.4rem; border:1.5px solid var(--accent); border-radius:10px; background:var(--panel); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:.3rem .2rem; cursor:pointer; transition:transform .12s}
+.tray-leaf:hover{transform:translateY(-2px); box-shadow:var(--shadow)}
+.tray-leaf.disabled{opacity:.5; cursor:not-allowed; filter:grayscale(1); border-style:dashed}
+.tray-leaf.disabled .leaf-g{filter:blur(1px)}
+.crown-empty{text-align:center; color:var(--muted); font-size:.84rem; font-style:italic; padding:.3rem}
+.crown-banner{margin-top:.7rem; padding:.6rem .7rem; border-radius:9px; text-align:center; font-size:.9rem; line-height:1.4}
+.crown-banner.open{background:var(--gold); color:#241c08; font-weight:700}
+.crown-banner.broken{background:var(--chip); color:var(--muted)}
+.crown-banner b{color:inherit}
+.crown-tools{display:flex; gap:.4rem; justify-content:center; flex-wrap:wrap; margin-top:.6rem}
+.crown-verse{font-family:var(--serif); font-style:italic; color:var(--ra-ink); background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:.55rem .7rem; margin:.5rem 0; font-size:.96rem}
+.crown-hint{font-size:.84rem; margin-top:.5rem}
+.crown-hint .leaf-key{color:var(--accent); font-weight:700}
+
+/* ============================== PRINT ============================== */
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  .topbar,.nav,.rail,.backdrop,.qr-backdrop,.qr-drawer,.statusctl,.sb-add,.sb-toolbar,.ver-toggle,.icon-btn,.crown-tools,.crown-reorder{display:none !important}
+  .crown-hint{display:block !important}
+  .runfight,.turn-card,.rounds .rd,.crown-puz{break-inside:avoid; box-shadow:none}
+  .layout{display:block}
+  .main{max-width:100%; padding:0; margin:0}
+  .beat{display:block !important; page-break-inside:auto; break-inside:auto; margin-bottom:1.2rem; border-top:2px solid #000; padding-top:.5rem}
+  .beat:first-child{border-top:none}
+  body.read-aloud .dm-only{display:block !important}
+  .ra{box-shadow:none; border-left:4px solid #444; background:#f4f4f4; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  details.sb>.sb-body, details.sb[open]>.sb-body{display:block !important}
+  details.sb .sb-body{display:block !important}
+  details.sb>summary::before{content:""}
+  .ver-block{display:block !important}
+  .ver-block::before{content:""}
+  .zone,.npc,.check,.budget,.callout{break-inside:avoid; box-shadow:none}
+  a{color:#000}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn" id="navToggle" aria-label="Toggle navigation">☰</button>
+  <div class="title">🌲 The Weeping Grove<span class="sub">DM Screen</span></div>
+  <div class="scene-now" id="sceneNow">Overview</div>
+  <div class="glance" id="glance"></div>
+  <div class="spacer"></div>
+  <div class="topbar-actions">
+    <button class="tbtn" id="raBtn" title="Hide all DM-only zones to turn the screen to players">📖 Read-Aloud</button>
+    <button class="tbtn" id="qrBtn" title="Quick-reference cheat panel">📑 Quick Ref</button>
+    <button class="tbtn" id="railBtn" title="DM tools (trackers)">🎛 Tools</button>
+    <button class="tbtn" id="themeBtn" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+  </div>
+</header>
+
+<div class="backdrop" id="backdrop"></div>
+
+<div class="layout">
+  <nav class="nav" id="nav" aria-label="Beats in play order"></nav>
+  <main class="main" id="main"></main>
+  <aside class="rail" id="rail" aria-label="DM tools"></aside>
+</div>
+
+<div class="qr-backdrop" id="qrBackdrop"></div>
+<aside class="qr-drawer" id="qrDrawer" aria-label="Quick reference">
+  <button class="qr-close" id="qrClose">✕ Close</button>
+  <h2>📑 Quick Reference</h2>
+  <div class="qr-sec">
+    <h3>DC Ladder</h3>
+    <div class="dc-ladder">
+      <div class="step"><b>10</b>Easy</div>
+      <div class="step"><b>15</b>Medium</div>
+      <div class="step"><b>20</b>Hard</div>
+    </div>
+    <p style="font-size:.8rem;color:var(--muted);margin:.4rem 0 0">Very easy 5 · Very hard 25 · Nearly impossible 30. This module leans on <b>DC 12–15</b> for clues and <b>DC 20</b> for the hardest plays (intimidating Fenn, flipping the Guardian mid-fight).</p>
+  </div>
+  <div class="qr-sec">
+    <h3>Party XP Budget · 4 PCs, level 3</h3>
+    <div class="budget-grid">
+      <div><b>300</b>Easy</div>
+      <div><b>600</b>Medium</div>
+      <div><b>900</b>Hard</div>
+      <div class="deadly"><b>1,600</b>Deadly</div>
+    </div>
+    <p style="font-size:.8rem;color:var(--muted);margin:.4rem 0 0">Adventuring-day ≈ 4,800. Encounter multiplier for 5+ monsters vs 3–6 PCs is <b>×2</b>. Fights: Bramble-Pack <b>Medium</b>, Camp <b>Hard</b>, Showdown <b>Deadly</b>.</p>
+  </div>
+  <div class="qr-sec">
+    <h3>Conditions (quick)</h3>
+    <ul class="cond-list">
+      <li><b>Blinded</b> — can't see; attacks vs. have adv., its attacks have disadv.</li>
+      <li><b>Charmed</b> — can't attack charmer; charmer has adv. on social checks.</li>
+      <li><b>Frightened</b> — disadv. on checks/attacks while source in sight; can't move closer.</li>
+      <li><b>Grappled</b> — speed 0; ends if grappler incapacitated.</li>
+      <li><b>Prone</b> — crawl or stand (½ move); melee vs. has adv., ranged disadv.; attacks disadv.</li>
+      <li><b>Restrained</b> — speed 0; attacks vs. adv., its attacks disadv.; disadv. Dex saves.</li>
+      <li><b>Poisoned</b> — disadv. on attacks and ability checks.</li>
+      <li><b>Stunned</b> — incapacitated, can't move, auto-fail Str/Dex saves; attacks vs. adv.</li>
+      <li><b>Unconscious</b> — incapacitated, prone, drops items; attacks vs. adv., crit if within 5 ft.</li>
+      <li><b>Incapacitated</b> — no actions or reactions.</li>
+    </ul>
+    <p style="font-size:.8rem;color:var(--muted);margin:.3rem 0 0">Death saves: roll d20 — 10+ success, &lt;10 fail; 3 successes stabilize, 3 fails die; nat 20 = +1 HP, nat 1 = two fails.</p>
+  </div>
+  <div class="qr-sec">
+    <h3>Actions in Combat</h3>
+    <ul class="cond-list">
+      <li><b>Attack</b> — one attack (more via a feature).</li>
+      <li><b>Dash</b> — double your move this turn.</li>
+      <li><b>Disengage</b> — move without provoking opportunity attacks.</li>
+      <li><b>Dodge</b> — attacks vs. you have disadv.; adv. on Dex saves.</li>
+      <li><b>Help</b> — give an ally adv. (a check, or their next attack vs. a foe within 5 ft.).</li>
+      <li><b>Hide</b> — Stealth vs. passive Perception; unseen = adv. to attack.</li>
+      <li><b>Ready</b> — set a trigger + action; spend your reaction when it fires.</li>
+      <li><b>Search</b> — Perception/Investigation to find something.</li>
+      <li><b>Shove</b> — Athletics vs. Athletics/Acrobatics: knock prone or push 5 ft.</li>
+      <li><b>Grapple</b> — Athletics vs. Athletics/Acrobatics: target grappled (speed 0).</li>
+    </ul>
+    <p style="font-size:.8rem;color:var(--muted);margin:.3rem 0 0"><b>Opportunity attack:</b> a foe leaving your reach on foot provokes one melee attack (your reaction). <b>Improvise</b> freely — say yes, set a DC.</p>
+  </div>
+  <div class="qr-sec">
+    <h3>Advantage · Cover · Unseen</h3>
+    <ul class="cond-list">
+      <li><b>Advantage</b> — roll 2d20, take higher.</li>
+      <li><b>Disadvantage</b> — roll 2d20, take lower.</li>
+      <li>They <b>don't stack</b> — one of each cancels to a flat roll.</li>
+      <li><b>½ cover</b> — +2 AC &amp; Dex saves.</li>
+      <li><b>¾ cover</b> — +5 AC &amp; Dex saves.</li>
+      <li><b>Total cover</b> — can't be targeted directly.</li>
+      <li><b>Attacker unseen</b> — advantage.</li>
+      <li><b>Target unseen</b> — disadvantage.</li>
+      <li><b>Prone target</b> — melee adv., ranged disadv.</li>
+      <li><b>Flanking</b> (optional) — adv. if you use it.</li>
+    </ul>
+  </div>
+  <div class="qr-sec">
+    <h3>Spells in this module</h3>
+    <p style="font-size:.78rem;color:var(--muted);margin:0 0 .4rem">What the cult & the hag actually cast — so you don't break play to look them up.</p>
+    <ul class="cond-list" style="columns:1">
+      <li><b>Hold person</b> (Fanatic, 2nd) — humanoid, <b>Wis save DC 11</b> or paralyzed; re-saves end of each turn. Melee within 5 ft. auto-crits.</li>
+      <li><b>Command</b> (Fanatic, 1st) — one word, <b>Wis save DC 11</b> or obeys ("flee", "grovel", "drop").</li>
+      <li><b>Inflict wounds</b> (Fanatic, 1st) — melee spell atk +3, <b>3d10 necrotic</b> on hit.</li>
+      <li><b>Spiritual weapon</b> (Fanatic, 2nd) — bonus-action floating blade, +3 to hit, <b>1d8+1 force</b>; moves 20 ft./turn.</li>
+      <li><b>Shield of faith</b> (Fanatic, 1st) — +2 AC to one ally, conc.</li>
+      <li><b>Sacred flame</b> (Fanatic, cantrip) — <b>Dex save DC 11</b> or 1d8 radiant; ignores cover.</li>
+      <li><b>Vicious mockery</b> (Sere, cantrip) — <b>Wis save DC 12</b> or 1d4 psychic + disadv. on its next attack.</li>
+      <li><b>Minor illusion / dancing lights</b> (Sere) — sound/image or floating lights to mislead.</li>
+    </ul>
+  </div>
+</aside>
+
+<script>
+"use strict";
+/* ============================================================
+   THE WEEPING GROVE — offline DM screen
+   All content drawn from the module markdown (Appendix A/B verbatim
+   for stat blocks & trackers; read-aloud text quoted as written).
+   ============================================================ */
+
+/* ---------- helpers ---------- */
+const $ = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const uid = ()=>Math.random().toString(36).slice(2,9);
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+
+/* ====================== STAT BLOCKS (Appendix A — verbatim mechanics) ====================== */
+const STATBLOCKS = {
+  wolf:{
+    name:"Wolf", rf:"reflavor: Bramble-Wolf — Scene 1", cr:"1/4", xp:50, src:"MM p.341",
+    usage:"Scene 1 · Showdown is unrelated", ac:"13 (natural armor)", hp:"11 (2d8 + 2)", maxhp:11, speed:"40 ft.",
+    ab:{STR:["12","+1"],DEX:["15","+2"],CON:["12","+1"],INT:["3","−4"],WIS:["12","+1"],CHA:["6","−2"]},
+    skills:"Perception +3, Stealth +4", senses:"passive Perception 13", langs:"—",
+    traits:[
+      {n:"Keen Hearing and Smell",t:"Advantage on Wisdom (Perception) checks relying on hearing or smell."},
+      {n:"Pack Tactics",t:"Advantage on an attack roll if at least one ally is within 5 ft. of the target and not incapacitated."}
+    ],
+    actions:[
+      {n:"Bite",t:"<i>Melee Weapon Attack:</i> +4 to hit, reach 5 ft., one target. <i>Hit:</i> 7 (2d4 + 2) piercing. If the target is a creature, <b>DC 11 Strength save</b> or be knocked prone."}
+    ]
+  },
+  cultist:{
+    name:"Cultist", rf:"Scenes 3 & Showdown B", cr:"1/8", xp:25, src:"MM p.345",
+    usage:"Scene 3 · Showdown B", ac:"12 (leather armor)", hp:"9 (2d8)", maxhp:9, speed:"30 ft.",
+    ab:{STR:["11","+0"],DEX:["12","+1"],CON:["10","+0"],INT:["10","+0"],WIS:["11","+0"],CHA:["10","+0"]},
+    skills:"Deception +2, Religion +2", senses:"passive Perception 10", langs:"any one (usually Common)",
+    traits:[{n:"Dark Devotion",t:"Advantage on saving throws against being charmed or frightened."}],
+    actions:[{n:"Scimitar",t:"<i>Melee Weapon Attack:</i> +3 to hit, reach 5 ft., one creature. <i>Hit:</i> 4 (1d6 + 1) slashing."}]
+  },
+  fanatic:{
+    name:"Cult Fanatic", rf:"reflavor: Harvest Overseer — Scene 3; optional Showdown B lieutenant", cr:"2", xp:450, src:"MM p.345",
+    usage:"Scene 3 · Showdown B (optional)", ac:"13 (leather armor)", hp:"33 (6d8 + 6)", maxhp:33, speed:"30 ft.",
+    ab:{STR:["11","+0"],DEX:["14","+2"],CON:["12","+1"],INT:["10","+0"],WIS:["13","+1"],CHA:["14","+2"]},
+    skills:"Deception +4, Persuasion +4, Religion +2", senses:"passive Perception 11", langs:"any one (usually Common)",
+    traits:[
+      {n:"Dark Devotion",t:"Advantage on saving throws against being charmed or frightened."},
+      {n:"Spellcasting",t:"4th-level spellcaster (Wis, <b>save DC 11</b>, +3 to hit). Cantrips: <i>light, sacred flame, thaumaturgy</i>; 1st (4 slots): <i>command, inflict wounds, shield of faith</i>; 2nd (3 slots): <i>hold person, spiritual weapon</i>."}
+    ],
+    actions:[
+      {n:"Multiattack",t:"The fanatic makes two melee attacks."},
+      {n:"Dagger",t:"<i>Melee or Ranged Weapon Attack:</i> +4 to hit, reach 5 ft. or range 20/60 ft., one creature. <i>Hit:</i> 4 (1d4 + 2) piercing."}
+    ]
+  },
+  thug:{
+    name:"Thug", rf:"optional hired poacher-muscle — Scene 3", cr:"1/2", xp:100, src:"MM p.350",
+    usage:"Scene 3 (optional)", ac:"11 (leather armor)", hp:"32 (5d8 + 10)", maxhp:32, speed:"30 ft.",
+    ab:{STR:["15","+2"],DEX:["11","+0"],CON:["14","+2"],INT:["10","+0"],WIS:["10","+0"],CHA:["11","+0"]},
+    skills:"Intimidation +2", senses:"passive Perception 10", langs:"any one (usually Common)",
+    traits:[{n:"Pack Tactics",t:"Advantage on an attack roll if an ally is within 5 ft. of the target and not incapacitated."}],
+    actions:[
+      {n:"Multiattack",t:"The thug makes two melee attacks."},
+      {n:"Mace",t:"<i>Melee Weapon Attack:</i> +4 to hit, reach 5 ft., one creature. <i>Hit:</i> 5 (1d6 + 2) bludgeoning."},
+      {n:"Heavy Crossbow",t:"<i>Ranged Weapon Attack:</i> +2 to hit, range 100/400 ft., one target. <i>Hit:</i> 5 (1d10) piercing."}
+    ]
+  },
+  twig:{
+    name:"Twig Blight", rf:"reflavor: Thorn-Spawn — Showdown A", cr:"1/8", xp:25, src:"MM p.32",
+    usage:"Showdown A (minions)", ac:"13 (natural armor)", hp:"4 (1d6 + 1)", maxhp:4, speed:"20 ft.",
+    ab:{STR:["6","−2"],DEX:["13","+1"],CON:["12","+1"],INT:["4","−3"],WIS:["8","−1"],CHA:["3","−4"]},
+    skills:"Stealth +3", vuln:"fire", condimm:"blinded, deafened",
+    senses:"blindsight 60 ft. (blind beyond), passive Perception 9", langs:"understands Common but can't speak",
+    traits:[{n:"False Appearance",t:"While motionless, indistinguishable from a dead shrub."}],
+    actions:[{n:"Claws",t:"<i>Melee Weapon Attack:</i> +3 to hit, reach 5 ft., one target. <i>Hit:</i> 3 (1d4 + 1) piercing."}]
+  },
+  hag:{
+    name:"Green Hag", rf:"reflavor: Mother Sere, the withered prophet — Showdown B", cr:"3", xp:700, src:"MM p.177",
+    usage:"Showdown B (boss)", ac:"17 (natural armor)", hp:"82 (11d8 + 33)", maxhp:82, speed:"30 ft.",
+    ab:{STR:["18","+4"],DEX:["12","+1"],CON:["16","+3"],INT:["13","+1"],WIS:["14","+2"],CHA:["14","+2"]},
+    skills:"Arcana +3, Deception +4, Perception +4, Stealth +3", senses:"darkvision 60 ft., passive Perception 14", langs:"Common, Draconic, Sylvan",
+    traits:[
+      {n:"Amphibious",t:"Can breathe air and water."},
+      {n:"Innate Spellcasting",t:"Cha (save DC 12), no material components. At will: <i>dancing lights, minor illusion, vicious mockery</i>."},
+      {n:"Mimicry",t:"Mimics animal sounds and humanoid voices. A listener can tell they are imitations with a successful DC 14 Wisdom (Insight) check."}
+    ],
+    actions:[
+      {n:"Claws",t:"<i>Melee Weapon Attack:</i> +6 to hit, reach 5 ft., one target. <i>Hit:</i> 13 (2d8 + 4) slashing."},
+      {n:"Illusory Appearance",t:"Covers herself and anything she wears/carries with a magical illusion making her look like another ugly creature of her general size (DC 20 Investigation to discern by physical inspection)."},
+      {n:"Invisible Passage",t:"Magically turns invisible until she attacks or casts a spell, or until her concentration ends (as if concentrating on a spell). While invisible she leaves no physical evidence of passage."}
+    ]
+  },
+  mound:{
+    name:"Shambling Mound", rf:"reflavor: the Guardian — “Sorrowroot,” the grieving treant-spirit — Showdown", cr:"5", xp:1800, src:"MM p.270",
+    usage:"Showdown — BOSS in A · ALLY in B", ac:"15 (natural armor)", hp:"136 (16d10 + 48)", maxhp:136, speed:"20 ft., swim 20 ft.",
+    ab:{STR:["18","+4"],DEX:["8","−1"],CON:["16","+3"],INT:["5","−3"],WIS:["10","+0"],CHA:["5","−3"]},
+    skills:"Stealth +2", resist:"cold, fire", imm:"lightning", condimm:"blinded, deafened, exhaustion",
+    senses:"blindsight 60 ft. (blind beyond), passive Perception 10",
+    langs:"— (narratively, it speaks the old tongue of the wood — see Showdown read-aloud)",
+    traits:[{n:"Lightning Absorption",t:"Whenever it is subjected to lightning damage, it takes no damage and instead <b>regains a number of hit points equal to the lightning damage dealt</b>."}],
+    actions:[
+      {n:"Multiattack",t:"Two <b>Slams</b>. If both hit a Medium-or-smaller target, the target is <b>grappled (escape DC 14)</b> and the mound uses <b>Engulf</b> on it."},
+      {n:"Slam",t:"<i>Melee Weapon Attack:</i> +7 to hit, reach 5 ft., one target. <i>Hit:</i> 13 (2d8 + 4) bludgeoning."},
+      {n:"Engulf",t:"The mound engulfs a Medium-or-smaller creature grappled by it. The engulfed target is <b>blinded, restrained, and unable to breathe</b>, and must make a <b>DC 14 Con save</b> at the start of each of the mound's turns or take 13 (2d8 + 4) bludgeoning damage. It moves with the mound; only one creature at a time."}
+    ]
+  }
+};
+
+function renderSB(id, opts){
+  opts = opts||{};
+  const s = STATBLOCKS[id]; if(!s) return "";
+  const open = opts.open ? " open":"";
+  const countLbl = opts.count ? ` <span class="pill">×${opts.count}</span>`:"";
+  const ab = Object.entries(s.ab).map(([k,v])=>`<div><div class="ab">${k}</div><div class="sc">${v[0]} (${v[1]})</div></div>`).join("");
+  let defense="";
+  if(s.resist) defense+=`<div class="meta-row"><b>Damage Resistances</b> ${s.resist}</div>`;
+  if(s.imm) defense+=`<div class="meta-row"><b>Damage Immunities</b> ${s.imm}</div>`;
+  if(s.vuln) defense+=`<div class="meta-row"><b>Damage Vulnerabilities</b> ${s.vuln}</div>`;
+  if(s.condimm) defense+=`<div class="meta-row"><b>Condition Immunities</b> ${s.condimm}</div>`;
+  const traits = s.traits.map(t=>`<div class="trait"><b><i>${t.n}.</i></b> ${t.t}</div>`).join("");
+  const actions = s.actions.map(a=>`<div class="trait"><b><i>${a.n}.</i></b> ${a.t}</div>`).join("");
+  return `<details class="sb"${open}>
+    <summary>
+      <span class="sb-name">${s.name}</span>${countLbl}
+      <span class="sb-rf">${s.rf}</span>
+      <span class="sb-quick">AC ${s.ac.split(" ")[0]} · HP ${s.maxhp} · CR ${s.cr}</span>
+    </summary>
+    <div class="sb-body">
+      <div class="usage">${s.usage} — CR ${s.cr} (${s.xp.toLocaleString()} XP) · ${s.src}</div>
+      <div class="meta-row"><b>AC</b> ${s.ac} · <b>HP</b> ${s.hp} · <b>Speed</b> ${s.speed}</div>
+      <div class="abilities">${ab}</div>
+      ${s.skills?`<div class="meta-row"><b>Skills</b> ${s.skills}</div>`:""}
+      ${defense}
+      <div class="meta-row"><b>Senses</b> ${s.senses} · <b>Languages</b> ${s.langs}</div>
+      <hr>${traits?traits+'<hr>':""}
+      <div class="meta-row"><b>Actions</b></div>${actions}
+      <button class="sb-add" data-add="${id}">＋ Add to combat tracker</button>
+    </div>
+  </details>`;
+}
+
+/* ====================== CLUES (Appendix B) ====================== */
+const CLUES = [
+  {n:1, t:"Victims all <b>harmed the wood</b> (cut / hunted / hauled).", where:"Cold Open (cart) · Greywater records"},
+  {n:2, t:"<b>No beast</b> — roots, sap, thorns, abandoned axes.", where:"Cold Open · Scene 1"},
+  {n:3, t:"Heart-sap crates + the <b>withered-crown brand</b> (proof).", where:"Scene 3 (camp)"},
+  {n:4, t:"<b>Fenn's testimony / journal</b> — the cult, Mother Sere, the rite.", where:"Scene 2 (Fenn)"},
+  {n:5, t:"The <b>Guardian pleads</b> + the vision (fail-safe).", where:"Showdown"}
+];
+
+/* ====================== CROWN PUZZLE (Scene 4) ====================== */
+/* Canonical order = array order (green years → grey). Slot index 3 (the
+   "stolen crown") is the Key leaf — only readable with Clue 3 or 4. */
+const CROWN = [
+  {id:"green",   g:"🌿", n:"The Living Crown",  desc:"Crowned in living leaves; the wood green and whole."},
+  {id:"gift",    g:"🍞", n:"The Keepers' Gift", desc:"Robed wardens leave bread at its roots."},
+  {id:"axes",    g:"🪓", n:"The Axe-Bearers",   desc:"Those who come to take are pulled into the earth."},
+  {id:"theft",   g:"👑", n:"The Stolen Crown",  desc:"Grey-robes cut the crown away — branded, withered.", key:true},
+  {id:"weeping", g:"💧", n:"The Weeping",       desc:"The tree alone, crown broken and fallen, weeping sap."}
+];
+/* Fixed scrambled order for the tray, so it reads as a puzzle (not the answer). */
+const CROWN_TRAY_ORDER = ["axes","weeping","green","theft","gift"];
+const CROWN_KEY_SLOT = CROWN.findIndex(c=>c.key); // 3
+
+/* ====================== BEATS (play order) ====================== */
+const BEATS = [];
+function beat(o){ BEATS.push(o); }
+
+/* ---------- OVERVIEW ---------- */
+beat({ id:"overview", nav:"Overview", icon:"📋", name:"Overview", play:false, body:`
+<p class="subtitle">“Travelers keep vanishing on the old forest road; the village hires you to kill the beast responsible — but the woods are <i>mourning</i>, not hunting, and the real predator walks on two legs.”</p>
+<div class="zone">
+  <h4>📜 At a glance</h4>
+  <dl class="kv">
+    <dt>Quest (told up front)</dt><dd>Find what's taking travelers on the <b>Briar Road</b> through the <b>Mournwood</b>, and stop it — make the road safe again.</dd>
+    <dt>Party</dt><dd>4 PCs · level 3</dd>
+    <dt>Length</dt><dd>~3–4 hours (4 scenes + showdown)</dd>
+    <dt>Tone</dt><dd>Mystery + heroic adventure (a tragic twist underneath)</dd>
+    <dt>Setting</dt><dd>The Mournwood — wilderness forest road (the “Briar Road”)</dd>
+    <dt>Party XP budget</dt><dd>Easy 300 / Medium 600 / Hard 900 / <b>Deadly 1,600</b> · Adventuring-day ≈ 4,800</dd>
+  </dl>
+</div>
+<div class="callout"><b>⚠ Content & safety.</b> A grieving, wronged guardian; a death-cult harvesting a sacred grove; an undeath/immortality rite. No on-screen cruelty to children or animals. Run an <b>X-card / lines &amp; veils</b> check at session zero.</div>
+<div class="zone secret">
+  <h4><span class="dm-tag">THE KEY</span> The twist</h4>
+  <p>The “monster” is the grove's wronged <b>Guardian</b> (<b>Sorrowroot</b>), taking only those who desecrated it. The true villains are the <b>Withering</b>, a death-cult felling the grove to distill <b>heart-sap</b> for <b>Mother Sere's</b> immortality rite — and they <i>seeded the “beast” rumor</i> so heroes would kill the Guardian for them. <i>Proof: Fenn's testimony + a crate of heart-sap.</i></p>
+</div>
+<div class="zone">
+  <h4>🧭 The two paths</h4>
+  <dl class="kv">
+    <dt>Path of Least Resistance</dt><dd>Stay on the road → reach the grove where the “beast” lairs → confront it. Fewer truths, a tragic boss. <span class="pill">→ Ending A</span></dd>
+    <dt>Path Least Traveled On</dt><dd>Follow the drag-marks off-trail → <b>Fenn's Hollow</b> &amp; the <b>Harvesters' Camp</b> → learn the truth (the Key). A heroic finish. <span class="pill">→ Ending B</span></dd>
+  </dl>
+  <p><b>Choosing the detour over the direct route is the meaningful choice.</b> Both paths funnel through Scene 4 to the grove.</p>
+</div>
+<div class="zone">
+  <h4>🗺️ Map of play</h4>
+  <p><b>Road:</b> Cold Open → <b>S1 Bramble-Pack</b> → <b>S4 Warded Grove</b> → <b>Showdown</b> <i>(no Key → Guardian fight → Ending A)</i>.</p>
+  <p><b>Off-trail:</b> Cold Open → <b>S2 Fenn</b> and/or <b>S3 Camp</b> → <i>Key + proof</i> → <b>S4 Warded Grove</b> → <b>Showdown</b> <i>(with Key → cult fight + Guardian ally → Ending B)</i>.</p>
+</div>
+<div class="zone">
+  <h4>⏱️ How to run this</h4>
+  <ul>
+    <li><b>Clock:</b> the cult finishes the <b>Great Harvest at dusk on the third day</b> — an invisible clock. Dawdle and the rite nears completion; if fast, the Showdown is a fight to <i>stop</i> it; if slow, a fight <i>during</i> its final moments. (Track it in the Tools rail.)</li>
+    <li><b>Tags:</b> <span class="badge core">★ CORE</span> scenes always run (Cold Open + Showdown); <span class="badge modular">⬡ MODULAR</span> scenes are skippable — each has a <b>Bypass</b>.</li>
+    <li><b>Cut-list (in order):</b> Scene 4 (→ one Nature check) → Scene 1 → Scene 3. <b>Never cut the Showdown.</b> Cutting <b>Scene 2 (Fenn)</b> removes the clearest route to the Key — only do it for a party racing straight up the road (Ending A's path).</li>
+    <li><b>Seed the truth (three-clue rule):</b> clues 1–2 on the direct path, 3–4 on the side path, and the <b>Guardian pleads</b> at the Showdown (clue 5) so even a kill-first party gets one last chance to flip.</li>
+  </ul>
+</div>`
+});
+
+/* ---------- COLD OPEN ---------- */
+beat({ id:"cold-open", nav:"Cold Open", icon:"🎬", name:"Cold Open", play:true, tag:"CORE", type:"framing", time:"~10 min (or ~20 with the village)",
+  readAloud:[
+    {label:"Before you start — Say to the table (Rules of the Table, ~3 min)", text:`<p>“Quick table stuff before we start:</p>
+      <ol>
+        <li><b>One night, one story.</b> A self-contained adventure with a single goal — find what's taking people on the road, and stop it. We'll reach a real ending tonight.</li>
+        <li><b>I'll keep things moving.</b> Describe something clever and it'll usually just <b>work</b>. When something's unclear I'll make a quick call so we can play on.</li>
+        <li><b>One voice at a time, and everyone gets a moment.</b> Watch out for each other's spotlight. I'll be rolling [in the open / behind the screen] tonight.</li>
+        <li><b>Safety.</b> If anything gets uncomfortable, say <b>‘X’</b> or tap the table and we'll move past it — no explanation needed. Fair warning: this one gets dark (grief, a death-cult, an old guardian pushed past breaking). Anything you'd rather keep off the table?</li>
+        <li><b>Tone:</b> mystery and heroics with a sad streak — haunted forest, not a dungeon crawl.</li>
+      </ol>
+      <p>Sound good? Then tell me who your character is in a sentence, and we'll begin.”</p>`},
+    {label:"On the road — the vanishing site (open here if you skip the village)", text:`The Briar Road runs into the Mournwood like a tongue into a dark mouth. Late-afternoon light comes down green and thin through the canopy, and the birds have stopped. An overturned handcart lies half off the road, one wheel still lazily turning. There's no blood — only a deep smell of cut sap and wet earth, and a single iron hatchet sunk in the dirt, its owner nowhere. Ahead, the road forks: the worn ruts bend on through the trees, while a fainter trail peels left, the ferns flattened as if something heavy was <i>dragged</i> into the deep wood.`}
+  ],
+  body:`
+<div class="zone dm-only">
+  <h4>🏘️ Opening in Greywater <span class="badge modular">⬡ MODULAR · recommended for new players</span></h4>
+  <p>Lets players meet the quest-givers, ask questions, pick up first threads. Short on time? Skip it — the quest was given above the table — and open on the road.</p>
+  <div class="ra reveal"><span class="ra-label">Read aloud — the village</span>Greywater is a muddy huddle of houses where the Briar Road meets the river — the kind of place that lives or dies by the road. Today the market's half-empty and too quiet. The reeve waits outside the meeting-hall, arms crossed; beside her a barrel-chested man twists his cap in his hands, eyes red-rimmed. “You're the ones come about the road,” the reeve says. “Good. Ask what you need — then make it safe.”</div>
+</div>
+
+<div class="npc dm-only">
+  <h5>Reeve Maelis Carrow <span class="pill">quest-giver</span></h5>
+  <div class="wvt"><span><b>Want:</b> the Briar Road safe, trade moving</span><span><b>Voice:</b> practical, weary, blunt</span><span><b>Tell:</b> counts coin on her fingers as she talks</span></div>
+  <p>Former caravan-master who quit the roads, settled in Greywater, then took the reeve's chain because no one else would. Scrapes the <b>bounty (150 gp + trail supplies)</b> from a near-empty coffer. Knows the <i>what</i>, never the <i>why</i>.</p>
+</div>
+<div class="npc dm-only">
+  <h5>Tomas the Cooper <span class="pill">Clue 1</span></h5>
+  <div class="wvt"><span><b>Want:</b> his sister Wren back</span><span><b>Voice:</b> grieving, desperate, hopeful</span><span><b>Tell:</b> can't finish a sentence about her</span></div>
+  <p>Raised his younger sister <b>Wren</b> himself. Six days ago she went up the Briar Road for staves and never came home. <i>Unknowingly gives Clue 1:</i> “She only went in to cut staves — she'd no quarrel with a soul…”</p>
+  <div class="callout"><b>🔗 Payoff:</b> Wren <i>took</i> from the wood, so she's almost certainly one the <b>Guardian</b> took, not the cult. The grove holds the recently-taken in root and soil: <b>Ending B</b> can send <b>Wren home</b>; <b>Ending A</b> leaves her among the lost.</div>
+</div>
+<div class="npc dm-only" style="border-left-color:var(--danger)">
+  <h5>Brother Aldous <span class="dm-tag">DM-ONLY: CULT PLANT</span></h5>
+  <div class="wvt"><span><b>Want:</b> keep Greywater believing in “the beast”</span><span><b>Voice:</b> mild, pious, helpful</span><span><b>Tell:</b> his blessings smell faintly of sap and rot</span></div>
+  <p>A scout for <b>the Withering</b>, steering hired blades into killing the Guardian so the Harvest finishes unopposed. <i>Urges:</i> “Put the poor beast down quickly, and don't go disturbing the deep wood — some graves are best left shut.” Clocking him is an <i>early</i> thread to the truth — not proof on its own.</p>
+</div>
+
+<div class="zone dm-only">
+  <h4>🍺 Word around Greywater — rumors (pick what fits, or roll d6)</h4>
+  <p style="font-size:.85rem;color:var(--muted)">Each line is what a villager <b>says</b>; the italic column is for your eyes only.</p>
+  <table class="tbl">
+    <tr><th>d6</th><th>A villager says…</th><th>(DM only — what it points to)</th></tr>
+    <tr><td>1</td><td>“Only folk who went in to <b>cut or hunt</b> have gone missing — never a pilgrim, never a child.”</td><td class="dmonly">Clue 1 — true: the wood takes only those who harm it.</td></tr>
+    <tr><td>2</td><td>“It's a <b>great beast</b> — a thorn-wolf big as a horse, they say.”</td><td class="dmonly">The cover story — half-true: bramble-wolves (S1) are real, not the cause.</td></tr>
+    <tr><td>3</td><td>“Old <b>Fenn</b> still keeps her hut past the fork. Daft as a coot, but she knows that wood.”</td><td class="dmonly">→ Scene 2: Fenn is the clearest route to the Key.</td></tr>
+    <tr><td>4</td><td>“<b>Grey-robed strangers</b> bought the old logging rights — cart <i>something</i> out at night.”</td><td class="dmonly">True: the Withering's harvest crew (Scene 3).</td></tr>
+    <tr><td>5</td><td>“Folk used to leave <b>bread at the standing stones</b> each spring. Kept the wood kind.”</td><td class="dmonly">Lore — the grove and its Guardian.</td></tr>
+    <tr><td>6</td><td>“The <b>cutting's been worse this year</b> than ever. The wood feels… <i>angry</i>.”</td><td class="dmonly">Thematic — true.</td></tr>
+  </table>
+</div>
+
+<div class="zone dm-only">
+  <h4>🌲 Investigate the cart — launch the Two Paths</h4>
+  <p>Let them investigate, then choose: <b>follow the road</b> (→ Scene 1) or <b>follow the drag-marks</b> off-trail (→ Scene 2/3).</p>
+
+  <div class="check">
+    <div class="ck-head"><span class="ck-name">Clue 1 — the victim pattern</span> <span class="dc">DC 12</span> <span class="pill">Wis (Insight) / Int (Investigation)</span></div>
+    <div class="hit"><b>On a hit, read:</b> <span class="q">“It's a woodcutter's load — fresh ash staves, bundled snares, a billhook. You think back on the reeve's list of the lost: a trapper, two cutters, a charcoal-burner. Every one of them came into this wood to <b>take</b> something from it.”</span></div>
+    <div class="miss"><b>On a miss:</b> <span class="q">“It's a hauler's cart, nothing stranger — though the more you look, the more the load nags at you.”</span> (Try another angle, or it resurfaces later.) Or just hand it over from the cargo.</div>
+  </div>
+  <div class="check">
+    <div class="ck-head"><span class="ck-name">Clue 2 — no beast</span> <span class="dc">DC 13</span> <span class="pill">Wis (Survival) / Int (Nature)</span></div>
+    <div class="hit"><b>On a hit, read:</b> <span class="q">“You crouch over the sign. No blood. No tracks of any beast you can name, no drag of a kill. Instead the earth is <b>churned</b> — root-scars gouged deep, thorn-scratches raked across the cart, a slick of sweet sap gone tacky. Whatever took the driver didn't hunt them. It pulled them <b>down</b> — roots and all.”</span></div>
+    <div class="miss"><b>On a miss:</b> <span class="q">“The ground's a torn-up mess you can't quite read — but it sits wrong for any animal you know.”</span></div>
+  </div>
+  <div class="check">
+    <div class="ck-head"><span class="ck-name">Scout the fork</span> <span class="dc">DC 15</span> <span class="pill">Wis (Survival)</span></div>
+    <div class="hit"><b>On a hit:</b> the drag-trail and a faint thread of woodsmoke run the same way off-trail — <b>someone is camped in the deep wood</b> (the Harvesters' Camp, Scene 3).</div>
+  </div>
+  <p class="lbl">Avenues from the fork</p>
+  <p><span class="pill">the road — fast, the obvious hunt</span><span class="pill">the drag-marks — slower, the truth</span><span class="pill">scout first (above)</span></p>
+</div>`
+});
+
+/* ---------- SCENE 1 ---------- */
+beat({ id:"scene1", nav:"Scene 1 · Bramble-Pack", icon:"🐺", name:"Scene 1 — The Bramble-Pack", play:true, tag:"MODULAR", type:"combat", time:"~15 min",
+  subtitle:"Path of Least Resistance — on the road, deeper in.",
+  readAloud:[
+    {label:"Read aloud", text:`The road narrows where the old trees lean close. You hear them before you see them — a low, wrong panting, more sob than snarl. Six wolves slink from the brush, but no wolves were ever like <i>these</i>: thorned vines have grown <i>through</i> their hides, their eyes weep sap, and they move like something is driving them from behind. They don't circle to feed. They circle to <b>push you back the way you came.</b>`}
+  ],
+  body:`
+<div class="zone dm-only">
+  <h4>🎭 Setup / DM notes</h4>
+  <p>Ordinary wolves the wounded wood has seized and maddened — the forest lashing out at intruders on the harm-road. <b>They fight to herd, not to kill:</b> a clever party notices the wolves break off if the party <i>retreats</i> or shows they mean the grove no harm. <i>(Reinforces Clue 2.)</i></p>
+  <p><b>🔎 Clues here:</b> reinforces <b>Clue 2</b> (it's the <i>wood</i>, not a beast) and nods <b>Clue 1</b> (it drives back those who came to cut).</p>
+</div>
+<div class="callout dm-only"><b>▸ First fight — keep it short.</b> Likely the party's first taste of combat: let them feel a round or two of teeth, then end it. After about <b>2 rounds</b> — or the moment they retreat, land a couple of solid hits, or calm the pack — the wood <i>lets them go.</i> <b>Don't grind all six wolves to zero;</b> the point is the <i>wrongness</i>, not attrition.</div>
+
+<div class="zone dm-only">
+  <h4>⚔️ Encounter — Medium</h4>
+  <div class="budget"><b>Budget check:</b> 6 Wolves ×50 = 300 base ×2 (3–6 band) = <b>600 adjusted → Medium.</b> <span class="pill">Party 300 / 600 / 900 / 1,600</span></div>
+  <p class="lbl">Roster &amp; tactics</p>
+  <p>6 <b>Wolves</b> (reflavor: <i>bramble-wolves</i>). <b>Pack Tactics</b> — gang up for advantage; <b>Keen Hearing &amp; Smell</b> makes surprise hard. Focus the frontline, knock prone (Bite rider), drive PCs <i>back toward the road's edge</i>.</p>
+  <p><b>Morale (end it in ~2 rounds):</b> as forest-puppets they don't flee for self-preservation, but the wood “lets them go” early — after ~2 rounds, or the moment the party turns to leave, lands solid hits, calms them, or the pack drops to <b>2</b>, the vines go slack and survivors melt into the wood.</p>
+</div>
+
+<div class="dm-only">${renderSB("wolf",{count:6})}</div>
+
+<div class="runfight dm-only">
+  <h4>🎬 Run the fight — round by round</h4>
+  <div class="initline">
+    <span class="ini"><b>Init +2</b> <span class="die">(roll once for the pack — group initiative keeps it fast)</span></span>
+    <span class="ini">Suggested fixed init: <b>14</b></span>
+    <span class="ini">No surprise if a PC made <b>Survival DC 13</b> at the fork</span>
+  </div>
+  <div class="turns">
+    <div class="turn-card">
+      <h5>🐺 Bramble-Wolves ×6 <span class="pri">Target: whoever pushes deepest in</span></h5>
+      <ol>
+        <li><b>Move &amp; gang up.</b> 40 ft. speed — get two wolves adjacent to one PC so <b>Pack Tactics</b> gives both <b>advantage</b>.</li>
+        <li><b>Bite</b> +4 (reach 5 ft.): <b>7 (2d4+2) piercing</b>, then <b>DC 11 Str save or knocked prone</b>. A prone PC = easy pickings for the next wolf.</li>
+        <li><b>Herd, don't kill.</b> They body-block and shove PCs <i>back toward the road</i> — they <b>never finish a downed PC</b> (the wood wants them gone, not dead).</li>
+      </ol>
+    </div>
+  </div>
+  <div class="rounds">
+    <div class="rd"><b>Round 1</b> Lunge from the brush. Knock the lead PC prone, snarl, press. Let it feel dangerous.</div>
+    <div class="rd"><b>Round 2</b> The wood begins to "let go." If they retreat, land a couple of solid hits, calm the pack, or drop it to 2 — <b>end it now.</b></div>
+    <div class="rd"><b>End</b> Vines go slack, survivors melt into the trees. Don't grind all six down.</div>
+  </div>
+  <div class="ra reveal"><span class="ra-label">Read — the wood lets them go (the fight ends)</span>All at once the fight goes out of them. The thorns that drove the pack seem to <i>loosen</i> — the wolves shudder, whine low in their throats, and slink backward into the green dark, leaving only flattened ferns and the smell of sap. Whatever was holding their leash has decided you've been pushed back far enough.</div>
+</div>
+
+<div class="zone dm-only">
+  <h4>🤝 Reading the pack — the calming check</h4>
+  <div class="check">
+    <div class="ck-head"><span class="ck-name">Calm / scatter the pack</span> <span class="dc">DC 15</span> <span class="pill">Animal Handling / Nature</span></div>
+    <div class="hit"><b>On a hit, read:</b> <span class="q">“You catch it between heartbeats — the way they flinch from their own thorns, the sap running down their muzzles like tears, the cringe in them even as they lunge. These aren't hunting you. Something behind them is driving them, and it's hurting them to do it. They don't want your throats — they want you to turn back.”</span> <i>(A PC who then lowers weapons or gives ground ends the fight without a kill.)</i></div>
+    <div class="miss"><b>On a miss:</b> <span class="q">“They're frothing and wrong, and past the snarling you can't get a read on them — best keep your guard up.”</span> (No penalty; another PC can try next round.)</div>
+  </div>
+</div>
+
+<div class="zone dm-only">
+  <h4>↔️ Avenues · Bypass · Exit</h4>
+  <p class="lbl">Avenues</p>
+  <p><span class="pill">fight</span><span class="pill">Survival DC 13 — spot the ambush, gain surprise / avoid it</span><span class="pill">Animal Handling/Nature DC 15 — calm them</span><span class="pill">simply retreat ends it</span></p>
+  <p class="lbl">Bypass ⬡</p>
+  <p>If cut: a single tense moment — a wolf or two lunge, a <b>Survival DC 13</b> scatters them, the party reads Clue 2 off the thorns and sap.</p>
+  <p class="lbl">Exit / lead</p>
+  <p>The road climbs toward a ridge; through the trees they glimpse <b>smoke</b> (the camp, Scene 3) and beyond, a <b>green-glowing hollow</b> (the grove, Scene 4).</p>
+</div>`
+});
+
+/* ---------- SCENE 2 ---------- */
+beat({ id:"scene2", nav:"Scene 2 · Fenn's Hollow", icon:"🛖", name:"Scene 2 — Fenn's Hollow", play:true, tag:"MODULAR", type:"roleplay", time:"~30 min",
+  subtitle:"Path Least Traveled On — follow the drag-marks / smoke off-trail. This is the clearest route to the Key.",
+  readAloud:[
+    {label:"Read aloud", text:`The drag-trail ends at a sod-roofed hut grown half into a living oak, its door hung with bundles of dried herbs and little bone charms. An old woman sits on the step with a carving knife and a piece of heartwood, not looking up. “You smell of the road,” she says. “Of axes. Tell me true — did you come to cut my wood, or to save it? Lie, and the wood will know.”`}
+  ],
+  body:`
+<div class="zone dm-only">
+  <h4>🎭 Setup / DM notes</h4>
+  <p><b>Fenn</b> is the last living <b>grove-warden</b> — keeper of the grove and old friend to its guardian, <b>Sorrowroot</b>. She knows everything: Sorrowroot is no beast and takes only those who harm the grove; the <b>Withering</b> has been felling the heartwood for months to brew <b>heart-sap</b> for <b>Mother Sere's</b> rite. She's terrified and grief-stricken and won't trust killers.</p>
+  <p><b>🔎 Clues here:</b> <b>Clue 4 = the Key</b> — Fenn's testimony, or her journal.</p>
+</div>
+<div class="npc dm-only">
+  <h5>Fenn — the grove-warden</h5>
+  <div class="wvt"><span><b>Want:</b> the grove and her old friend saved</span><span><b>Voice:</b> slow, plain, weighs every word</span><span><b>Tell:</b> keeps carving the same little oak figure; won't meet your eyes at “harvest”</span></div>
+  <p>Greywater-born, she left for the wood sixty years ago to apprentice to the old grove-warden. <b>Sorrowroot is the only family she has left</b>, and she's watched grief turn her oldest friend into the thing the village calls a monster.</p>
+</div>
+
+<div class="zone dm-only">
+  <h4>🗣️ How the conversation runs</h4>
+  <p><b>Step 1 — Her test (free, no roll).</b> She asks: <i>cut, or save?</i> The answer sets the <b>modifier</b> on the trust check. Honest concern or naming what they've seen leans her open; bluster, bounty-talk, or bared steel closes her.</p>
+
+  <div class="check">
+    <div class="ck-head"><span class="ck-name">Step 2 — The trust check → the Key</span> <span class="dc">DC 15</span> <span class="pill">Persuasion / Insight / Deception</span></div>
+    <p style="margin:.3rem 0"><b>Advantage</b> if they've found <b>Clue 1 or 2</b> and <i>say so</i>. · <b>Disadvantage</b> if they brag about the bounty, threaten, or wave weapons.</p>
+    <div class="hit"><b>On a hit → sets Clue 4 (the full Key). Read:</b>
+      <div class="ra reveal" style="margin-top:.4rem"><span class="ra-label">Fenn, low and steady</span>“Then hear it true. The thing on the road is no beast — it's <b>Sorrowroot</b>, the old heart of this wood, and it takes only those who come to <b>wound</b> it. The grey-robes — the <b>Withering</b> — have been felling the heartwood for months, boiling it down to <b>heart-sap</b> so their <b>Mother Sere</b> will never die. They started the beast-tale themselves: they want hired swords to put my friend down, so none are left to guard the grove when they take the last of it. <b>Dusk, the third day, they finish.</b> If you mean to save it — go to the grove <i>unarmed</i>, and <i>grieve</i> with it. It will know.”</div>
+    </div>
+    <div class="miss"><b>On a miss → fail forward (never a dead end):</b>
+      <ul style="margin:.3rem 0 0">
+        <li><i>Persuasion / Insight miss:</i> she closes the door — “You smell too much of axes.” The <b>journal</b> (Step 4) is still there. <b>Retry only with new leverage</b> — bring <b>proof</b> (a heart-sap crate = Clue 3) or cite an unmentioned Clue 1/2 — then <b>one</b> more DC 15 attempt, at advantage.</li>
+        <li><i>Deception miss:</i> <b>the wood knows.</b> She catches the lie, turns hostile, flees deeper — <b>journal only, no retry.</b> Flag this risk to a player <i>before</i> they commit to lying.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="check">
+    <div class="ck-head"><span class="ck-name">Step 3 — The threat route (alternative)</span> <span class="dc hard">DC 20</span> <span class="pill">Intimidation</span></div>
+    <div class="miss" style="border-left-color:var(--warn)">Even on a <b>hit</b> → only <b>fragments</b> (no “go unarmed” method); attitude flips <b>hostile</b>, she warns them the cult is <i>using</i> them, then <b>flees</b> (journal → Clue 4 still gettable). On a <b>miss</b> → she clams up and flees; journal only.</div>
+  </div>
+
+  <div class="check">
+    <div class="ck-head"><span class="ck-name">Step 4 — Fenn's journal — Bypass ⬡</span> <span class="dc">DC 15</span> <span class="pill">Investigation (search the hut)</span></div>
+    <p style="margin:.3rem 0">Finds the journal = <b>Clue 4</b> — the gist (the felling, the heart-sap, “they mean for heroes to slay my friend so none can stop the Harvest”) but <b>not</b> the live ally or the unarmed-approach method. Auto-handed over if Fenn flees. Use this if the scene is cut.</p>
+  </div>
+</div>
+
+<div class="zone secret">
+  <h4><span class="dm-tag">RECORD IN TRACKER</span> 🔑 What gets set / triggered</h4>
+  <ul>
+    <li><b>Clue 4 = the Key</b> from any of: winning her trust (full Key + grove-approach method), the journal, or even her hostile fragments (partial).</li>
+    <li><b>Key = found</b> → flips trending <b>Ending A → B</b> and unlocks <b>Showdown Version B</b> (fight the cult; Sorrowroot fights as your ally).</li>
+    <li>The <b>“go unarmed and grieving”</b> line is the trust-route's exclusive prize: at the Showdown a PC who approaches Sorrowroot <i>without attacking</i> reaches it <b>automatically — no roll</b>. A journal-only party still gets Version B but must <i>earn</i> that moment live.</li>
+    <li><b>Fenn's fate flag:</b> trusted → she lives and returns in Ending B's hook; threatened or ignored → she flees deeper into the wood.</li>
+  </ul>
+</div>
+<div class="zone dm-only"><h4>↪️ Exit / lead</h4><p>Fenn points them to <b>the grove</b> (Scene 4 → Showdown) and begs them not to harm the guardian — or, without trust, they leave with doubt and the journal, and the drag-trail still leads on to <b>the camp (Scene 3)</b>.</p></div>`
+});
+
+/* ---------- SCENE 3 ---------- */
+beat({ id:"scene3", nav:"Scene 3 · Harvesters' Camp", icon:"⛺", name:"Scene 3 — The Harvesters' Camp", play:true, tag:"MODULAR", type:"combat", time:"~40 min",
+  subtitle:"Path Least Traveled On — the cult's work-camp; the physical proof for Ending B.",
+  readAloud:[
+    {label:"Read aloud", text:`The trees simply <i>stop</i>. A raw clearing opens where a stand of ancient oaks used to be — stumps weeping pale sap into catch-buckets, a reek of resin and rot over it all. Robed figures work a crude still that drips a glowing green ichor into iron crates stamped with a <b>withered crown — a ring of dead, leafless branches.</b> A harder-eyed man in vestments turns at your approach, hand drifting to a dagger. “Pilgrims? No. The Mother said hunters would come. She didn't say they'd be fool enough to come <i>here</i>.”`}
+  ],
+  body:`
+<div class="zone dm-only">
+  <h4>🎭 Setup / DM notes</h4>
+  <p>The <b>Withering's</b> harvest-crew, distilling <b>heart-sap</b> (concentrated grove life-force) for Mother Sere's immortality rite. The <b>overseer</b> (Cult Fanatic) bluffs, then fights; the <b>cultists</b> defend the still and crates. <b>A crate of heart-sap + the withered-crown brand is undeniable proof</b> (Clue 3) that the “beast” story is a cover.</p>
+  <p><b>🔎 Clues here:</b> <b>Clue 3 = the proof</b> — a heart-sap crate + the withered-crown brand; a captured cultist confirms it aloud.</p>
+</div>
+<div class="callout dm-only"><b>🔗 Links:</b> the brand's <b>withered crown</b> is the grove's own leaf-crown (carved on the Scene 4 standing stones) — stolen and killed; <b>Mother Sere</b> wears its dead-branch form at the Showdown. The <b>heart-sap</b> in these crates is the same glowing sap she drinks to finish the rite.</div>
+
+<div class="zone dm-only">
+  <h4>⚔️ Encounter — Hard</h4>
+  <div class="budget"><b>Budget check:</b> 1 Cult Fanatic (450) + 4 Cultists (4×25=100) = 550 base ×2 (5 monsters, 3–6 band) = <b>1,100 adjusted → Hard.</b> <i>Tougher party? Add a Thug or two.</i></div>
+  <p class="lbl">Roster &amp; tactics</p>
+  <p>The <b>Cult Fanatic</b> overseer hangs back, opens with <b>hold person</b> on the heaviest hitter and <b>spiritual weapon</b>, uses <b>command (“flee”/“grovel”)</b> — he <i>inflicts</i>, never heals. The <b>Cultists</b> swarm and protect the still.</p>
+  <p><b>Terrain:</b> catch-buckets (difficult footing); the still is a hazard — a hit on it sprays scalding sap, <b>DC 13 Dex or 1d6 fire</b>.</p>
+  <p><b>Morale:</b> when the overseer falls or cultists drop to <b>2</b>, survivors break and beg/flee — <b>a captured cultist is a goldmine</b> (the rite, the timing, Mother Sere at the grove).</p>
+</div>
+
+<div class="dm-only">
+  ${renderSB("fanatic",{count:1})}
+  ${renderSB("cultist",{count:4})}
+  ${renderSB("thug")}
+</div>
+
+<div class="runfight dm-only">
+  <h4>🎬 Run the fight — round by round</h4>
+  <div class="initline">
+    <span class="ini">Overseer <b>init +2</b></span>
+    <span class="ini">Cultists <b>init +1</b> <span class="die">(one group roll)</span></span>
+    <span class="ini">Thug (opt.) <b>init +0</b></span>
+    <span class="ini">⚠ Still hazard: a hit on it sprays scalding sap — <b>DC 13 Dex or 1d6 fire</b></span>
+  </div>
+  <div class="turns">
+    <div class="turn-card">
+      <h5>🔥 Harvest Overseer <span class="pri">Stays back · targets the strongest melee PC</span></h5>
+      <ol>
+        <li><b>Opens with</b> <i>hold person</i> on the party's heaviest hitter — <b>Wis save DC 11</b> or paralyzed (melee within 5 ft. auto-crits). Same turn, bonus action: <i>shield of faith</i> on self (+2 AC) or it's already up.</li>
+        <li><b>Bonus action each turn:</b> <i>spiritual weapon</i> — floating blade, +3, <b>1d8+1 force</b>, flies to a backline caster.</li>
+        <li><b>If a PC closes:</b> <i>inflict wounds</i> — melee spell +3, <b>3d10 necrotic</b> (his scariest hit). Otherwise <i>sacred flame</i> at range (Dex DC 11, 1d8, ignores cover) or <i>command</i> "flee"/"grovel" to peel someone off.</li>
+        <li><b>He inflicts, never heals.</b> Dark Devotion = adv. vs. charm/fright.</li>
+      </ol>
+    </div>
+    <div class="turn-card">
+      <h5>🗡 Cultists ×4 <span class="pri">Screen the overseer &amp; the still</span></h5>
+      <ul>
+        <li><b>Scimitar</b> +3, <b>4 (1d6+1) slashing.</b> Form a wall between the party and the overseer / the crates.</li>
+        <li>Fight in the catch-bucket clutter (difficult footing for chargers). No clever tricks — they're fodder with conviction.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="rounds">
+    <div class="rd"><b>Round 1</b> Overseer Holds the tank &amp; raises the blade; cultists line up at the still.</div>
+    <div class="rd"><b>Rounds 2–3</b> Inflict wounds on anyone who reaches him; Command to split the party; cultists swarm.</div>
+    <div class="rd"><b>Break</b> Overseer down <i>or</i> cultists cut to 2 → survivors beg/flee. <b>Capture one</b> → Clue 3 spills out.</div>
+  </div>
+  <div class="ra reveal"><span class="ra-label">Read — the camp breaks (a captured cultist)</span>The fight goes out of them the moment the overseer drops. The last grey-robe throws down a sap-slick blade and presses into the dirt, hands over his head. "Please — please, I only carry the crates," he babbles, eyes darting to the green-lit hollow uphill. "It's all up at the grove. Whatever you want to know — just don't put me in the ground."</div>
+</div>
+
+<div class="zone dm-only">
+  <h4>📜 Clue 3 — the proof</h4>
+  <div class="ra reveal"><span class="ra-label">Cracking a crate / reading the brand — automatic, sets Clue 3</span>“Inside the iron crate, glass vials nest in straw, each full of that slow green light — <b>heart-sap</b>, thick as honey and faintly <i>pulsing.</i> Every crate, every tool, every grey robe wears the same mark: a <b>withered crown.</b> Whatever's been taking folk on the road, <i>this</i> is what they died to hide — someone is bleeding the wood dry on purpose, and they wanted a ‘beast’ blamed for it.”</div>
+  <div class="check">
+    <div class="ck-head"><span class="ck-name">What it is (optional)</span> <span class="dc easy">DC 13</span> <span class="pill">Nature / Arcana / Religion</span></div>
+    <div class="hit"><b>Hit, read:</b> <span class="q">“This is the wood's own life, distilled — heartwood's vital force boiled down. Drink enough and you might cheat death itself. No wonder they'd burn a forest for it.”</span></div>
+    <div class="miss"><b>Miss:</b> <span class="q">“It reeks of sap and something sweetly wrong — you can't name the magic, but your gut says it shouldn't exist.”</span></div>
+  </div>
+  <div class="check">
+    <div class="ck-head"><span class="ck-name">A captured / cornered cultist</span> <span class="dc easy">DC 13</span> <span class="pill">Intimidation / Persuasion</span></div>
+    <div class="hit"><b>Hit, read (cultist, babbling):</b> <span class="q">“Please — I only carry crates! The Mother's at the grove, finishing the <b>Great Harvest</b> — by <b>dusk on the third day</b> she drinks the last of it and never dies. The thing in the wood? We <b>made</b> that story. We needed it dead before the harvest was done, so we sent for hunters. You. You were meant to do it for us.”</span></div>
+    <div class="miss"><b>Miss / clams up:</b> they spit and say nothing — but their eyes flick to the grove, and every loaded cart points the same way.</div>
+  </div>
+</div>
+
+<div class="zone dm-only">
+  <h4>↔️ Avenues · Bypass · Exit</h4>
+  <p class="lbl">Avenues</p>
+  <p><span class="pill">fight</span><span class="pill">Stealth past to steal a crate (vs passive Perception 10/11)</span><span class="pill">pose as buyers/initiates — Deception DC 15</span><span class="pill">sabotage the still (Clue 3 + a distraction)</span></p>
+  <p class="lbl">Bypass ⬡</p>
+  <p>If cut: the camp is found <i>already struck</i> — stumps, a dropped crate of heart-sap, and a dying/captured cultist who gasps the truth (Clue 3 handed over free).</p>
+  <p class="lbl">Exit / lead</p>
+  <p>The crates' brand + a cultist's words point to <b>the grove</b>, where <b>Mother Sere</b> performs the <b>Great Harvest</b> at dusk (Scene 4 → Showdown).</p>
+</div>`
+});
+
+/* ---------- SCENE 4 ---------- */
+beat({ id:"scene4", nav:"Scene 4 · Warded Grove", icon:"🗿", name:"Scene 4 — The Warded Grove", play:true, tag:"MODULAR", type:"exploration / puzzle", time:"~30 min",
+  subtitle:"Both paths funnel here — the approach to the Showdown.",
+  readAloud:[
+    {label:"Read aloud", text:`The air thickens, sweet and grievous. Ahead, a ring of standing stones leans around the oldest trees you've ever seen — and the way <i>shifts</i>: paths double back, a fallen log is suddenly a yawning ravine, birdsong loops like a stuck bell. Old fey wards still guard this place, tangled now with the wood's grief. On the nearest stone, worn carvings catch the green light: a great tree <b>crowned in leaves</b>, a procession of small robed figures — and, over and over, others laid into the earth.`}
+  ],
+  body:`
+<div class="zone dm-only">
+  <h4>🎭 Setup / DM notes</h4>
+  <p>A <b>fey-warded</b> grove approach — illusion and shifting paths protect the sacred heart. Crossing it is a <b>skill challenge</b>; the standing-stone carvings hold the grove's <i>ancient</i> story.</p>
+  <p><b>🔎 Clues here:</b> <i>no new numbered clue</i> — the carving <b>reinforces Clue 1/2</b> and reveals the guardian's nature (a nudge toward mercy, <b>not</b> the Key).</p>
+</div>
+<div class="callout dm-only"><b>▸ What the carvings are (and aren't).</b> They reveal the <b>guardian's nature</b> — an old, grieving protector that takes only those who <i>harm</i> the wood. But they're cut in <b>old stone, so they can't show the modern Withering cult.</b> They <b>reinforce</b> the truth; they are <b>not the full Key.</b> A party with no Clue 3 or 4 still arrives <b>without the Key → Version A / Ending A.</b></div>
+
+<div class="zone">
+  <h4>🧩 The Weeping Crown — the puzzle at the warded ring</h4>
+  <p>At the heart of the standing stones lies the grove's broken emblem: a <b>stone crown of five leaves</b>, toppled and scattered, its ward humming wrong. The grove won't let strangers pass until the crown is made whole <b>in the true order of its grief.</b> Each fallen leaf carries a worn carving — a moment of the grove's life. <b>Set them in order</b> and the crown greens, the ward opens, and the wood marks you as one who <i>understands</i>.</p>
+  <div class="crown-verse">“Read me true, axe-bearer. Lay my leaves as my life was lived — from the green years to the grey — and I will let you pass. Lay them wrong, and the wood will turn you in circles till you do.”</div>
+  <div class="ra reveal"><span class="ra-label">Read — the stones speak (the riddle)</span>As you step into the ring, the carvings seem to <i>stir.</i> Five fallen leaves of worn stone lie scattered among the standing stones, each cut with a faded scene. A voice that is the whole grove at once sighs through the branches: <i>“Lay my leaves as my life was lived, and pass. Lay them wrong, and wander.”</i></div>
+  <p style="font-size:.85rem;color:var(--muted);margin:.4rem 0 0">Tap a fallen leaf to set it on the crown; tap a placed leaf to take it back; nudge it with ◀ ▶. The crown checks itself — when it's whole, the ward opens. <span class="dm-only">(Drive it with the skill challenge below — each success seats a leaf — or just let the players reason it out and click.)</span></p>
+  <div id="crownPuz"></div>
+</div>
+
+<div class="zone secret dm-only">
+  <h4><span class="dm-tag">DM — SOLUTION &amp; THE CROWN'S 5TH LEAF</span> 🔑 How the crown ties it together</h4>
+  <p><b>The true order (green years → grey):</b></p>
+  <ol style="margin:.2rem 0 .4rem">
+    <li>🌿 <b>The Living Crown</b> — the great tree crowned in living leaves, the wood green and whole.</li>
+    <li>🍞 <b>The Keepers' Gift</b> — small robed wardens leave bread at its roots (the line of grove-wardens <b>before Fenn</b>).</li>
+    <li>🪓 <b>The Axe-Bearers</b> — those who come to <i>take</i> are pulled down into the earth <i>(this is Clues 1 &amp; 2 — it strikes only those who wound it).</i></li>
+    <li><span class="leaf-key">👑 <b>The Stolen Crown</b></span> — grey-robes cut the crown away, branded and withered, and carry it off.</li>
+    <li>💧 <b>The Weeping</b> — the tree alone, crown broken and fallen, bleeding sap. <i>(Now.)</i></li>
+  </ol>
+  <div class="callout"><b>The 5th leaf is the Key in puzzle form.</b> Leaf 4 — <span class="leaf-key">the Stolen Crown</span> — is the one a party <b>cannot truly read without the Key</b> (Clue 3 or 4): old stone can't depict the modern cult. So:
+    <ul style="margin:.4rem 0 0">
+      <li><b>No Key:</b> that leaf stays a <b>cracked, unreadable stone</b> — the crown opens the ward on its four <i>grief</i> leaves (grief is enough to pass), but a <b>visible gap</b> remains. Let that gap nag at them — it pays off when they meet Mother Sere's dead-branch crown at the Showdown.</li>
+      <li><b>With the Key:</b> the stolen-crown leaf is readable. Complete all five and the grove <b>recognizes</b> you — the same emblem they've now seen <i>living → branded → worn dead.</i></li>
+    </ul>
+  </div>
+  <p style="font-size:.85rem;color:var(--muted)">The crown reads the live <b>clue tracker</b>: tick Clue 3 or 4 and the stolen-crown leaf unlocks automatically.</p>
+</div>
+
+<div class="zone dm-only">
+  <h4>🎲 How to run the skill challenge (drives the crown)</h4>
+  <ol>
+    <li><b>Name the goal &amp; stakes:</b> reach the grove's heart before the wards — or the rite — turn on you.</li>
+    <li><b>Go round the table:</b> each PC <b>describes how they push forward</b>, then rolls the fitting skill at <b>DC 15</b>. Don't let everyone roll the same skill (the same one twice running gets harder or is disallowed).</li>
+    <li><b>Narrate every roll:</b> a <b>hit reads &amp; seats one leaf of the Crown</b> above (click it into place) — ground gained; a miss = a looping path, a false floor, a leaf set wrong.</li>
+    <li><b>Tally to 4 successes</b> = the four <i>grief</i> leaves are seated → the <b>ward opens</b> (the crown checks itself). <b>Or 3 failures</b> = through it the <i>hard</i> way. Never a dead end.</li>
+  </ol>
+  <p style="font-size:.85rem;color:var(--muted)">If they hold the <b>Key</b> (Clue 3/4), the <span class="leaf-key">stolen-crown</span> leaf is also readable — let a 5th success (or a beat of recognition) seat it for the full, <i>recognized</i> crown.</p>
+  <p class="lbl">Skill avenues — DC 15 each (each maps to a leaf)</p>
+  <p><span class="pill">Survival / Nature — true ground from illusion</span><span class="pill">Arcana — step through the fey wards</span><span class="pill">Perception / Investigation — looped birdsong; read carvings</span><span class="pill">Athletics / Acrobatics — clear a ravine / grasping roots</span></p>
+</div>
+
+<div class="zone dm-only">
+  <h4>✅ Outcome — 4 successes (they cross)</h4>
+  <p>They reach the grove <b>surefooted and forewarned</b>, and the stones tell it plainly.</p>
+  <div class="ra reveal"><span class="ra-label">Read</span>“The worn carvings come clear as you pass. A great tree with a grieving face, <b>crowned in living leaves</b>, sheltering generation upon generation of small robed keepers who leave bread at its roots. Then others: figures who come bearing <b>axes</b> — and are <b>pulled down into the earth.</b> Last of all the tree stands alone, weeping, its branches bare and its <b>leaf-crown broken and fallen.</b> This is no beast's den. It is a <b>grave-keeper</b>, old as the wood, and it strikes only those who <i>wound</i> it.”</div>
+</div>
+<div class="callout danger dm-only"><b>🔗 DM-only — the crown links the scenes.</b> The tree's <b>living leaf-crown</b> is the grove's own emblem. A party that has seen the <b>Scene 3 crates</b> (the <i>withered</i>-crown brand) — or who later sees <b>Mother Sere's crown of dead branches</b> at the Showdown — can realize the Withering <b>stole the grove's crown and killed it:</b> the same symbol in three stages — <i>living → branded → worn dead.</i> Not a standalone Key. The carved <b>robed keepers</b> are the line of <b>grove-wardens before Fenn</b> — she is the last of them.</div>
+
+<div class="zone secret">
+  <h4><span class="dm-tag">REWARD</span> ⭐ The edge — when the ward opens (4-leaf crown)</h4>
+  <p>The party may <b>act first at the Showdown</b> (a free surprise round <i>before</i> initiative), <b>or</b> take <b>advantage on their first attempt to reach / plead with the guardian.</b></p>
+  <p style="margin-top:.4rem"><b>👑 Recognized (full 5-leaf crown — needs the Key):</b> the grove knows them. Grant <b>both</b> edges <i>and</i> the Guardian's plea lands warmer — a PC who lays down arms reaches Sorrowroot with no roll even on the journal-only path.</p>
+</div>
+<div class="zone dm-only">
+  <h4>❌ Outcome — 3 failures (the hard way)</h4>
+  <p>The wards turn on them — <b>1d6 psychic</b> each (grief made manifest), the carvings stay a blur, and they spill into the Showdown <b>off-balance</b> (no edge; the rite/guardian is already mid-action).</p>
+  <p class="lbl">Bypass ⬡</p>
+  <p>A single <b>Nature or Arcana DC 15</b> walks the party through and gives the gist — the <b>guardian's nature only</b>, not the cult.</p>
+  <p class="lbl">Exit / lead</p>
+  <p>Beyond the stones, the <b>grove itself</b> — and the Showdown.</p>
+</div>`
+});
+
+/* ---------- SHOWDOWN ---------- */
+beat({ id:"showdown", nav:"Showdown", icon:"🌳", name:"The Showdown — The Weeping Grove", play:true, tag:"CORE", type:"climax", time:"~45–60 min",
+  readAloud:[
+    {label:"Read aloud", text:`The grove opens like a wound. At its heart, the greatest tree of all has half torn <i>itself</i> from the earth — bark like a grieving face, roots dragging through soil churned with cut stumps. Around it, robed figures chant over a fire of green flame, and a withered woman in a crown of dead branches lifts a vial of glowing sap to her lips. The great tree turns its slow, sorrowing face toward you. <i>“Another axe,”</i> it says, in a voice like splitting heartwood. <i>“Have you come to cut me too?”</i>`}
+  ],
+  body:`
+<div class="zone dm-only">
+  <h4>🎭 Setup</h4>
+  <p>The <b>Great Harvest</b> at its climax: <b>Mother Sere</b> is about to complete her immortality rite, and the grove's <b>Guardian</b> stands maddened with grief. <b>The Key decides who you fight.</b> Keep the mechanics the same; change the flavor.</p>
+  <p><b>🔎 Clues here:</b> <b>Clue 5 = the Guardian's plea + vision</b> — the fail-safe: even a kill-first party gets one last chance to flip.</p>
+</div>
+<div class="callout dm-only"><b>🔗 Links:</b> Mother Sere's <b>crown of dead branches</b> = the grove's leaf-crown (S4) withered into the cult's brand (S3) — <i>living → branded → worn dead.</i> The <b>vial of glowing sap</b> is the <b>heart-sap</b> distilled at the camp. The <b>Guardian</b> is <b>Sorrowroot</b> — the oak figure Fenn keeps whittling.</p></div>
+
+<div class="zone secret">
+  <h4><span class="dm-tag">CLUE 5 · FAIL-SAFE</span> Before initiative — the Guardian pleads</h4>
+  <p>Whatever path they took, the Guardian — <b>Sorrowroot</b> — <i>speaks first</i> and shows a <b>vision</b> (free action). <b>Any PC may try to reach it</b> — Persuasion/Insight, or simply lowering weapons.</p>
+  <div class="ra reveal"><span class="ra-label">Read — the vision, then the plea (Clue 5)</span>The tree's sorrow washes over you as a <i>seeing:</i> this grove green and singing, small keepers leaving bread at its roots — then the axes come, the green goes grey, and one by one its children are laid in the earth. The vision breaks. <i>“I was the keeping-place of this wood. I took only those who came to <b>wound</b> it. Now they bleed my heart into their vials and send me killers wearing the faces of heroes. If you too have come for my heartwood — strike; I am so tired. But if you have eyes to see who truly holds the axe… lay down your blade, and help me.”</i></div>
+  <p style="margin-top:.5rem"><b>If the party has the Key</b> (Fenn's truth <i>or</i> the heart-sap proof; S4's carvings reinforce but don't supply it alone) → they name the real enemy. Grief turns to <b>wrath at the cult</b> → <b>Version B.</b> Read: <i>“Then I am not alone. Stand with me — and we will end the ones who did this.”</i> <i>(With Fenn's full Key, a PC who simply lays down arms and grieves reaches the Guardian <b>automatically — no roll</b>.)</i></p>
+  <p><b>If they don't</b> → the Guardian, seeing only more armed strangers, attacks → <b>Version A.</b> Read: <i>“…Another axe. So be it.”</i> Its roots tear free. <i>(A lone PC can still attempt <b>DC 20 Persuasion</b> to flip it mid-fight.)</i></p>
+</div>
+
+<div class="dm-only">
+  <p class="lbl">Pick the version live (set by the clue tracker)</p>
+  <div class="ver-toggle" role="group" aria-label="Showdown version">
+    <button data-ver="A" id="verA">⚔ Version A — “The Beast” (no Key)</button>
+    <button data-ver="B" id="verB">🤝 Version B — “The True Harvest” (has Key)</button>
+  </div>
+  <div class="ver-hint" id="verHint"></div>
+
+  <div class="ver-block" data-verblock="A">
+    <div class="zone">
+      <h4>Version A — “The Beast” (no Key) · Deadly</h4>
+      <p>The party fights the <b>Guardian</b> itself. Tragic: they “win the quest” by killing the grove's wounded protector; the cult slips away to finish elsewhere.</p>
+      <div class="budget"><b>Budget check:</b> Guardian (Shambling Mound, 1,800) + 3 thorn-spawn (Twig Blights, 25 ea — <i>ignored for the multiplier</i>) ≈ <b>1,800 adjusted → Deadly.</b></div>
+      <p><b>Tactics:</b> the Guardian <b>grapples + Engulfs</b> the heaviest-armored PC (rooting them in living wood), slams the rest; thorn-spawn harry the backline. <b>Immune to lightning (absorbs it), resists cold &amp; fire</b> — note this before a caster wastes a <i>fireball</i>. It fights with grief, not malice: if reduced low it <i>keens</i> and gives one more chance to stop (a final <b>Persuasion DC 20</b> can still flip to Version B).</p>
+    </div>
+    <div class="callout danger"><b>▸ Running Version A safely — your biggest TPK risk.</b> A solo CR 5 Engulfer (~1,800 vs the 1,600 Deadly line) that can take a PC out of the fight. Keeping it survivable is by design:
+      <ul style="margin:.4rem 0 0">
+        <li><b>Grief, not bloodlust.</b> It doesn't chase fleeing PCs or finish the downed; it grapples and Engulfs to <b>stop</b> them, keening the whole time.</li>
+        <li><b>Engulf has an exit.</b> Only <b>one</b> creature at a time; <b>escape DC 14</b>, or free them by dropping it low. A PC at 0 HP inside it still makes <b>death saves</b>.</li>
+        <li><b>The flip is always open.</b> Any round, lowering weapons or a <b>DC 20 Persuasion</b> ends it into Version B (Sorrowroot becomes an ally).</li>
+        <li><b>Dial it live.</b> Cut a thorn-spawn or two; or have it Engulf and <i>hold</i> a downed PC “in the roots” (no damage) instead of crushing.</li>
+      </ul>
+    </div>
+    ${renderSB("mound")}
+    ${renderSB("twig",{count:3})}
+    <div class="runfight">
+      <h4>🎬 Run Version A — the grieving Guardian</h4>
+      <div class="initline">
+        <span class="ini">Sorrowroot <b>init −1</b> <span class="die">(slow — the party usually acts first; good, give them agency)</span></span>
+        <span class="ini">Thorn-spawn <b>init +1</b></span>
+        <span class="ini">⚡ <b>Heals</b> from lightning · resists cold &amp; fire — say so before a caster wastes a spell</span>
+      </div>
+      <div class="turns">
+        <div class="turn-card">
+          <h5>🌳 Sorrowroot, the Guardian <span class="pri">Grapples the heaviest-armored PC</span></h5>
+          <ol>
+            <li><b>Multiattack:</b> two <b>Slams</b> +7, <b>13 (2d8+4)</b> each. If <i>both</i> hit a Medium-or-smaller target → <b>grappled (escape DC 14)</b> and it <b>Engulfs</b> them.</li>
+            <li><b>Engulf:</b> target is <b>blinded, restrained, can't breathe</b> — <b>DC 14 Con</b> at the start of the mound's turns or <b>2d8+4</b>. One PC at a time; it moves with the mound.</li>
+            <li><b>Grief, not malice.</b> It doesn't chase fleers or finish the downed — it grapples to <b>stop</b> "the axes," keening the whole time. A PC at 0 inside it still rolls death saves.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="rounds">
+        <div class="rd"><b>Round 1</b> Roots tear free. It grabs the tank and Engulfs; thorn-spawn harry the backline.</div>
+        <div class="rd"><b>Rounds 2+</b> Slam the casters, hold the engulfed PC (escape DC 14). Mind the lightning heal.</div>
+        <div class="rd"><b>If it drops low</b> It <i>keens</i> — offer one more chance: lowering weapons or <b>Persuasion DC 20</b> flips to Version B (it stops, becomes an ally).</div>
+      </div>
+      <div class="callout danger" style="margin-top:.6rem"><b>🛟 Pressure valves (this is your TPK risk):</b> the flip is open <b>every round</b>; cut a thorn-spawn or two; or have it Engulf-and-<i>hold</i> a downed PC "in the roots" (no damage) if the table's on the ropes.</div>
+    </div>
+  </div>
+
+  <div class="ver-block" data-verblock="B">
+    <div class="zone">
+      <h4>Version B — “The True Harvest” (has the Key) · Deadly</h4>
+      <p>The party turns the Guardian on the cult. <b>Mother Sere + her cultists</b> are the enemy; the <b>Guardian fights as the party's ally</b> (DM runs it; it focuses Mother Sere).</p>
+      <div class="budget"><b>Budget check (enemies only):</b> Mother Sere (Green Hag, 700) + 4 Cultists (100) = 800 base ×2 (5 monsters) = <b>1,600 adjusted → Deadly</b> — the <b>Guardian ally</b> tips it to a winnable, heroic Deadly. <i>Add the Cult Fanatic overseer if he survived/escaped Scene 3.</i></div>
+      <p><b>Tactics:</b> <b>Mother Sere</b> opens with <b>Invisible Passage</b> and <b>Illusory Appearance</b> (she may look like a frightened captive — let a PC's Insight or the Guardian's senses cut through), strikes with <b>Claws (2d8+4)</b>, uses <b>vicious mockery / minor illusion</b> to split the party; cultists screen her and tend the green fire (the rite — a <b>clock: 3 rounds to completion</b> unless disrupted; smashing the fire/vial sets it back). The <b>Guardian</b> grapples and Engulfs Mother Sere if it can. <b>Morale:</b> cultists break when she falls.</p>
+    </div>
+    ${renderSB("hag")}
+    ${renderSB("cultist",{count:4})}
+    ${renderSB("mound")}
+    <div class="runfight">
+      <h4>🎬 Run Version B — Mother Sere &amp; the rite</h4>
+      <div class="initline">
+        <span class="ini">Mother Sere <b>init +1</b></span>
+        <span class="ini">Cultists <b>init +1</b></span>
+        <span class="ini">Sorrowroot (ally) <b>init −1</b> <span class="die">(you run it — it focuses Sere)</span></span>
+      </div>
+      <div class="callout danger" style="margin:.4rem 0"><b>⏳ The rite clock — 3 rounds.</b> The green fire completes Mother Sere's Harvest at the end of <b>round 3</b> unless disrupted. <b>Smashing the fire or the vial</b> (an object — AC 12, or a clean action) sets it back a round. Track it in the Tools rail clock or on the table.</div>
+      <div class="turns">
+        <div class="turn-card">
+          <h5>👑 Mother Sere (Green Hag) <span class="pri">Hides, splits the party, drinks the rite</span></h5>
+          <ol>
+            <li><b>Opens hidden:</b> <i>Invisible Passage</i> (invisible until she attacks/casts) and/or <i>Illusory Appearance</i> — she may pose as a <b>frightened captive.</b> See through with <b>Insight DC 14</b> (mimicry) or <b>Investigation DC 20</b>; the <b>Guardian's blindsight ignores it.</b></li>
+            <li><b>Claws</b> +6, <b>13 (2d8+4) slashing</b> — strikes a caster, then vanishes again next turn.</li>
+            <li><b>Control:</b> <i>vicious mockery</i> (Wis DC 12, 1d4 psychic + disadv. on its next attack) &amp; <i>minor illusion</i> to fracture the party and guard the fire.</li>
+          </ol>
+        </div>
+        <div class="turn-card">
+          <h5>🤝 Sorrowroot — your ally <span class="pri">DM runs it · focuses Mother Sere</span></h5>
+          <ul>
+            <li>Wades to Sere and tries to <b>grapple + Engulf</b> her (escape DC 14) — its blindsight cuts her illusions. Pull it back if it outshines the players; it's their win to land.</li>
+          </ul>
+        </div>
+        <div class="turn-card">
+          <h5>🗡 Cultists ×4 <span class="pri">Screen Sere · tend the green fire</span></h5>
+          <ul><li><b>Scimitar</b> +3, 4 (1d6+1). They feed the rite and body-block the fire. <b>Morale:</b> they break when Sere falls.</li></ul>
+        </div>
+      </div>
+      <div class="rounds">
+        <div class="rd"><b>Round 1</b> Sere hidden/illusory; cultists feed the fire (<b>clock 1</b>). Guardian crashes toward her.</div>
+        <div class="rd"><b>Round 2</b> <b>Clock 2.</b> Sere claws a caster &amp; mocks; reward anyone who smashes the fire/vial (−1 clock).</div>
+        <div class="rd"><b>Round 3</b> <b>Clock 3 = rite completes</b> unless disrupted — drop her or break the fire <i>now.</i> When Sere falls, the rite shatters.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="zone">
+    <h4>↔️ Avenues (either version)</h4>
+    <p><span class="pill">straight fight</span><span class="pill">disrupt the rite — smash the green fire/vial (shortens Version B)</span><span class="pill">turn the guardian with words / the Key</span><span class="pill">use the grove — cover, standing stones, lured Engulf</span></p>
+  </div>
+</div>`
+});
+
+/* ---------- ENDINGS & HOOKS ---------- */
+beat({ id:"endings", nav:"Endings & Hooks", icon:"🏁", name:"Endings & Hooks", play:true, body:`
+<div class="zone dm-only">
+  <h4>Ending A — Adequate <span class="pill">no Key</span></h4>
+  <p>The Guardian falls. The Briar Road goes quiet, Greywater pays the bounty — but the grove keeps dying, the heart-sap carts still roll out of the wood, and somewhere Mother Sere drinks to her long life. A hollow victory the players will <i>feel</i>. <i>(Quest complete, the obvious way.)</i></p>
+  <div class="callout"><b>🔗 Wren (Tomas's sister):</b> with the Guardian dead, what it took stays taken — the roots give up only bones. <b>Tomas gets a body to bury, not a sister.</b> Let that land when they collect the bounty.</div>
+</div>
+<div class="zone dm-only">
+  <h4>Ending B — Ballsy <span class="pill">requires the Key</span></h4>
+  <p>Mother Sere falls, the rite breaks, and the Guardian — grief spent — sinks its roots back into the earth and <b>begins to heal the grove</b>. It marks the party as friends of the wood. The cult's surviving harvesters scatter. The road is safe <i>because the truth was.</i></p>
+  <div class="callout"><b>🔗 Wren:</b> as the grief lifts, the grove <b>loosens its grip on the recently-taken</b> — the soil opens and the still-living are given back, <b>Wren among them.</b> Her homecoming to Tomas pays off the Cold Open. <i>(DM's call how many return; keep the oldest taken as graves.)</i></div>
+</div>
+<div class="zone dm-only">
+  <h4>🪝 Hooks</h4>
+  <p><b>If Ending A →</b> weeks later the vanishings begin again on a <i>different</i> road — the cult has other groves — and a robed envoy of the Withering arrives in Greywater to “thank” the famous beast-slayers… and offer them work.</p>
+  <p><b>If Ending B →</b> the grateful Guardian (or Fenn) brings word that the Withering tends <b>three more groves</b> deeper in the wilds, each with its own bound guardian and withered prophet. The wood asks the party to finish what they started.</p>
+</div>`
+});
+
+/* ---------- STAT BLOCKS (Appendix A) ---------- */
+beat({ id:"statblocks", nav:"Stat Blocks", icon:"📕", name:"Appendix A — Stat Blocks", play:false, body:`
+<p class="subtitle">All seven inlined once. Reflavor notes change the <i>fiction only</i> — the mechanics are unchanged. Collapsed by default; click to expand, or use the buttons.</p>
+<div class="sb-toolbar">
+  <button class="btn" id="sbExpand">Expand all</button>
+  <button class="btn ghost" id="sbCollapse">Collapse all</button>
+</div>
+<div id="sbAll">
+  ${renderSB("wolf")}
+  ${renderSB("cultist")}
+  ${renderSB("fanatic")}
+  ${renderSB("thug")}
+  ${renderSB("twig")}
+  ${renderSB("hag")}
+  ${renderSB("mound")}
+</div>`
+});
+
+/* ---------- TRACKERS (Appendix B) — main panel: scene board + session ---------- */
+beat({ id:"trackers", nav:"Trackers", icon:"🎛", name:"Appendix B — Trackers", play:false, body:`
+<p class="subtitle">Your live tools ride in the <b>🎛 Tools rail</b> at the right — always reachable while you play. Below: the scene board and session controls.</p>
+<div class="zone">
+  <h4>🎛 What's in the rail</h4>
+  <ul>
+    <li><b>🔎 Clue tracker → the Key.</b> Tick clues; the banner flips to Version B / Ending B when the Key lands (Clue 3 or 4). <i>This also unlocks the Crown's 5th leaf in Scene 4.</i></li>
+    <li><b>⏳ The clock.</b> Step the Great Harvest from Day 1 to dusk on Day 3.</li>
+    <li><b>❤️ Party HP.</b> Name, <b>AC</b>, current/max HP, <b>temp HP</b> (damage eats temp first), quick ±buttons, and <b>death-save pips</b> that appear at 0 HP (3 ✓ = stable, 3 ✕ = dead; healing clears them).</li>
+    <li><b>⚔️ Combat tracker.</b> Add PCs &amp; monsters (quick-add buttons, or ＋ from any stat block), set initiative, then <b>▶ Start combat</b> → <b>⏭ Next turn</b> walks the order and counts <b>rounds</b>; the active combatant is highlighted.</li>
+    <li><b>🧭 Scene status.</b> Mark each beat current / done / skipped.</li>
+  </ul>
+</div>
+<div class="zone">
+  <h4>🧭 Scene progress</h4>
+  <p style="font-size:.85rem;color:var(--muted)">Mark each beat done / current / skipped — the nav and the headers reflect it.</p>
+  <div class="sb-board" id="sceneBoardMain"></div>
+</div>
+<div class="zone">
+  <h4>⏳ The clock — the Great Harvest</h4>
+  <p>Completes <b>dusk, day 3</b>. Track time loosely; dawdling advances the Showdown into the rite's final moments (Version B gains the 3-round ritual clock). Advance it in the Tools rail.</p>
+</div>
+<div class="zone secret">
+  <h4><span class="dm-tag">CARE</span> ♻️ Reset</h4>
+  <p>Clears every tracker (clues, clock, party HP, combat, scene status, showdown version) and starts a fresh session. Read-aloud and theme preferences are kept.</p>
+  <button class="btn danger" id="resetBtn">Reset session</button>
+</div>`
+});
+
+/* ====================== STATE ====================== */
+const LS_KEY = "wg-dm-screen-v1";
+const PREF_KEY = "wg-dm-prefs-v1";
+const PLAY_BEATS = BEATS.filter(b=>b.play);
+
+function newPC(name){ return {name, cur:0, max:0, tmp:0, ac:"", ds:{s:0,f:0}}; }
+function freshState(){
+  return {
+    active:"overview",
+    clues:[false,false,false,false,false],
+    clock:0,
+    party:[ newPC("PC 1"), newPC("PC 2"), newPC("PC 3"), newPC("PC 4") ],
+    combat:[],
+    round:0,           // 0 = not started; ≥1 = combat round number
+    turnId:null,       // id of the combatant whose turn it is
+    crown:{ slots:[null,null,null,null,null] },  // Scene-4 puzzle
+    scenes:{},        // id -> 'current'|'done'|'skipped'
+    version:"A",
+    versionTouched:false
+  };
+}
+/* back-fill fields missing from older saved sessions */
+function migrate(s){
+  if(Array.isArray(s.party)) s.party = s.party.map(p=>Object.assign(newPC(p.name||""), p, {ds:Object.assign({s:0,f:0}, p.ds||{})}));
+  if(!s.crown || !Array.isArray(s.crown.slots)) s.crown = {slots:[null,null,null,null,null]};
+  if(typeof s.round!=="number") s.round = 0;
+  if(!("turnId" in s)) s.turnId = null;
+  return s;
+}
+let state = load();
+function load(){
+  try{ const s = JSON.parse(localStorage.getItem(LS_KEY)); if(s && s.party && s.clues) return migrate(Object.assign(freshState(), s)); }catch(e){}
+  return freshState();
+}
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+
+let prefs = loadPrefs();
+function loadPrefs(){ try{ return Object.assign({theme:"light",readAloud:false}, JSON.parse(localStorage.getItem(PREF_KEY))||{}); }catch(e){ return {theme:"light",readAloud:false}; } }
+function savePrefs(){ try{ localStorage.setItem(PREF_KEY, JSON.stringify(prefs)); }catch(e){} }
+
+const CLOCK_STEPS = [
+  "Day 1 — you set out (the wood is quiet)",
+  "Day 1 — dusk. The cutting goes on.",
+  "Day 2 — morning. Carts roll at night.",
+  "Day 2 — dusk. The still never stops.",
+  "Day 3 — morning. Mother Sere readies the rite.",
+  "Day 3 — afternoon. The grove screams.",
+  "DUSK, DAY 3 — THE GREAT HARVEST COMPLETES"
+];
+
+function keyObtained(){ return state.clues[2] || state.clues[3]; } // Clue 3 or 4
+
+/* ====================== RENDER: NAV + BEATS ====================== */
+function buildNav(){
+  const nav = $("#nav");
+  nav.innerHTML = `<div class="navhead">Beats — play order</div>` + BEATS.map(b=>{
+    return `<a class="navitem" data-go="${b.id}" tabindex="0" role="button">
+      <span class="ni-ico" data-ico="${b.id}">${b.icon}</span>
+      <span class="ni-label">${b.nav}</span>
+      ${b.tag?`<span class="ni-tag">${b.tag==='CORE'?'★':'⬡'}</span>`:""}
+    </a>`;
+  }).join("");
+}
+function buildBeats(){
+  const main = $("#main");
+  main.innerHTML = BEATS.map(b=>{
+    const tagBadge = b.tag ? `<span class="badge ${b.tag==='CORE'?'core':'modular'}">${b.tag==='CORE'?'★ CORE':'⬡ MODULAR'}</span>`:"";
+    const typeBadge = b.type ? `<span class="badge type">${b.type}</span>`:"";
+    const statusCtl = b.play ? `<span class="statusctl dm-only" data-statusfor="${b.id}" role="group" aria-label="Scene status">
+        <button data-st="current" title="Mark current">▶</button>
+        <button data-st="done" title="Mark done">✓</button>
+        <button data-st="skipped" title="Mark skipped">⬡</button>
+      </span>`:"";
+    const meta = (b.time||b.type) ? `<div class="meta-line">${[b.tag,b.type,b.time].filter(Boolean).join(" · ")}</div>`:"";
+    const ra = (b.readAloud||[]).map(r=>`<div class="ra"><span class="ra-label">${r.label}</span>${r.text}</div>`).join("");
+    return `<section class="beat" id="beat-${b.id}" aria-label="${b.name}">
+      <div class="beat-head">
+        <h2>${b.name}</h2>
+        ${tagBadge}${typeBadge}${statusCtl}
+        ${meta}
+      </div>
+      ${ra}
+      ${b.body||""}
+    </section>`;
+  }).join("");
+}
+
+function showBeat(id){
+  const b = BEATS.find(x=>x.id===id); if(!b) return;
+  state.active = id; save();
+  $$(".beat").forEach(s=>s.classList.toggle("active", s.id==="beat-"+id));
+  $$(".navitem").forEach(a=>a.classList.toggle("active", a.dataset.go===id));
+  $("#sceneNow").textContent = b.nav;
+  // scroll to top (guarded — some environments lack scrollTo)
+  try{ window.scrollTo(0,0); }catch(e){}
+  const m=$("#main"); if(m) m.scrollTop = 0;
+  closeNav();
+}
+
+/* nav status icons */
+function refreshNavStatus(){
+  BEATS.forEach(b=>{
+    const item = $(`.navitem[data-go="${b.id}"]`); if(!item) return;
+    const ico = item.querySelector(".ni-ico");
+    item.classList.remove("st-done","st-current","st-skipped");
+    if(!b.play){ ico.textContent = b.icon; return; }
+    const st = state.scenes[b.id];
+    if(st==="done"){ ico.textContent="✓"; item.classList.add("st-done"); }
+    else if(st==="current"){ ico.textContent="▶"; item.classList.add("st-current"); }
+    else if(st==="skipped"){ ico.textContent="⬡"; item.classList.add("st-skipped"); }
+    else { ico.textContent="○"; }
+  });
+  // header status controls
+  $$(".statusctl[data-statusfor]").forEach(ctl=>{
+    const id = ctl.dataset.statusfor;
+    ctl.querySelectorAll("button").forEach(btn=>btn.classList.toggle("sel", state.scenes[id]===btn.dataset.st));
+  });
+}
+function setSceneStatus(id, st){
+  if(state.scenes[id]===st) delete state.scenes[id]; // toggle off
+  else {
+    if(st==="current"){ // only one current at a time
+      Object.keys(state.scenes).forEach(k=>{ if(state.scenes[k]==="current") delete state.scenes[k]; });
+    }
+    state.scenes[id]=st;
+  }
+  save(); refreshNavStatus(); renderSceneBoard();
+}
+
+/* ====================== RENDER: GLANCE ====================== */
+function renderGlance(){
+  const g = $("#glance");
+  const count = state.clues.filter(Boolean).length;
+  const key = keyObtained();
+  const clockDone = state.clock>=CLOCK_STEPS.length-1;
+  g.innerHTML =
+    `<span class="chip ${clockDone?'clock-done':''}" data-chip="clock" title="${CLOCK_STEPS[state.clock]}">⏳ Day ${Math.min(3,Math.floor(state.clock/2)+1)}${clockDone?' · HARVEST':''}</span>`+
+    `<span class="chip" data-chip="clues">🔎 ${count}/5</span>`+
+    `<span class="chip ${key?'key-on':''}" data-chip="key">🔑 ${key?'KEY':'no Key'}</span>`+
+    `<span class="chip" data-chip="ver">${state.version==='B'?'🤝 Ver B':'⚔ Ver A'}</span>`;
+}
+
+/* ====================== RENDER: CLUE TRACKER ====================== */
+function renderClues(){
+  const host = $("#clueList"); if(!host) return;
+  host.innerHTML = CLUES.map((c,i)=>`<label class="clue">
+      <input type="checkbox" data-clue="${i}" ${state.clues[i]?"checked":""}>
+      <span><span class="cnum">Clue ${c.n}.</span> ${c.t}<span class="where">${c.where}</span></span>
+    </label>`).join("");
+  const key = keyObtained();
+  const banner = $("#keyBanner");
+  if(key){
+    banner.className="key-banner";
+    banner.innerHTML = "🔑 KEY OBTAINED →<br>run Showdown <b>Version B</b> / <b>Ending B</b>";
+  } else {
+    banner.className="key-banner off";
+    banner.innerHTML = "No Key yet — trending <b>Version A / Ending A</b>.<br><span style='font-weight:600;font-size:.78rem'>Check Clue 3 or 4 (or piece together 1+2+5).</span>";
+  }
+}
+function setClue(i,val){
+  state.clues[i]=val;
+  // auto-suggest version from key unless DM has manually chosen
+  if(!state.versionTouched){ state.version = keyObtained() ? "B":"A"; }
+  save(); renderClues(); renderGlance(); applyVersion(); renderCrown(); // Key unlocks the 5th crown leaf
+}
+
+/* ====================== RENDER: CLOCK ====================== */
+function renderClock(){
+  const host = $("#clockTool"); if(!host) return;
+  const done = state.clock>=CLOCK_STEPS.length-1;
+  const pips = CLOCK_STEPS.map((_,i)=>`<div class="pip ${i<=state.clock?(i===CLOCK_STEPS.length-1?'full':'on'):''}"></div>`).join("");
+  host.querySelector(".clock-pips").innerHTML = pips;
+  const lab = host.querySelector(".clock-label");
+  lab.textContent = CLOCK_STEPS[state.clock];
+  lab.classList.toggle("done", done);
+}
+function advanceClock(d){
+  state.clock = clamp(state.clock+d, 0, CLOCK_STEPS.length-1);
+  save(); renderClock(); renderGlance();
+}
+
+/* ====================== RENDER: PARTY ====================== */
+function dsPips(i){
+  const p=state.party[i], ds=p.ds||{s:0,f:0};
+  const stable=ds.s>=3, dead=ds.f>=3;
+  const pip=(type)=>[1,2,3].map(n=>`<span class="ds-pip ${type} ${ (type==='s'?ds.s:ds.f)>=n?'on':''}" data-ds="${i}" data-dstype="${type}" data-val="${n}" role="button" tabindex="0" aria-label="death ${type==='s'?'success':'failure'} ${n}"></span>`).join("");
+  const cls = stable?'stable':(dead?'dead':'');
+  const lbl = stable?'<span class="ds-state">STABLE</span>':(dead?'<span class="ds-state">DEAD</span>':'');
+  return `<div class="deathsaves ${cls}"><span class="ds-lbl">Death saves</span>
+    <span class="ds-group" title="successes">✓<span class="ds-pips">${pip('s')}</span></span>
+    <span class="ds-group" title="failures">✕<span class="ds-pips">${pip('f')}</span></span>${lbl}</div>`;
+}
+function renderParty(){
+  const host = $("#partyList"); if(!host) return;
+  host.innerHTML = state.party.map((p,i)=>{
+    const max=p.max||0, cur=p.cur||0, tmp=p.tmp||0;
+    const pct = max>0 ? clamp(Math.round(cur/max*100),0,100) : 0;
+    const cls = pct<=25?"crit":(pct<=50?"low":"");
+    const down = max>0 && cur<=0;
+    return `<div class="party-row">
+      <div class="pr-top">
+        <input class="pname" data-party="${i}" data-f="name" value="${escAttr(p.name)}" aria-label="PC ${i+1} name">
+        <span class="ac-box">🛡<input class="ac-in" data-party="${i}" data-f="ac" value="${escAttr(p.ac||'')}" placeholder="AC" aria-label="armor class"></span>
+      </div>
+      <div class="pr-hp">
+        <span class="hpbox"><input class="num" type="number" data-party="${i}" data-f="cur" value="${cur}" aria-label="current HP">/<input class="num" type="number" data-party="${i}" data-f="max" value="${max}" aria-label="max HP"></span>
+        <span class="tmp-box">+<input class="tmp-in" type="number" data-party="${i}" data-f="tmp" value="${tmp}" aria-label="temp HP">tmp</span>
+        <span class="pbtns"><button class="mini" data-pdmg="${i}" data-amt="5">−5</button><button class="mini" data-pdmg="${i}" data-amt="1">−1</button><button class="mini" data-pheal="${i}" data-amt="1">+1</button></span>
+      </div>
+      <span class="hpbar"><i class="${cls}" style="width:${pct}%"></i></span>
+      ${down?dsPips(i):''}
+    </div>`;
+  }).join("");
+}
+function setParty(i,f,v){
+  const p=state.party[i];
+  if(f==="name"||f==="ac") p[f]=v;
+  else { let n=parseInt(v,10); if(isNaN(n)) n=0; if(n<0) n=0; p[f]=n; }
+  if((f==="cur"||f==="max") && p.cur>0) p.ds={s:0,f:0};
+  save();
+  if(f==="name"||f==="ac"||f==="tmp") return; // no bar change
+  // refresh bar without losing focus
+  const row = $(`.pname[data-party="${i}"]`)?.closest(".party-row");
+  if(row){ const pct=p.max>0?clamp(Math.round(p.cur/p.max*100),0,100):0; const bar=row.querySelector(".hpbar>i"); if(bar){ bar.style.width=pct+"%"; bar.className=pct<=25?"crit":(pct<=50?"low":""); } }
+}
+function partyDmg(i,amt,heal){
+  const p = state.party[i];
+  if(heal){ p.cur = p.max>0 ? clamp(p.cur+amt,0,p.max) : p.cur+amt; if(p.cur>0) p.ds={s:0,f:0}; }
+  else { let dmg=amt; if(p.tmp>0){ const t=Math.min(p.tmp,dmg); p.tmp-=t; dmg-=t; } p.cur = clamp(p.cur-dmg, 0, p.max>0?p.max:Math.max(p.cur,0)); }
+  save(); renderParty();
+}
+function setDeathSave(i,type,val){
+  const p=state.party[i]; if(!p.ds) p.ds={s:0,f:0};
+  const cur=p.ds[type]||0;
+  p.ds[type] = (val===cur) ? val-1 : val;   // click the filled top pip to drop one
+  save(); renderParty();
+}
+
+/* ====================== RENDER: COMBAT TRACKER ====================== */
+function sortedCombat(){ return [...state.combat].sort((a,b)=> (b.init-a.init) || a.name.localeCompare(b.name)); }
+function renderRoundBar(){
+  const rb=$("#ctRoundBar"); if(!rb) return;
+  if(!state.combat.length){ rb.innerHTML=""; return; }
+  if(state.round>0 && state.turnId){
+    const cur=state.combat.find(c=>c.id===state.turnId);
+    rb.innerHTML = `<span class="rnum">Round ${state.round}</span>
+      <button class="mini" id="ctNext">⏭ Next turn</button>
+      <button class="mini" id="ctEndRound" title="Stop the turn pointer">⟲ reset</button>
+      ${cur?`<span class="turn-now">Now: <b>${escAttr(cur.name)}</b></span>`:''}`;
+  } else {
+    rb.innerHTML = `<button class="mini" id="ctNext">▶ Start combat</button><span class="turn-now">Roll initiative, then step turns in order.</span>`;
+  }
+}
+function renderCombat(){
+  renderRoundBar();
+  const host = $("#ctList"); if(!host) return;
+  const rows = sortedCombat();
+  if(rows.length===0){ host.innerHTML = `<div class="ct-empty">No combatants yet. Add PCs and the scene's monsters above.</div>`; return; }
+  host.innerHTML = rows.map(c=>{
+    const down = c.cur<=0;
+    const active = state.round>0 && c.id===state.turnId;
+    return `<div class="ct-row ${down?'down':''} ${active?'active':''}">
+      <div class="ct-r1">
+        <input class="ct-init" type="number" data-ct="${c.id}" data-f="init" value="${c.init}" aria-label="initiative">
+        <span class="ct-name ${c.pc?'pc':''}" title="${escAttr(c.name)}">${c.name}${down?' 💀':''}</span>
+        <button class="ct-rm" data-ctrm="${c.id}" title="Remove" aria-label="Remove">✕</button>
+      </div>
+      <div class="ct-r2">
+        <span class="ct-hp"><b>${c.cur}</b>/${c.max} HP</span>
+        <input class="ct-amt" type="number" value="1" data-ctamt="${c.id}" aria-label="amount">
+        <button class="mini" data-ctdmg="${c.id}">−</button>
+        <button class="mini" data-ctheal="${c.id}">＋</button>
+      </div>
+      <input class="ct-cond" data-ct="${c.id}" data-f="cond" value="${escAttr(c.cond||'')}" placeholder="conditions / notes (prone, grappled…)" aria-label="conditions">
+    </div>`;
+  }).join("");
+}
+function ctNext(){
+  const rows=sortedCombat(); if(!rows.length) return;
+  if(state.round===0 || !state.turnId || !rows.find(r=>r.id===state.turnId)){
+    state.round=Math.max(1,state.round||1); state.turnId=rows[0].id;
+  } else {
+    const idx=rows.findIndex(r=>r.id===state.turnId);
+    if(idx>=rows.length-1){ state.round++; state.turnId=rows[0].id; }
+    else state.turnId=rows[idx+1].id;
+  }
+  save(); renderCombat();
+}
+function addCombatant(name, init, max, pc){
+  name = (name||"").trim(); if(!name) return;
+  max = parseInt(max,10); if(isNaN(max)) max=0;
+  init = parseInt(init,10); if(isNaN(init)) init=0;
+  state.combat.push({id:uid(), name, init, max, cur:max, cond:"", pc:!!pc});
+  save(); renderCombat();
+}
+function ctSet(id,f,v){ const c=state.combat.find(x=>x.id===id); if(!c)return; if(f==="cond")c.cond=v; else { let n=parseInt(v,10); if(isNaN(n))n=0; c[f]=n; } save(); if(f==="init") renderCombat(); }
+function ctDmg(id,heal){
+  const c=state.combat.find(x=>x.id===id); if(!c)return;
+  const amtEl = $(`.ct-amt[data-ctamt="${id}"]`); let amt = amtEl?parseInt(amtEl.value,10):1; if(isNaN(amt))amt=1;
+  c.cur = clamp(c.cur + (heal?amt:-amt), 0, c.max);
+  save(); renderCombat();
+}
+function ctRemove(id){
+  const wasTurn = state.turnId===id;
+  state.combat = state.combat.filter(x=>x.id!==id);
+  if(wasTurn){ const rows=sortedCombat(); state.turnId = rows.length?rows[0].id:null; if(!rows.length) state.round=0; }
+  save(); renderCombat();
+}
+function newFight(){ if(state.combat.length && !confirm("Clear all combatants and start a new fight?")) return; state.combat=[]; state.round=0; state.turnId=null; save(); renderCombat(); }
+function addPartyToCombat(){ state.party.forEach(p=>{ if((p.name||"").trim()) addCombatant(p.name, 0, p.max, true); }); }
+
+/* ====================== RENDER: CROWN PUZZLE (Scene 4) ====================== */
+function crownLeaf(id){ return CROWN.find(c=>c.id===id); }
+function crownSolved(){
+  const key=keyObtained(), s=state.crown.slots;
+  for(let i=0;i<CROWN.length;i++){
+    if(i===CROWN_KEY_SLOT && !key) continue;   // stolen-crown slot skipped without the Key
+    if(s[i]!==CROWN[i].id) return false;
+  }
+  return true;
+}
+function renderCrown(){
+  const host=$("#crownPuz"); if(!host) return;
+  const key=keyObtained();
+  const slots=state.crown.slots;
+  const solved=crownSolved();
+  const allReadable = CROWN.filter(c=>key||!c.key).map(c=>c.id);
+  const placed = slots.filter(Boolean);
+  // RING (5 slots)
+  const ring = CROWN.map((leaf,i)=>{
+    const locked = (i===CROWN_KEY_SLOT && !key);
+    if(locked){
+      return `<div class="crown-slot locked" title="The stolen-crown leaf can't be read without the Key (tick Clue 3 or 4)">
+        <span class="slotno">${i+1}</span><span class="lock-mk">🪨</span><span class="lock-tx">UNREADABLE<br>(needs Key)</span></div>`;
+    }
+    const id=slots[i];
+    if(!id){
+      return `<div class="crown-slot empty" data-crownslot="${i}" role="button" tabindex="0" aria-label="empty crown slot ${i+1}">
+        <span class="slotno">${i+1}</span><span class="slot-hint">+</span></div>`;
+    }
+    const leafObj=crownLeaf(id);
+    const correct = id===CROWN[i].id;
+    return `<div class="crown-slot filled ${solved?(correct?'correct':''):(correct?'':'')}" data-crownslot="${i}" role="button" tabindex="0" aria-label="${leafObj.n} in slot ${i+1}; tap to remove">
+      <span class="slotno">${i+1}</span>
+      <span class="leaf-g">${leafObj.g}</span><span class="leaf-n">${leafObj.n}</span>
+      <span class="crown-reorder"><button data-crownmove="${i}" data-dir="-1" title="move left" aria-label="move left">◀</button><button data-crownmove="${i}" data-dir="1" title="move right" aria-label="move right">▶</button></span>
+    </div>`;
+  }).join("");
+  // TRAY (unplaced, readable leaves) + locked leaf shown disabled
+  const trayItems = CROWN_TRAY_ORDER.map(id=>{
+    if(slots.includes(id)) return "";
+    const leaf=crownLeaf(id);
+    if(leaf.key && !key){
+      return `<div class="tray-leaf disabled" title="You don't yet know this part of the story (needs Clue 3 or 4)"><span class="leaf-g">👑</span><span class="leaf-n">? ? ?</span></div>`;
+    }
+    return `<div class="tray-leaf" data-crownleaf="${id}" role="button" tabindex="0" title="${leaf.desc}"><span class="leaf-g">${leaf.g}</span><span class="leaf-n">${leaf.n}</span></div>`;
+  }).join("");
+  const trayHasItems = CROWN_TRAY_ORDER.some(id=>!slots.includes(id) && (key || !crownLeaf(id).key));
+  // BANNER
+  let banner;
+  if(solved){
+    banner = key
+      ? `<div class="crown-banner open">👑 <b>THE CROWN IS WHOLE — the grove KNOWS you.</b><br>The ward opens. Grant <b>both</b> Scene-4 edges; the Guardian's plea will land warm.</div>`
+      : `<div class="crown-banner open">🌿 <b>THE WARD OPENS.</b> The four leaves of grief are enough to pass.<br><span style="font-weight:600">But one slot stays a cracked, empty stone — the part of the story you haven't learned. Let it nag at them.</span></div>`;
+  } else {
+    banner = `<div class="crown-banner broken">The stones resist — the telling isn't whole yet. <b>${placed.length}/${key?5:4}</b> leaves seated${key?"":" · the 5th stays unreadable without the Key"}.</div>`;
+  }
+  host.innerHTML = `<div class="crown-puz ${solved?'mended':''}">
+    <div class="crown-instr">${trayHasItems?"Set the fallen leaves on the crown, in the true order of the grove's life.":"All readable leaves are placed — nudge them with ◀ ▶ until the crown checks out."}</div>
+    <div class="crown-ring">${ring}</div>
+    <div class="crown-tray">
+      <div class="tray-lbl">Fallen leaves${key?"":" — one is too worn to read"}</div>
+      <div class="crown-tray-row">${trayItems || '<span class="crown-empty">— all leaves are on the crown —</span>'}</div>
+    </div>
+    ${banner}
+    <div class="crown-tools">
+      <button class="btn ghost" id="crownReset">↺ Scatter the leaves</button>
+      ${solved?'':'<button class="btn ghost" id="crownHintBtn">💡 DM: reveal the order</button>'}
+    </div>
+    <div class="crown-hint" id="crownHint" hidden>
+      <b>True order:</b> 🌿 Living Crown → 🍞 Keepers' Gift → 🪓 Axe-Bearers → <span class="leaf-key">👑 Stolen Crown</span> → 💧 Weeping. <span class="leaf-key">The 4th leaf needs the Key.</span>
+    </div>`;
+}
+function crownPlace(id){
+  const key=keyObtained();
+  if(crownLeaf(id).key && !key) return; // can't place the locked leaf
+  const slots=state.crown.slots;
+  if(slots.includes(id)) return;
+  let i=-1;
+  for(let k=0;k<slots.length;k++){ if(k===CROWN_KEY_SLOT && !key) continue; if(slots[k]===null){ i=k; break; } } // skip the locked slot when no Key
+  if(i<0) return;
+  slots[i]=id; save(); renderCrown();
+}
+function crownRemove(slotIdx){
+  state.crown.slots[slotIdx]=null; save(); renderCrown();
+}
+function crownMove(slotIdx,dir){
+  const slots=state.crown.slots, j=slotIdx+dir;
+  if(j<0||j>=slots.length) return;
+  if(j===CROWN_KEY_SLOT && !keyObtained()) return; // don't shuffle into the locked slot
+  [slots[slotIdx],slots[j]]=[slots[j],slots[slotIdx]];
+  save(); renderCrown();
+}
+function crownScatter(){ state.crown={slots:[null,null,null,null,null]}; save(); renderCrown(); }
+
+/* ====================== RENDER: SCENE BOARD ====================== */
+function sceneBoardHTML(){
+  return PLAY_BEATS.map(b=>{
+    const st = state.scenes[b.id]||"";
+    return `<div class="sbrow">
+      <span class="nm" data-go="${b.id}">${b.icon} ${b.nav}</span>
+      <span class="seg" data-sboard="${b.id}">
+        <button data-st="current" class="${st==='current'?'sel':''}" title="current">▶</button>
+        <button data-st="done" class="${st==='done'?'sel':''}" title="done">✓</button>
+        <button data-st="skipped" class="${st==='skipped'?'sel':''}" title="skipped">⬡</button>
+      </span>
+    </div>`;
+  }).join("");
+}
+function renderSceneBoard(){
+  const m = $("#sceneBoardMain"); if(m) m.innerHTML = sceneBoardHTML();
+}
+
+/* ====================== SHOWDOWN VERSION ====================== */
+function applyVersion(){
+  $$('[data-verblock]').forEach(el=>el.classList.toggle("show", el.dataset.verblock===state.version));
+  const a=$("#verA"), b=$("#verB");
+  if(a&&b){ a.classList.toggle("on", state.version==="A"); b.classList.toggle("on", state.version==="B"); }
+  const hint=$("#verHint");
+  if(hint){
+    hint.innerHTML = keyObtained()
+      ? "🔑 The clue tracker shows the <b>Key is obtained</b> — default is <b>Version B</b> (you may override)."
+      : "No Key in the tracker — default is <b>Version A</b>. (Toggle anytime; the Guardian's plea can still flip it live.)";
+  }
+}
+function setVersion(v){ state.version=v; state.versionTouched=true; save(); applyVersion(); renderGlance(); }
+
+/* ====================== READ-ALOUD / THEME / DRAWERS ====================== */
+function applyReadAloud(){
+  document.body.classList.toggle("read-aloud", prefs.readAloud);
+  $("#raBtn").classList.toggle("on", prefs.readAloud);
+  $("#raBtn").setAttribute("aria-pressed", prefs.readAloud);
+  if(prefs.readAloud){ closeRail(); }
+}
+function toggleReadAloud(){ prefs.readAloud=!prefs.readAloud; savePrefs(); applyReadAloud(); }
+function applyTheme(){ document.documentElement.setAttribute("data-theme", prefs.theme); $("#themeBtn").textContent = prefs.theme==="dark"?"☀️":"🌙"; }
+function toggleTheme(){ prefs.theme = prefs.theme==="dark"?"light":"dark"; savePrefs(); applyTheme(); }
+
+function openRail(){ document.body.classList.add("rail-open"); $("#railBtn").classList.add("on"); }
+function closeRail(){ document.body.classList.remove("rail-open"); $("#railBtn").classList.remove("on"); }
+function toggleRail(){ document.body.classList.contains("rail-open")?closeRail():openRail(); }
+function openNav(){ document.body.classList.add("nav-open"); $("#backdrop").classList.add("open"); }
+function closeNav(){ document.body.classList.remove("nav-open"); if(!document.body.classList.contains("rail-open"))$("#backdrop").classList.remove("open"); }
+function openQR(){ $("#qrDrawer").classList.add("open"); $("#qrBackdrop").classList.add("open"); $("#qrBtn").classList.add("on"); }
+function closeQR(){ $("#qrDrawer").classList.remove("open"); $("#qrBackdrop").classList.remove("open"); $("#qrBtn").classList.remove("on"); }
+
+/* ====================== BUILD RAIL ====================== */
+function buildRail(){
+  $("#rail").innerHTML = `
+  <div class="railhead"><h3 style="margin:0">🎛 DM Tools</h3><button class="close" id="railClose">✕</button></div>
+  <div class="tool">
+    <h3>🔎 Clue tracker → the Key</h3>
+    <div id="clueList"></div>
+    <div id="keyBanner" class="key-banner off"></div>
+  </div>
+  <div class="tool" id="clockTool">
+    <h3>⏳ The clock — Great Harvest</h3>
+    <div class="clock-pips"></div>
+    <div class="clock-label"></div>
+    <div class="row-btns"><button class="mini" id="clockBack">◀ Earlier</button><button class="mini" id="clockFwd">Later ▶</button></div>
+  </div>
+  <div class="tool">
+    <h3>❤️ Party HP</h3>
+    <div id="partyList"></div>
+  </div>
+  <div class="tool">
+    <h3>⚔️ Combat tracker</h3>
+    <div class="ct-add">
+      <input id="ctName" placeholder="name" aria-label="combatant name">
+      <input id="ctInit" type="number" placeholder="init" aria-label="initiative">
+      <input id="ctHP" type="number" placeholder="HP" aria-label="max HP">
+      <button class="mini" id="ctAdd">Add</button>
+    </div>
+    <div class="ct-quick" id="ctQuick"></div>
+    <div class="ct-roundbar" id="ctRoundBar"></div>
+    <div class="ct-list" id="ctList"></div>
+    <div class="row-btns"><button class="mini" id="ctNewFight">♻ New fight</button></div>
+  </div>
+  <div class="tool sb-board">
+    <h3>🧭 Scene status</h3>
+    <div id="sceneBoardRail"></div>
+  </div>`;
+
+  // quick-add buttons (party + each stat block)
+  const q = $("#ctQuick");
+  q.innerHTML = `<button data-addparty="1">＋ Party (4)</button>` +
+    Object.keys(STATBLOCKS).map(id=>`<button data-addsb="${id}">${STATBLOCKS[id].name} (${STATBLOCKS[id].maxhp})</button>`).join("");
+  // rail scene board
+  $("#sceneBoardRail").innerHTML = sceneBoardHTML();
+}
+
+/* ====================== UTIL ====================== */
+function escAttr(s){ return String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* ====================== EVENT WIRING ====================== */
+function wire(){
+  // top bar
+  $("#raBtn").addEventListener("click", toggleReadAloud);
+  $("#themeBtn").addEventListener("click", toggleTheme);
+  $("#qrBtn").addEventListener("click", ()=> $("#qrDrawer").classList.contains("open")?closeQR():openQR());
+  $("#qrClose").addEventListener("click", closeQR);
+  $("#qrBackdrop").addEventListener("click", closeQR);
+  $("#railBtn").addEventListener("click", toggleRail);
+  $("#navToggle").addEventListener("click", ()=> document.body.classList.contains("nav-open")?closeNav():openNav());
+  $("#backdrop").addEventListener("click", ()=>{ closeNav(); closeRail(); });
+  $("#railClose").addEventListener("click", closeRail);
+
+  // delegated click handler
+  document.addEventListener("click", (e)=>{
+    const t = e.target.closest("[data-go],[data-chip],[data-add],[data-pdmg],[data-pheal],[data-ds],[data-st],[data-sboard] button,[data-ctrm],[data-ctdmg],[data-ctheal],[data-addsb],[data-addparty],[data-crownmove],[data-crownleaf],[data-crownslot]");
+    if(!t) return;
+    // navigation
+    if(t.matches("[data-go]")){ showBeat(t.dataset.go); return; }
+    // glance chips
+    if(t.matches("[data-chip]")){ const c=t.dataset.chip; if(c==="ver"){ showBeat("showdown"); } else { openRail(); } return; }
+    // add statblock from appendix/scene
+    if(t.matches("[data-add]")){ const s=STATBLOCKS[t.dataset.add]; addCombatant(s.name, "", s.maxhp, false); openRail(); flash(t); return; }
+    if(t.matches("[data-addsb]")){ const s=STATBLOCKS[t.dataset.addsb]; addCombatant(s.name,"",s.maxhp,false); return; }
+    if(t.matches("[data-addparty]")){ addPartyToCombat(); return; }
+    // party hp buttons
+    if(t.matches("[data-pdmg]")){ partyDmg(+t.dataset.pdmg, +t.dataset.amt, false); return; }
+    if(t.matches("[data-pheal]")){ partyDmg(+t.dataset.pheal, +t.dataset.amt, true); return; }
+    // death-save pips
+    if(t.matches("[data-ds]")){ setDeathSave(+t.dataset.ds, t.dataset.dstype, +t.dataset.val); return; }
+    // crown puzzle (check move buttons before slot so ◀▶ don't trigger remove)
+    if(t.matches("[data-crownmove]")){ crownMove(+t.dataset.crownmove, +t.dataset.dir); return; }
+    if(t.matches("[data-crownleaf]")){ crownPlace(t.dataset.crownleaf); return; }
+    if(t.matches("[data-crownslot]")){ crownRemove(+t.dataset.crownslot); return; }
+    // scene status (header control)
+    if(t.matches(".statusctl button")){ const id=t.closest(".statusctl").dataset.statusfor; setSceneStatus(id, t.dataset.st); return; }
+    // scene board seg buttons
+    if(t.closest("[data-sboard]") && t.dataset.st){ const id=t.closest("[data-sboard]").dataset.sboard; setSceneStatus(id, t.dataset.st); $("#sceneBoardRail").innerHTML=sceneBoardHTML(); return; }
+    // combat row buttons
+    if(t.matches("[data-ctrm]")){ ctRemove(t.dataset.ctrm); return; }
+    if(t.matches("[data-ctdmg]")){ ctDmg(t.dataset.ctdmg,false); return; }
+    if(t.matches("[data-ctheal]")){ ctDmg(t.dataset.ctheal,true); return; }
+  });
+
+  // header status controls (delegated above also covers; ensure statusctl direct)
+  document.addEventListener("click",(e)=>{
+    const sc = e.target.closest(".statusctl button"); if(sc){ const id=sc.closest(".statusctl").dataset.statusfor; /* handled */ }
+  });
+
+  // delegated input/change
+  document.addEventListener("input",(e)=>{
+    const t=e.target;
+    if(t.matches("[data-clue]")) return; // checkbox handled on change
+    if(t.matches(".pname[data-party]")){ setParty(+t.dataset.party,"name",t.value); }
+    else if(t.matches(".num[data-party]")){ setParty(+t.dataset.party,t.dataset.f,t.value); }
+    else if(t.matches(".tmp-in[data-party]")){ setParty(+t.dataset.party,"tmp",t.value); }
+    else if(t.matches(".ac-in[data-party]")){ setParty(+t.dataset.party,"ac",t.value); }
+    else if(t.matches('.ct-cond[data-ct]')){ ctSet(t.dataset.ct,"cond",t.value); }
+  });
+  document.addEventListener("change",(e)=>{
+    const t=e.target;
+    if(t.matches("[data-clue]")){ setClue(+t.dataset.clue, t.checked); }
+    else if(t.matches(".ct-init[data-ct]")){ ctSet(t.dataset.ct,"init",t.value); }
+    else if(t.matches(".num[data-party]")){ renderParty(); }
+  });
+
+  // combat add form
+  $("#ctAdd").addEventListener("click", ()=>{ addCombatant($("#ctName").value, $("#ctInit").value, $("#ctHP").value, false); $("#ctName").value="";$("#ctInit").value="";$("#ctHP").value=""; $("#ctName").focus(); });
+  $("#ctName").addEventListener("keydown",(e)=>{ if(e.key==="Enter") $("#ctAdd").click(); });
+  $("#ctHP").addEventListener("keydown",(e)=>{ if(e.key==="Enter") $("#ctAdd").click(); });
+  $("#ctNewFight").addEventListener("click", newFight);
+
+  // clock
+  $("#clockBack").addEventListener("click", ()=>advanceClock(-1));
+  $("#clockFwd").addEventListener("click", ()=>advanceClock(1));
+
+  // showdown version toggle (in beat body)
+  document.addEventListener("click",(e)=>{ const v=e.target.closest("[data-ver]"); if(v){ setVersion(v.dataset.ver); } });
+
+  // combat round pointer + crown tools (ids are re-created on each render → delegate)
+  document.addEventListener("click",(e)=>{
+    if(e.target.id==="ctNext"){ ctNext(); }
+    else if(e.target.id==="ctEndRound"){ state.round=0; state.turnId=null; save(); renderCombat(); }
+    else if(e.target.id==="crownReset"){ crownScatter(); }
+    else if(e.target.id==="crownHintBtn"){ const h=$("#crownHint"); if(h) h.hidden=!h.hidden; }
+  });
+  // death-save pip keyboard activation
+  document.addEventListener("keydown",(e)=>{ if((e.key==="Enter"||e.key===" ") && e.target.matches("[data-ds]")){ e.preventDefault(); setDeathSave(+e.target.dataset.ds, e.target.dataset.dstype, +e.target.dataset.val); } });
+
+  // stat block expand/collapse
+  document.addEventListener("click",(e)=>{
+    if(e.target.id==="sbExpand"){ $$("#sbAll details.sb").forEach(d=>d.open=true); }
+    if(e.target.id==="sbCollapse"){ $$("#sbAll details.sb").forEach(d=>d.open=false); }
+  });
+
+  // reset
+  document.addEventListener("click",(e)=>{ if(e.target.id==="resetBtn"){ if(confirm("Reset the whole session? Clues, clock, party HP, combat (round/turn), the Crown puzzle, scene status and the showdown version will be cleared.")){ state=freshState(); save(); fullRender(); showBeat("trackers"); } } });
+
+  // nav keyboard (left/right between beats)
+  document.addEventListener("keydown",(e)=>{
+    if(e.key!=="ArrowLeft" && e.key!=="ArrowRight") return;
+    const tag = (e.target.tagName||"").toLowerCase();
+    if(tag==="input"||tag==="textarea"||tag==="select"||e.target.isContentEditable) return;
+    if($("#qrDrawer").classList.contains("open")) return;
+    const idx = BEATS.findIndex(b=>b.id===state.active);
+    const ni = e.key==="ArrowRight" ? Math.min(BEATS.length-1, idx+1) : Math.max(0, idx-1);
+    if(ni!==idx){ showBeat(BEATS[ni].id); e.preventDefault(); }
+  });
+  // nav item keyboard activation
+  $("#nav").addEventListener("keydown",(e)=>{ if((e.key==="Enter"||e.key===" ") && e.target.matches(".navitem")){ e.preventDefault(); showBeat(e.target.dataset.go); } });
+
+  $("#qrBackdrop").addEventListener("click", closeQR);
+  document.addEventListener("keydown",(e)=>{ if(e.key==="Escape"){ closeQR(); closeNav(); if(window.innerWidth<=1200) closeRail(); } });
+}
+
+function flash(el){ el.style.transition="background .1s"; const o=el.style.background; el.style.background="var(--gold)"; setTimeout(()=>el.style.background=o,180); }
+
+/* ====================== INIT ====================== */
+function fullRender(){
+  renderClues(); renderClock(); renderParty(); renderCombat(); renderCrown();
+  renderSceneBoard(); $("#sceneBoardRail") && ($("#sceneBoardRail").innerHTML=sceneBoardHTML());
+  refreshNavStatus(); renderGlance(); applyVersion();
+}
+function init(){
+  applyTheme();
+  buildNav(); buildBeats(); buildRail();
+  // ensure version sync with key on first load (only if untouched)
+  if(!state.versionTouched){ state.version = keyObtained()?"B":"A"; }
+  wire();
+  fullRender();
+  applyReadAloud();
+  showBeat(state.active || "overview");
+}
+init();
+</script>
+</body>
+</html>

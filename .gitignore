@@ -1,0 +1,16 @@
+# ── Copyrighted source rulebooks — DO NOT publish ──────────────────
+# The PHB/DMG/MM PDFs are WotC's copyrighted books. They stay on your
+# local disk for rules lookups but must never be committed/pushed.
+*.pdf
+
+# Regenerable page-tagged text dumps of those same copyrighted PDFs.
+# (Recreate with the pdftotext commands in PROGRESS.md if you need them.)
+.build/
+
+# ── OS / editor cruft ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/

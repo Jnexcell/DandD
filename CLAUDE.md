@@ -1,0 +1,151 @@
+# D&D 5e Rules Reference — Claude Router
+
+This folder is a **Dungeon Master's rules-lookup knowledge base** for **D&D 5e (2014 core rules)**.
+Use it to answer rules questions fast — both questions players ask and DM rulings — for Josh's
+one-shot. The three core rulebooks are broken down into per-book markdown summaries with page
+citations back to the PDFs (the PDFs remain the source of truth).
+
+## How to answer a rules question
+
+1. **Check the Topic Index below** to find the right file, and read it.
+2. **`quick-reference/`** has the most-asked rules as tight cheat sheets — start there for combat,
+   conditions, death saves, DCs, and encounter building.
+3. **If a topic isn't covered yet** (see "Build status" below), read the source PDF directly:
+   `pdftotext -f <physical> -l <physical> "<Book>.pdf" -`. For the PHB the printed→physical offset
+   drifts, so find the page by grepping the text dump instead:
+   `grep -n -i "<keyword>" .build/phb.txt` (regenerate `.build/` per `PROGRESS.md` if missing).
+4. **Always cite book + printed page**, e.g. *(PHB p.195)*.
+5. **Distinguish hard rules from DM discretion** — flag judgment calls.
+6. **OCR caveat:** the PDFs are scans with minor OCR errors; rely on the cleaned markdown, and
+   sanity-check numbers against the PDF when it matters.
+
+## Page-offset table (printed → physical PDF page)
+
+| Book | PDF file | Offset | Notes |
+|------|----------|--------|-------|
+| PHB  | `Player's Handbook.pdf` | **drifts** | No constant offset — find by heading via `.build/phb.txt` |
+| DMG  | `Dungeon Master's Guide.pdf` | **0** | physical = printed |
+| MM   | `Monster Manual.pdf` | **+1** | physical = printed + 1 |
+
+## Topic → file index
+
+### Combat & actions
+| Topic | File | Page |
+|-------|------|------|
+| Turn structure, initiative, surprise | `players-handbook/09-combat.md` | PHB 189 |
+| Actions (Attack, Dash, Dodge, Disengage, Help, Hide, Ready, Search, Use Object) | `quick-reference/actions-in-combat.md` · `players-handbook/09-combat.md` | PHB 192 |
+| Bonus actions, reactions, **opportunity attacks** | `players-handbook/09-combat.md` | PHB 190, 195 |
+| **Grappling & shoving** | `players-handbook/09-combat.md` | PHB 195 |
+| **Cover** (half +2, three-quarters +5, total) | `players-handbook/09-combat.md` | PHB 196 |
+| Movement, difficult terrain, prone, squeezing | `players-handbook/09-combat.md` | PHB 190–192 |
+| Attack rolls, advantage, unseen attackers, ranged-in-melee | `players-handbook/09-combat.md` | PHB 193–195 |
+| Two-weapon fighting | `players-handbook/09-combat.md` · `players-handbook/05-equipment.md` | PHB 195 |
+| Mounted & underwater combat | `players-handbook/09-combat.md` | PHB 198 |
+
+### Damage, healing & death
+| Topic | File | Page |
+|-------|------|------|
+| Damage rolls, **critical hits**, resistance/vulnerability | `players-handbook/09-combat.md` | PHB 196–197 |
+| Dropping to 0 HP, **death saving throws**, instant death | `quick-reference/death-and-dying.md` · `players-handbook/09-combat.md` | PHB 197 |
+| Stabilizing, knocking out, temporary HP | `quick-reference/death-and-dying.md` | PHB 197–198 |
+
+### Conditions
+| Topic | File | Page |
+|-------|------|------|
+| The 14 conditions (blinded, grappled, prone, restrained, stunned…) | `quick-reference/conditions.md` | PHB 290 |
+| **Exhaustion** (6 levels) | `quick-reference/conditions.md` | PHB 291 |
+
+### Ability checks, skills & saves
+| Topic | File | Page |
+|-------|------|------|
+| Ability checks, **Difficulty Classes**, advantage/disadvantage | `quick-reference/difficulty-classes.md` · `players-handbook/07-using-ability-scores.md` | PHB 173–174 |
+| Skills by ability, passive checks, group checks, contests | `players-handbook/07-using-ability-scores.md` | PHB 174–179 |
+| Saving throws | `players-handbook/07-using-ability-scores.md` | PHB 179 |
+
+### Adventuring
+| Topic | File | Page |
+|-------|------|------|
+| Travel pace, journeys, difficult terrain | `players-handbook/08-adventuring.md` | PHB 182 |
+| **Resting** (short/long rest, Hit Dice) | `players-handbook/08-adventuring.md` | PHB 186 |
+| Vision & light (obscured, darkvision) | `players-handbook/08-adventuring.md` | PHB 183 |
+| Falling, suffocation, food & water | `players-handbook/08-adventuring.md` | PHB 183–185 |
+| Jumping, climbing, swimming | `players-handbook/08-adventuring.md` | PHB 182 |
+
+### Magic
+| Topic | File | Page |
+|-------|------|------|
+| Spellcasting rules: slots, components, upcasting, rituals | `players-handbook/10-spellcasting.md` | PHB 201 |
+| **Concentration** | `players-handbook/10-spellcasting.md` | PHB 203 |
+| Spell save DC / spell attack bonus | `players-handbook/10-spellcasting.md` | PHB 205 |
+| Schools of magic; how to read a spell entry | `players-handbook/11-spells.md` | PHB 203, 207 |
+| Individual spell descriptions | `players-handbook/spells/` — **cantrips + L1–L5 built** (`cantrips.md`, `level-1.md` … `level-5.md`, `spell-index.md`); **L6–L9 ⚠️ deferred** (use PDF) | PHB 211+ |
+
+### Character building
+| Topic | File | Page |
+|-------|------|------|
+| **Make a character** (guided Character Creation Helper — say *"help me make a character"*; circle the chooser, get a full level-1 packet, beginner-friendly) | `tools/character-creator.md` → `characters/_CHOOSER.md` → `characters/` | — |
+| Creating a character, ability scores, point buy, standard array | `players-handbook/01-creating-a-character.md` | PHB 11–13 |
+| Leveling, XP, proficiency bonus | `players-handbook/01-creating-a-character.md` | PHB 15 |
+| **Races** (all 9 + subraces) | `players-handbook/02-races.md` | PHB 17 |
+| Classes overview (hit die, saves, casters) | `players-handbook/03-classes.md` | PHB 45 |
+| Per-class detail (full features + subclasses) | `players-handbook/classes/` — **all 12 classes built** | PHB 46+ |
+| Backgrounds, alignment, inspiration, languages | `players-handbook/04-personality-and-background.md` (overview/index) + `players-handbook/backgrounds/` (**all 13**, full feature/equipment/variant + trait-ideal-bond-flaw tables) | PHB 121 |
+| Equipment, **armor & AC**, weapons, packs, encumbrance | `players-handbook/05-equipment.md` | PHB 143 |
+| **Feats** (full list) & multiclassing | `players-handbook/06-customization-feats-multiclassing.md` | PHB 163 |
+| Gods & pantheons, planes overview, common creature stat refs | `players-handbook/appendices.md` | PHB 293+ |
+
+### Running the game (DM)
+| Topic | File | Page |
+|-------|------|------|
+| **DM RUN-THE-GAME TOOLKIT** (generate NPCs / encounters / traps & puzzles / room descriptions / scenes & avenues / NPC dialog *live at the table*) | `quick-reference/dm-toolkit/` (`npc-generator.md`, `encounters-and-monsters.md`, `traps-puzzles-hazards.md`, `environments-and-dressing.md`, `scenes-goals-and-avenues.md`, `social-and-dialog.md`) | — |
+| **Building encounters** (XP thresholds, multipliers, adventuring day) | `quick-reference/encounter-building.md` · `dungeon-masters-guide/03-creating-adventures.md` | DMG 82 |
+| New-DM tips, rulings vs. rules, pacing, safety tools | `quick-reference/new-dm-one-shot-tips.md` | DMG 235 |
+| **Designing a one-shot** (Pointy Hat's MMOS — quest, two paths, the key, modular encounters, showdown, endings, hook) | `quick-reference/one-shot-formula-mmos.md` | — |
+| **Build a full run-ready one-shot module** (Session/Module Creator — say *"build me a one-shot"*; auto-scales encounters, inlines stat blocks, outputs to `modules/`) | `tools/session-creator.md` → `modules/` | — |
+| **Run a live session** (DM Assistant — say *"run the session"*; walks a module scene-by-scene, conducts combat turn by turn, tracks live state in `sessions/`, pause/resume) | `tools/dm-assistant.md` → `sessions/` | — |
+| Creating adventures (location vs. event, encounters, random encounters) | `dungeon-masters-guide/03-creating-adventures.md` | DMG 71 |
+| **NPCs & villains** (design, Loyalty, Death Domain / Oathbreaker) | `dungeon-masters-guide/04-npcs.md` | DMG 89 |
+| **Traps & hazards** (Trap save DCs, Damage Severity by level, sample traps) | `dungeon-masters-guide/05-adventure-environments.md` | DMG 99 |
+| Downtime / between adventures (crafting, magic-item creation, carousing, business) | `dungeon-masters-guide/06-between-adventures.md` | DMG 125 |
+| **Treasure & magic items** (treasure rules, rarity, attunement, ~220-item index) | `dungeon-masters-guide/07-treasure-and-magic-items.md` | DMG 133 |
+| **Running the game**: DCs, social interaction, chases, **disease / poison / madness** | `dungeon-masters-guide/08-running-the-game.md` | DMG 235 |
+| Optional / variant rules (flanking, hero points, lingering injuries, rest variants) | `dungeon-masters-guide/09-dm-workshop.md` | DMG 263 |
+| World-building & the planes of existence | `dungeon-masters-guide/01-02-world-building.md` | DMG 9, 43 |
+| DMG appendices (random dungeons, monster lists by environment/CR) | `dungeon-masters-guide/appendices.md` | DMG 290 |
+| **Monsters**: find one by name / CR / type; how to read a stat block | `monster-manual/` (`monster-index.md`, `monsters-by-cr.md`, `monsters-by-type.md`, `README.md`) | MM 12+ |
+| **Monster stat blocks** (AC/HP/abilities/traits/actions) | `monster-manual/stat-blocks/` — **CR 0–2 complete (every MM monster); CR 3–5 common monsters** (278 blocks, `cr-0.md`…`cr-5.md`). CR 6+ → MM PDF (offset **+1**) | MM 12+ |
+
+## Layout
+
+- `players-handbook/` — PHB by chapter (+ `classes/` all 12, `races/` all 9, `backgrounds/` all 13, `spells/` cantrips–L5, `appendices.md`)
+- `dungeon-masters-guide/` — DMG: README + all 9 chapters + `appendices.md` *(fully built)*
+- `monster-manual/` — MM **indexes** (alphabetical, by CR, by type) + `README.md` primer + **`stat-blocks/`** (full mechanical stat blocks in our own format; **CR 0–2 exhaustive, CR 3–5 common monsters**). CR 6+ → look the page up in the MM PDF (offset +1)
+- `quick-reference/` — cross-book cheat sheets for the most-asked rules + **`dm-toolkit/`** (6 generation scaffolds to improvise NPCs / encounters / traps & puzzles / room descriptions / scenes & avenues / dialog live)
+- `tools/` — **PHASE 2 tools** built on top of the KB. `session-creator.md` = the Session/Module Creator (say *"build me a one-shot"*); `character-creator.md` = the Character Creation Helper (say *"help me make a character"*); `dm-assistant.md` = the **live DM Assistant** that runs a session (say *"run the session"*)
+- `modules/` — **generated one-shot modules** (ready-to-run sessions from the Session Creator) + `_TEMPLATE.md` + `README.md`
+- `characters/` — **generated level-1 character packets** (from the Character Creation Helper) + `_CHOOSER.md` (the print-once "circle your character" worksheet) + `_TEMPLATE.md` + `README.md`
+- `sessions/` — **live session-state files** (kept by the DM Assistant while you play; pause/resume) + `_TEMPLATE.md` + `README.md`
+- `PROGRESS.md` — build tracker / resume guide (see "Build status" below)
+- `.build/` — regenerable page-tagged text dumps of each PDF (for live lookups)
+
+## Build status (what's done vs. not)
+
+**Done & verified** (full KB end-to-end verified 2026-06-12 — links, counts, and citation spot-checks all clean):
+- All **PHB** chapter overview files + README + `appendices.md` (conditions, gods, planes, creature stats).
+- All **12 PHB classes** (`classes/` — full features by level + every subclass + each caster's cantrip–L5 spell list + flavor).
+- All **9 races** (`races/` — full traits, subraces, names, lore) and all **13 backgrounds** (`backgrounds/` — feature, equipment, variants + trait/ideal/bond/flaw tables); `02-races.md` & `04-personality-and-background.md` are overview/index files into those folders.
+- **Spells** (`spells/`): `spell-index.md` + **cantrips through level-5** (full mechanical detail).
+- **All quick-reference** cheat sheets (6 rules sheets + the one-shot MMOS framework) **plus the `dm-toolkit/`** — 6 live-generation scaffolds (NPCs, encounters, traps/puzzles, environments, scenes/avenues, social/dialog).
+- **Entire DMG** (`dungeon-masters-guide/`): README + all 9 chapters + appendices — world-building, creating
+  adventures, NPCs, environments/traps, downtime, treasure & magic items, running-the-game, DM workshop.
+- **Monster Manual indexes** (alphabetical, by CR, by type, stat-block primer).
+- **Monster stat blocks CR 0–5** (`monster-manual/stat-blocks/`, 278 blocks) — content-verified (AC/HP/abilities/
+  traits/actions in our own format). **CR 0–2 is exhaustive** (every MM monster; counts match canonical totals).
+  **CR 3–5 covers the common monsters** (curated subset, not every MM monster).
+
+**Not built yet — fall back to the PDF (`pdftotext` / grep `.build/`):**
+- **Spell descriptions L6–L9** (`spells/level-6..9.md`) — deferred; cantrips through L5 are done.
+- **Monster stat blocks CR 6+** — only CR 0–5 are transcribed. For CR 6 and up, look the monster up in the MM PDF
+  (offset **+1**) or grep `.build/mm.txt`. (Some CR 3–5 monsters are also not yet transcribed — see `PROGRESS.md`.)
+
+See `PROGRESS.md` for the full checklist and how to resume the build.

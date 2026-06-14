@@ -7,12 +7,12 @@
 | | |
 |---|---|
 | **Quest (told to players up front)** | Find what's taking travelers on the Briar Road through the Mournwood, and stop it — make the road safe again. |
-| **Party** | 4 PCs · level 3 |
+| **Party** | 5 PCs · level 3 |
 | **Target length** | ~3–4 hours (4 scenes + showdown) |
 | **Tone** | Mystery + heroic adventure (a tragic twist underneath) |
 | **Setting** | The Mournwood — wilderness forest road (the "Briar Road") |
 | **Content notes / safety** | A grieving, wronged guardian; a death-cult harvesting a sacred grove; an undeath/immortality rite. No on-screen cruelty to children/animals. Run an **X-card / lines & veils** check at session zero (`../../quick-reference/new-dm-one-shot-tips.md`). |
-| **Party XP budget** | Easy 300 / Medium 600 / Hard 900 / **Deadly 1,600** · Adventuring-day ≈ 4,800 |
+| **Party XP budget** | Easy 375 / Medium 750 / Hard 1,125 / **Deadly 2,000** · Adventuring-day ≈ 6,000 |
 
 ### MMOS one-page worksheet
 | Element | This module |
@@ -114,17 +114,17 @@
 
 *(Path of Least Resistance — on the road, deeper in.)*
 
-> **Read aloud:** The road narrows where the old trees lean close. You hear them before you see them — a low, wrong panting, more sob than snarl. Six wolves slink from the brush, but no wolves were ever like *these*: thorned vines have grown *through* their hides, their eyes weep sap, and they move like something is driving them from behind. They don't circle to feed. They circle to **push you back the way you came.**
+> **Read aloud:** The road narrows where the old trees lean close. You hear them before you see them — a low, wrong panting, more sob than snarl. Eight wolves slink from the brush, but no wolves were ever like *these*: thorned vines have grown *through* their hides, their eyes weep sap, and they move like something is driving them from behind. They don't circle to feed. They circle to **push you back the way you came.**
 
 **Setup / DM notes:** These are ordinary wolves the wounded wood has seized and maddened — the forest lashing out at intruders on the harm-road. **They fight to herd, not to kill:** a clever party notices the wolves break off if the party *retreats* or shows they mean the grove no harm. *(Reinforces Clue 2 — the woods themselves are hostile to those who press deeper to cut.)*
 
 **🔎 Clues here:** reinforces **Clue 2** (it's the *wood*, not a beast) and nods **Clue 1** (it drives back those who came to cut). *(Appendix B.)*
 
-> **▸ First fight — keep it short.** This is likely the party's first taste of combat: let them feel a round or two of teeth (a knockdown, a near-miss), then end it. After about **2 rounds** — or the moment they retreat, land a couple of solid hits, or calm the pack (below) — the wood *lets them go.* **Don't grind all six wolves down to zero;** the point is the *wrongness* of these beasts, not a war of attrition.
+> **▸ First fight — keep it short.** This is likely the party's first taste of combat: let them feel a round or two of teeth (a knockdown, a near-miss), then end it. After about **2 rounds** — or the moment they retreat, land a couple of solid hits, or calm the pack (below) — the wood *lets them go.* **Don't grind all eight wolves down to zero;** the point is the *wrongness* of these beasts, not a war of attrition.
 
 **Encounter (Medium):**
-- **Budget check:** Party 300/600/900/1,600. This fight: **6 Wolves ×50 = 300 base ×2 (3–6 band) = 600 adjusted → Medium.**
-- **Roster & tactics:** 6 **Wolves** (reflavor: *bramble-wolves*). **Pack Tactics** — they gang up for advantage; **Keen Hearing & Smell** makes surprise hard. They focus the frontline, try to knock prone (Bite rider) and drive PCs *back toward the road's edge*. **Morale (end it in ~2 rounds):** as forest-puppets they don't flee for self-preservation, **but** the wood "lets them go" early — after about **2 rounds**, or the moment the party turns to leave, lands a couple of solid hits, calms them (see the calming check below), or drops the pack to **2**, the vines go slack and the survivors melt into the wood.
+- **Budget check:** Party 375/750/1,125/2,000. This fight: **8 Wolves ×50 = 400 base ×2.5 (7–10 band) = 1,000 adjusted → Medium.** *(4-PC original was 6 wolves = 600 → Medium; the two extra wolves restore Medium for 5 and give everyone a target in a fight meant to end fast.)*
+- **Roster & tactics:** 8 **Wolves** (reflavor: *bramble-wolves*). **Pack Tactics** — they gang up for advantage; **Keen Hearing & Smell** makes surprise hard. They focus the frontline, try to knock prone (Bite rider) and drive PCs *back toward the road's edge*. **Morale (end it in ~2 rounds):** as forest-puppets they don't flee for self-preservation, **but** the wood "lets them go" early — after about **2 rounds**, or the moment the party turns to leave, lands a couple of solid hits, calms them (see the calming check below), or drops the pack to **3**, the vines go slack and the survivors melt into the wood.
 - **Stat block (at-the-table copy — also in Appendix A):**
   > **Wolf** *(reflavor: Bramble-Wolf)* — CR 1/4 (50 XP) · MM p.341
   > **AC** 13 (natural armor) · **HP** 11 (2d8 + 2) · **Speed** 40 ft.
@@ -186,7 +186,7 @@
 
 *(Path Least Traveled On — the cult's work-camp; the **physical proof** for Ending B.)*
 
-> **Read aloud:** The trees simply *stop*. A raw clearing opens where a stand of ancient oaks used to be — stumps weeping pale sap into catch-buckets, a reek of resin and rot over it all. Robed figures work a crude still that drips a glowing green ichor into iron crates stamped with a **withered crown — a ring of dead, leafless branches.** A harder-eyed man in vestments turns at your approach, hand drifting to a dagger. "Pilgrims? No. The Mother said hunters would come. She didn't say they'd be fool enough to come *here*."
+> **Read aloud:** The trees simply *stop*. A raw clearing opens where a stand of ancient oaks used to be — stumps weeping pale sap into catch-buckets, a reek of resin and rot over it all. Robed figures work a crude still that drips a glowing green ichor into iron crates stamped with a **withered crown — a ring of dead, leafless branches.** A heavyset bruiser cradling a heavy crossbow lounges on a stump nearby, and a harder-eyed man in vestments turns at your approach, hand drifting to a dagger. "Pilgrims? No. The Mother said hunters would come. She didn't say they'd be fool enough to come *here*."
 
 **Setup / DM notes:** The **Withering's** harvest-crew, distilling **heart-sap** (concentrated grove life-force) for Mother Sere's immortality rite. The **overseer** (a Cult Fanatic) will bluff, then fight; the **cultists** defend the still and the crates. **A crate of heart-sap + the withered-crown brand is undeniable proof** (Clue 3) that the "beast" story is a cover.
 
@@ -195,8 +195,8 @@
 > **🔗 Links:** the brand's **withered crown** is the grove's **own leaf-crown** (carved on the Scene 4 standing stones) — stolen and killed; **Mother Sere** wears its dead-branch form at the Showdown. The **heart-sap** in these crates is the same glowing sap she drinks to finish the rite (Showdown). A party that clocks the matching crown *knows* the cult is the rot behind the "beast."
 
 **Encounter (Hard):**
-- **Budget check:** This fight: **1 Cult Fanatic (450) + 4 Cultists (4×25=100) = 550 base ×2 (5 monsters, 3–6 band) = 1,100 adjusted → Hard.** *(Tougher party? Add a Thug or two as hired poacher-muscle — see Appendix A.)*
-- **Roster & tactics:** the **Cult Fanatic** overseer hangs back, opens with **hold person** on the party's heaviest hitter and **spiritual weapon**, heals himself with nothing (he won't — he *inflicts*), and uses **command ("flee"/"grovel")**; the **Cultists** swarm and protect the still. Terrain: catch-buckets (difficult footing), the still (a hazard — a hit on it sprays scalding sap, DC 13 Dex or 1d6 fire). **Morale (`../../quick-reference/dm-toolkit/encounters-and-monsters.md`):** when the overseer falls or the cultists are cut to **2**, survivors break and beg/flee — **a captured cultist is a goldmine** (the rite, the timing, Mother Sere at the grove).
+- **Budget check:** This fight: **1 Cult Fanatic (450) + 4 Cultists (4×25=100) + 1 Thug (100) = 650 base ×2 (6 monsters, 3–6 band) = 1,300 adjusted → Hard.** *(4-PC original had no Thug: 550 ×2 = 1,100 → Hard. The Thug — hired poacher-muscle, already in Appendix A — restores a solid Hard for 5 and adds a ranged threat. Even tougher party? Add a 2nd Thug.)*
+- **Roster & tactics:** the **Cult Fanatic** overseer hangs back, opens with **hold person** on the party's heaviest hitter and **spiritual weapon**, heals himself with nothing (he won't — he *inflicts*), and uses **command ("flee"/"grovel")**; the **Cultists** swarm and protect the still; the **Thug** plants himself on the frontline and plinks at casters/archers with his heavy crossbow (range 100/400). Terrain: catch-buckets (difficult footing), the still (a hazard — a hit on it sprays scalding sap, DC 13 Dex or 1d6 fire). **Morale (`../../quick-reference/dm-toolkit/encounters-and-monsters.md`):** when the overseer falls or the cultists are cut to **2**, survivors break and beg/flee — **a captured cultist is a goldmine** (the rite, the timing, Mother Sere at the grove).
 - **Stat blocks — at-the-table copies below** *(also in Appendix A; mechanics identical).*
 
 > **Cult Fanatic** *(reflavor: Harvest Overseer)* — CR 2 (450 XP) · MM p.345
@@ -295,22 +295,22 @@
 
 ### Version A — "The Beast" (no Key) · Deadly
 The party fights the **Guardian** itself. Tragic: they "win the quest" by killing the grove's wounded protector; the cult slips away to finish elsewhere.
-- **Budget check:** **Guardian (Shambling Mound, 1,800) + 3 thorn-spawn (Twig Blights, 25 ea — *ignored for the multiplier*, CR ≪ boss) ≈ 1,800 adjusted → Deadly.**
+- **Budget check:** **Guardian (Shambling Mound, 1,800) + 6 thorn-spawn (Twig Blights, 25 ea — *ignored for the multiplier*, CR ≪ boss) ≈ 1,950 adjusted → Deadly** (5-PC Deadly = 2,000). *(4-PC original used 3 thorn-spawn. Against 5 PCs a lone boss gets swarmed — the extra thorn-spawn fix the action economy and give the backline real targets, not just raw XP.)*
 - **Tactics:** the Guardian **grapples + Engulfs** the heaviest-armored PC (rooting them in living wood), slams the rest; thorn-spawn harry the backline. **It is immune to lightning (absorbs it) and resists cold & fire** — note this before a caster wastes a *fireball*. It fights with grief, not malice: if reduced low it *keens* and gives the party one more chance to stop (a final Persuasion DC 20 can still flip to Version B even now).
 
-> **▸ Running Version A safely — your biggest TPK risk.** This is a **solo CR 5 Engulfer** (≈1,800 vs the 1,600 Deadly line) that *can* take a PC out of the fight. Keeping it survivable is **by design**, not softness:
+> **▸ Running Version A safely — your biggest TPK risk.** This is a **near-solo CR 5 Engulfer** (≈1,950 with the 6 thorn-spawn, vs the 2,000 Deadly line for 5 PCs) that *can* take a PC out of the fight. Keeping it survivable is **by design**, not softness:
 > - **Grief, not bloodlust.** Like the wolves, Sorrowroot fights to *drive off* — it doesn't chase fleeing PCs or finish the downed; it grapples and Engulfs to **stop** them, keening the whole time.
 > - **Engulf has an exit.** Only **one** creature at a time; **escape DC 14**, or free them by dropping it low. A PC at 0 HP inside it still makes **death saves** — never kill quietly.
 > - **The flip is always open.** Any round, lowering weapons or a **DC 20 Persuasion** ends it into **Version B** (Sorrowroot stops, becomes an ally) — the cleanest win and a pressure valve.
-> - **Dial it live.** Cut a thorn-spawn or two; or have it Engulf and *hold* a downed PC "in the roots" (no damage) instead of crushing, if the table's on the ropes.
+> - **Dial it live (both ways).** With 5 PCs swinging, Sorrowroot can drop fast — if the table's rolling hot and you want the boss to *last*, give it **+20–25 HP (≈160)** or a **bonus-action "grasping roots"** (grapple a 2nd PC, no damage) so Engulf isn't its only control against the bigger party. If instead the table's on the ropes: cut a thorn-spawn or two, or have it Engulf and *hold* a downed PC "in the roots" (no damage) instead of crushing.
 
 - **Stat blocks:** **Sorrowroot** (Shambling Mound) + **thorn-spawn** (Twig Blights) — **inlined below** (also Appendix A).
 
 ### Version B — "The True Harvest" (has the Key) · Deadly
 The party turns the Guardian on the cult. **Mother Sere + her cultists** are the enemy; the **Guardian fights as the party's ally** (DM runs it; it focuses Mother Sere).
-- **Budget check (enemies only):** **Mother Sere (Green Hag, 700) + 4 Cultists (100) = 800 base ×2 (5 monsters) = 1,600 adjusted → Deadly** — and the **Guardian ally** tips it to a winnable, heroic Deadly. *(Add the Cult Fanatic overseer here if he survived/escaped Scene 3.)*
+- **Budget check (enemies only):** **Mother Sere (Green Hag, 700) + the Harvest Overseer (Cult Fanatic, 450) + 4 Cultists (100) = 1,250 base ×2 (6 monsters) = 2,500 adjusted → Deadly+**, brought back to a winnable, heroic Deadly by the **Guardian ally** at the party's side. *(4-PC original = Hag + 4 Cultists = 1,600 → Deadly. The Overseer joins here by default for 5; **if he fell at Scene 3, swap in 2 more Cultists — 6 total — instead** to hold the budget.)*
 - **Tactics:** **Mother Sere** opens with **Invisible Passage** and **Illusory Appearance** (she may look like a frightened captive — let a PC's Insight or the Guardian's senses cut through), strikes with **Claws (2d8+4)**, and uses **vicious mockery / minor illusion** to split the party; cultists screen her and tend the green fire (the rite — a **clock:** 3 rounds to completion unless disrupted; smashing the fire/vial sets it back). The **Guardian** grapples and Engulfs Mother Sere if it can. **Morale:** cultists break when she falls.
-- **Stat blocks:** **Mother Sere** (Green Hag) + **Cultists** + the allied **Sorrowroot** (Shambling Mound) — **inlined below** (also Appendix A).
+- **Stat blocks:** **Mother Sere** (Green Hag) + the **Harvest Overseer** (Cult Fanatic) + **Cultists** + the allied **Sorrowroot** (Shambling Mound) — **inlined below** (also Appendix A).
 
 ### 🗿 Stat blocks — at-the-table copies *(mechanics identical to Appendix A)*
 
@@ -330,11 +330,14 @@ The party turns the Guardian on the cult. **Mother Sere + her cultists** are the
 > ***Claws.*** +6 to hit, reach 5 ft. — *Hit:* 13 (2d8 + 4) slashing.
 > ***Illusory Appearance.*** Disguise as another humanoid (DC 20 Investigation to discern). ***Invisible Passage.*** Invisible until she attacks, casts, or loses concentration.
 
-> **Thorn-Spawn ×3** *(Twig Blight)* — CR 1/8 (25 XP each) · MM p.32 · **minions in A**
+> **Thorn-Spawn ×6** *(Twig Blight)* — CR 1/8 (25 XP each) · MM p.32 · **minions in A**
 > **AC** 13 · **HP** 4 (1d6 + 1) · **Speed** 20 ft. · **Vulnerable** fire · blindsight 60 ft. (blind beyond), passive Perception 9
 > ***False Appearance*** (motionless = a dead shrub). ***Claws.*** +3 to hit, reach 5 ft. — *Hit:* 3 (1d4 + 1) piercing.
 
-> **Cultist ×4** *(also Scene 3 / Appendix A)* — CR 1/8 (25 XP each) · MM p.345 · **in B**
+> **Harvest Overseer** *(Cult Fanatic)* — CR 2 (450 XP) · MM p.345 · **lieutenant in B** *(if he survived Scene 3; full block in Appendix A)*
+> **AC** 13 · **HP** 33 (6d8 + 6) · **Speed** 30 ft. · ***Spellcasting*** (Wis, save DC 11): *command, hold person, spiritual weapon, inflict wounds.* ***Dagger.*** Two attacks, +4 to hit — *Hit:* 4 (1d4 + 2) piercing.
+
+> **Cultist ×4** *(also Scene 3 / Appendix A; make this ×6 if the Overseer fell at Scene 3)* — CR 1/8 (25 XP each) · MM p.345 · **in B**
 > **AC** 12 · **HP** 9 (2d8) · **Speed** 30 ft. · ***Dark Devotion*** (adv. vs charmed/frightened).
 > ***Scimitar.*** +3 to hit, reach 5 ft. — *Hit:* 4 (1d6 + 1) slashing.
 

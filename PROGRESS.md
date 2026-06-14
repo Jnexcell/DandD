@@ -13,7 +13,58 @@ a fresh session needs nothing except this file and the three PDFs.
 
 ---
 
-## ▶ NEXT UP (build-order override — updated 2026-06-12, end of PHASE 1.5)
+## ▶ NEXT UP (build-order override — updated 2026-06-14)
+
+### ★ ACTIVE SESSION AGENDA — 2026-06-14 (Josh) — player/DM polish + first live mock test
+
+The reference KB and PHASE 2 core (2a/2b/2c) are **done** (history below). This session is a **polish +
+exercise** pass on the player- and DM-facing artifacts, then the first real live-run test. Work in this order:
+
+1. **[x] Character sheet template — replace from Downloads.** Dropped Josh's newer
+   `characters/character-sheet-template.html` (57KB) in over the old 35KB copy (2026-06-14). It's a
+   self-contained **at-the-table reference sheet** generator: edit ONE `CHARACTER` object (identity, scores,
+   proficiency lists, attacks, spells, features, equipment, personality, "How to Play" coaching) and the
+   engine derives every modifier/save/skill/passive-Perception/prof-bonus and renders an illuminated-grove
+   sheet (race+class emblems, portrait upload, dark/light theme, print-friendly). Ships pre-filled with a
+   sample (Lyra Shadowleaf, Wood Elf Ranger L3). **Distinct from the `index.html` character *builder*** — the
+   builder is the player's pick-your-options intake; this sheet is the finished "how to play THIS character"
+   handout the DM produces for them. *(Not yet wired into `CLAUDE.md`/`README.md` — see task 4.)*
+2. **[x] Character sheet template — make changes (collaborative with Josh, 2026-06-14).** Focus: the two
+   beginner-critical teaching parts + making spells/attacks glanceable at level 3. Done:
+   - **Generic primer** retitled *"New to D&D? How to play"* — expanded to 5 lines that each name a thing you
+     DO + the short how: turn structure (action/bonus/reaction), the full **action menu** (Attack/Cast/Dash/
+     Disengage/Dodge/Help/Hide), rolling + advantage, **out-of-combat roleplay**, and dropping to 0.
+   - **Per-character "How to Play <name>"** — added **⚔ In a fight** (round-by-round combat flow) and
+     **🎭 At the table** (how to roleplay them) blocks; kept turn-1 callout / great-at / watch-out / signature.
+   - **Attacks** → glanceable cards (action-cost badge + to-hit + damage + range/melee) with a clearer
+     "How to attack on your turn" explainer; promoted `use` + `range` to real data fields.
+   - **Spells** → relabeled tags (`Cast`→*To cast*, `Resolves`→*How it lands*), rewrote the casting primer to
+     lead "On your turn…" and explain the Spell-save-DC / Spell-attack numbers in place; **grouped leveled
+     spells by level** with per-level slot counts (scales to full casters at L3).
+   - **⚡ "On Your Turn" menu** (new, under How-to-Play) — auto-derived from attacks + spells + features,
+     grouped by cost (Action / Bonus action / Reaction / Always-on), single source of truth; **action-cost
+     badges** added to every Feature card. (Decision via AskUserQuestion: "Both".)
+   - Validated JS after every change; removed a stray empty CSS rule. Sample (Lyra, Wood Elf Ranger L3)
+     left in place — flagged that a full-caster sample would best stress-test the menu/grouping later.
+3. **[ ] DM screen — work on it more.** The offline DM screen `modules/the-weeping-grove/site/index.html`
+   (full spoilers: scenes, the Key, stat blocks, trackers). Improvements TBD with Josh. *(Reachable on the
+   public Pages site but unlinked — keep not sharing that URL with players; CLAUDE.md flags this.)*
+4. **[ ] Repo cleanup.** Housekeeping: reconcile the HTML artifacts (builder `index.html` ↔
+   `character-builder.html` byte-identical pair, the new `character-sheet-template.html`, the DM screen) and
+   **document the new sheet template in `CLAUDE.md` + `characters/README.md`**; prune/organize stray files;
+   confirm `.gitignore` still excludes PDFs + `.build/`; tidy folder/file naming. *(Note: `dnd/` IS a git repo;
+   `characters/character-sheet-template.html` currently shows untracked — decide what to commit.)*
+5. **[ ] First live MOCK TEST with the DM Assistant.** The agreed fuller end-to-end test: take the built
+   module `modules/the-weeping-grove/the-weeping-grove.md` + a real party (build via 2b
+   `tools/character-creator.md`, or use the sheet above) and **run a live session** through
+   `tools/dm-assistant.md` — exercise SETUP → Scene Control loop → the Combat Conductor → state file in
+   `sessions/`. Capture any gaps found into the follow-up backlog.
+
+Deferred / not blocking (unchanged): spells L6–L9, CR 3–5 monster completeness, 2d campaign mode, 2b levels 2–5 / batch pre-gens.
+
+---
+
+### (build history — through 2026-06-12, end of PHASE 1.5 / PHASE 2 core)
 
 **DMG COMPLETE ✅. MONSTER STAT BLOCKS: CR 0–2 EXHAUSTIVE ✅, CR 3–5 CURATED ✅** (278 blocks).
 **PHB `appendices.md` COMPLETE ✅. SPELLS THROUGH 5th LEVEL COMPLETE ✅** (`cantrips`–`level-5`, dump-verified;
@@ -837,3 +888,16 @@ Revisit scope/format (skill vs. subagent vs. plain markdown templates) with Josh
   `../../` links resolve. **Convention added:** a module may be a single `modules/<slug>.md` **or** its own
   folder `modules/<slug>/<slug>.md` — `tools/dm-assistant.md` SETUP updated to load either. **NEXT (per
   Josh):** build the party with the Character Creator, then run the session live with the DM Assistant.
+- 2026-06-14 **SESSION KICKOFF — player/DM polish + first live mock test (agenda captured up top).** Josh set
+  this session's plan; full checklist is in the new **★ ACTIVE SESSION AGENDA — 2026-06-14** block at the top.
+  Order: (1) ✅ **replaced `characters/character-sheet-template.html`** with Josh's newer Downloads copy (35KB →
+  57KB) — a self-contained at-the-table **reference sheet** generator (edit one `CHARACTER` object → engine
+  derives all the math + renders the illuminated-grove sheet w/ race+class emblems, portrait upload, theme
+  toggle, print-friendly; ships filled with Lyra Shadowleaf, Wood Elf Ranger L3). It's a **different artifact**
+  from the `index.html`/`character-builder.html` *builder* (intake) — this is the finished handout. The old copy
+  was untracked, nothing tracked lost. (2) make collaborative **edits to that sheet** (TBD w/ Josh). (3) **work
+  on the DM screen** more (`modules/the-weeping-grove/site/index.html`). (4) **repo cleanup** — incl. documenting
+  the new sheet in `CLAUDE.md`/`characters/README.md`, reconciling the HTML artifacts, gitignore/naming tidy.
+  (5) **first live MOCK TEST of the DM Assistant** — run `tools/dm-assistant.md` against the built
+  `modules/the-weeping-grove/` + a real party, exercising the full Scene-Control + Combat-Conductor loop and the
+  `sessions/` state file. Will tick each box + log findings as we go.

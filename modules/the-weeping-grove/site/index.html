@@ -373,6 +373,11 @@ html[data-theme="dark"] .turn-card b{color:var(--green-d)}
 .rounds{display:flex; gap:.45rem; flex-wrap:wrap; margin:.5rem 0}
 .rounds .rd{flex:1 1 28%; min-width:130px; background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:.45rem .6rem; font-size:.86rem}
 .rounds .rd b{color:var(--accent); display:block; margin-bottom:.15rem; font-size:.78rem; text-transform:uppercase; letter-spacing:.4px}
+.attable{background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--gold); border-radius:8px; padding:.55rem .8rem; margin:.7rem 0}
+.attable>.lbl{margin-top:.1rem}
+.attable .turn-card.q-you{border-left-color:var(--gold)}
+.attable .turn-card.q-exp{border-left-color:var(--green)}
+.attable .turn-card.q-rx{border-left-color:var(--danger)}
 
 /* ============================== ROUND-COUNTER / TURN POINTER ============================== */
 .ct-roundbar{display:flex; align-items:center; gap:.4rem; margin-bottom:.45rem; flex-wrap:wrap}
@@ -447,6 +452,19 @@ html[data-theme="dark"] .party-row .tmp-box{color:var(--green-d)}
 .crown-verse{font-family:var(--serif); font-style:italic; color:var(--ra-ink); background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:.55rem .7rem; margin:.5rem 0; font-size:.96rem}
 .crown-hint{font-size:.84rem; margin-top:.5rem}
 .crown-hint .leaf-key{color:var(--accent); font-weight:700}
+/* Rune-riddle additions (Scene 4) */
+.rune-cipher{border:1px solid var(--green-l); border-radius:10px; background:var(--panel); padding:.55rem .65rem; margin:.6rem 0}
+.rune-cipher-lbl{font-size:.72rem; text-transform:uppercase; letter-spacing:.6px; color:var(--green-d); font-weight:700; margin-bottom:.45rem}
+html[data-theme="dark"] .rune-cipher-lbl{color:var(--green-d)}
+.rune-row{display:grid; grid-template-columns:repeat(5,1fr); gap:.4rem}
+.rune-cell{border:1px solid var(--line); border-radius:8px; background:var(--panel2); padding:.4rem .25rem; text-align:center; font-size:.78rem; line-height:1.3}
+.rune-cell .rune-glyph{display:block; font-size:1.7rem; color:var(--accent); line-height:1; margin-bottom:.2rem}
+.rune-cell .rune-q{color:var(--muted); font-size:.72rem; font-style:italic}
+@media(max-width:560px){.rune-row{grid-template-columns:repeat(2,1fr)}}
+ol.stone-riddle{margin:.45rem 0 .1rem 1.2rem; padding:0}
+ol.stone-riddle li{margin:.32rem 0; font-family:var(--serif); font-style:italic}
+.leaf-rune{display:block; font-size:1rem; color:var(--accent); line-height:1; font-weight:700; margin-bottom:.05rem}
+.tray-leaf.disabled .leaf-rune{color:var(--muted)}
 
 /* ============================== PRINT ============================== */
 @media print{
@@ -508,14 +526,14 @@ html[data-theme="dark"] .party-row .tmp-box{color:var(--green-d)}
     <p style="font-size:.8rem;color:var(--muted);margin:.4rem 0 0">Very easy 5 · Very hard 25 · Nearly impossible 30. This module leans on <b>DC 12–15</b> for clues and <b>DC 20</b> for the hardest plays (intimidating Fenn, flipping the Guardian mid-fight).</p>
   </div>
   <div class="qr-sec">
-    <h3>Party XP Budget · 4 PCs, level 3</h3>
+    <h3>Party XP Budget · 5 PCs, level 3</h3>
     <div class="budget-grid">
-      <div><b>300</b>Easy</div>
-      <div><b>600</b>Medium</div>
-      <div><b>900</b>Hard</div>
-      <div class="deadly"><b>1,600</b>Deadly</div>
+      <div><b>375</b>Easy</div>
+      <div><b>750</b>Medium</div>
+      <div><b>1,125</b>Hard</div>
+      <div class="deadly"><b>2,000</b>Deadly</div>
     </div>
-    <p style="font-size:.8rem;color:var(--muted);margin:.4rem 0 0">Adventuring-day ≈ 4,800. Encounter multiplier for 5+ monsters vs 3–6 PCs is <b>×2</b>. Fights: Bramble-Pack <b>Medium</b>, Camp <b>Hard</b>, Showdown <b>Deadly</b>.</p>
+    <p style="font-size:.8rem;color:var(--muted);margin:.4rem 0 0">Adventuring-day ≈ 6,000. 5 PCs still use the 3–5 multiplier column. Fights (rescaled for 5): Bramble-Pack <b>Medium</b> (8 wolves), Camp <b>Hard</b> (+1 Thug), Showdown <b>Deadly</b>.</p>
   </div>
   <div class="qr-sec">
     <h3>Conditions (quick)</h3>
@@ -730,11 +748,11 @@ const CLUES = [
 /* Canonical order = array order (green years → grey). Slot index 3 (the
    "stolen crown") is the Key leaf — only readable with Clue 3 or 4. */
 const CROWN = [
-  {id:"green",   g:"🌿", n:"The Living Crown",  desc:"Crowned in living leaves; the wood green and whole."},
-  {id:"gift",    g:"🍞", n:"The Keepers' Gift", desc:"Robed wardens leave bread at its roots."},
-  {id:"axes",    g:"🪓", n:"The Axe-Bearers",   desc:"Those who come to take are pulled into the earth."},
-  {id:"theft",   g:"👑", n:"The Stolen Crown",  desc:"Grey-robes cut the crown away — branded, withered.", key:true},
-  {id:"weeping", g:"💧", n:"The Weeping",       desc:"The tree alone, crown broken and fallen, weeping sap."}
+  {id:"green",   g:"🌿", r:"ᚇ", t:"Dair · Oak",        n:"The Living Crown",  desc:"Oak (Dair) — the heart, the crown. The wood green and whole."},
+  {id:"gift",    g:"🍞", r:"ᚉ", t:"Coll · Hazel",      n:"The Keepers' Gift", desc:"Hazel (Coll) — wisdom. Robed wardens leave bread at its roots."},
+  {id:"axes",    g:"🪓", r:"ᚎ", t:"Straif · Blackthorn", n:"The Axe-Bearers",  desc:"Blackthorn (Straif) — thorns, the wood's own hand. Takers are dragged into the earth."},
+  {id:"theft",   g:"👑", r:"ᚔ", t:"Iodhadh · Yew",     n:"The Stolen Crown",  desc:"Yew (Iodhadh) — death & the undying. Grey-robes cut the crown away, branded and withered.", key:true},
+  {id:"weeping", g:"💧", r:"ᚄ", t:"Saille · Willow",   n:"The Weeping",       desc:"Willow (Saille) — grief. The tree alone, crown broken and fallen, weeping sap."}
 ];
 /* Fixed scrambled order for the tray, so it reads as a puzzle (not the answer). */
 const CROWN_TRAY_ORDER = ["axes","weeping","green","theft","gift"];
@@ -751,11 +769,11 @@ beat({ id:"overview", nav:"Overview", icon:"📋", name:"Overview", play:false, 
   <h4>📜 At a glance</h4>
   <dl class="kv">
     <dt>Quest (told up front)</dt><dd>Find what's taking travelers on the <b>Briar Road</b> through the <b>Mournwood</b>, and stop it — make the road safe again.</dd>
-    <dt>Party</dt><dd>4 PCs · level 3</dd>
+    <dt>Party</dt><dd>5 PCs · level 3</dd>
     <dt>Length</dt><dd>~3–4 hours (4 scenes + showdown)</dd>
     <dt>Tone</dt><dd>Mystery + heroic adventure (a tragic twist underneath)</dd>
     <dt>Setting</dt><dd>The Mournwood — wilderness forest road (the “Briar Road”)</dd>
-    <dt>Party XP budget</dt><dd>Easy 300 / Medium 600 / Hard 900 / <b>Deadly 1,600</b> · Adventuring-day ≈ 4,800</dd>
+    <dt>Party XP budget</dt><dd>Easy 375 / Medium 750 / Hard 1,125 / <b>Deadly 2,000</b> · Adventuring-day ≈ 6,000</dd>
   </dl>
 </div>
 <div class="callout"><b>⚠ Content & safety.</b> A grieving, wronged guardian; a death-cult harvesting a sacred grove; an undeath/immortality rite. No on-screen cruelty to children or animals. Run an <b>X-card / lines &amp; veils</b> check at session zero.</div>
@@ -866,7 +884,7 @@ beat({ id:"cold-open", nav:"Cold Open", icon:"🎬", name:"Cold Open", play:true
 beat({ id:"scene1", nav:"Scene 1 · Bramble-Pack", icon:"🐺", name:"Scene 1 — The Bramble-Pack", play:true, tag:"MODULAR", type:"combat", time:"~15 min",
   subtitle:"Path of Least Resistance — on the road, deeper in.",
   readAloud:[
-    {label:"Read aloud", text:`The road narrows where the old trees lean close. You hear them before you see them — a low, wrong panting, more sob than snarl. Six wolves slink from the brush, but no wolves were ever like <i>these</i>: thorned vines have grown <i>through</i> their hides, their eyes weep sap, and they move like something is driving them from behind. They don't circle to feed. They circle to <b>push you back the way you came.</b>`}
+    {label:"Read aloud", text:`The road narrows where the old trees lean close. You hear them before you see them — a low, wrong panting, more sob than snarl. Eight wolves slink from the brush, but no wolves were ever like <i>these</i>: thorned vines have grown <i>through</i> their hides, their eyes weep sap, and they move like something is driving them from behind. They don't circle to feed. They circle to <b>push you back the way you came.</b>`}
   ],
   body:`
 <div class="zone dm-only">
@@ -874,17 +892,57 @@ beat({ id:"scene1", nav:"Scene 1 · Bramble-Pack", icon:"🐺", name:"Scene 1 �
   <p>Ordinary wolves the wounded wood has seized and maddened — the forest lashing out at intruders on the harm-road. <b>They fight to herd, not to kill:</b> a clever party notices the wolves break off if the party <i>retreats</i> or shows they mean the grove no harm. <i>(Reinforces Clue 2.)</i></p>
   <p><b>🔎 Clues here:</b> reinforces <b>Clue 2</b> (it's the <i>wood</i>, not a beast) and nods <b>Clue 1</b> (it drives back those who came to cut).</p>
 </div>
-<div class="callout dm-only"><b>▸ First fight — keep it short.</b> Likely the party's first taste of combat: let them feel a round or two of teeth, then end it. After about <b>2 rounds</b> — or the moment they retreat, land a couple of solid hits, or calm the pack — the wood <i>lets them go.</i> <b>Don't grind all six wolves to zero;</b> the point is the <i>wrongness</i>, not attrition.</div>
+<div class="callout dm-only"><b>▸ First fight — keep it short.</b> Likely the party's first taste of combat: let them feel a round or two of teeth, then end it. After about <b>2 rounds</b> — or the moment they retreat, land a couple of solid hits, or calm the pack — the wood <i>lets them go.</i> <b>Don't grind all eight wolves to zero;</b> the point is the <i>wrongness</i>, not attrition.</div>
+
+<details class="sb dm-only">
+  <summary><span class="sb-name">🎲 Combat at the table — the rolls on both sides</span> <span class="sb-quick">read once · applies to every fight</span></summary>
+  <div class="sb-body">
+    <p style="margin-top:0"><b>The core loop.</b> Roll initiative (d20 + Dex mod). For monster groups, <b>one roll for the whole group</b> keeps it fast — each fight's init bar pre-prints a number you can just use. Go highest → lowest. On a turn: <b>Move + one Action</b> (＋ maybe a Bonus Action, and one Reaction before your next turn).</p>
+    <hr>
+    <p class="lbl">What YOU (the DM) roll</p>
+    <ul style="margin:.2rem 0 .5rem 1.1rem; font-size:.9rem">
+      <li><b>Monster attack:</b> d20 ＋ the attack bonus on the stat block <b>vs. the target PC's AC</b>. Meet or beat = hit → roll the listed damage dice. <i>Ask every player their AC up front and jot it on your tracker.</i></li>
+      <li><b>Nat 20 = crit</b> (roll the damage dice <i>twice</i>); nat 1 = miss.</li>
+      <li><b>You do NOT roll the PCs' saves — they do.</b> When a monster forces a save you just <b>announce the ability ＋ the DC</b> ("Strength save, DC 11") and the player rolls.</li>
+      <li><b>Advantage / disadvantage:</b> roll 2d20, take higher (adv) / lower (dis). They don't stack — any amount = one die. (Wolves' & the Thug's <i>Pack Tactics</i> grant the monster advantage when an ally is within 5 ft. of its target.)</li>
+    </ul>
+    <p class="lbl">What the PLAYERS roll (have these numbers ready)</p>
+    <ul style="margin:.2rem 0 .5rem 1.1rem; font-size:.9rem">
+      <li><b>Their attacks:</b> d20 ＋ their bonus <b>vs. the monster's AC</b> (top of each stat block). Tell them the AC, or just call hit/miss.</li>
+      <li><b>Saving throws you call for</b> — each fight below lists which monster effects force which save.</li>
+      <li><b>Ability checks</b> when they try something off-menu — you set a DC (Easy 10 · Medium 15 · Hard 20) and they roll.</li>
+    </ul>
+    <p class="lbl">The action menu — what players will try, and your instant ruling</p>
+    <table class="tbl">
+      <tr><th>They say…</th><th>You do…</th></tr>
+      <tr><td>"I attack"</td><td>They roll vs. the monster's AC; on a hit, they roll damage.</td></tr>
+      <tr><td>"I cast a [save] spell"</td><td><b>The target rolls the save vs. the caster's spell DC</b> (the player tells you the DC). Attack-roll spells/cantrips: they roll vs. AC instead.</td></tr>
+      <tr><td>"I grapple / shove"</td><td>Contest — their <b>Athletics</b> vs. the target's <b>Athletics or Acrobatics</b> (defender's choice). Win = grappled (speed 0) or shoved 5 ft. / knocked prone.</td></tr>
+      <tr><td>Target is <b>prone</b></td><td>Melee attacks vs. it have <b>advantage</b>; its attacks have disadvantage; standing costs half its move.</td></tr>
+      <tr><td>"I Dodge"</td><td>Attacks vs. them have disadvantage; they get advantage on Dex saves — until their next turn.</td></tr>
+      <tr><td>"I Disengage"</td><td>No opportunity attacks for leaving melee this turn.</td></tr>
+      <tr><td>"I Dash"</td><td>Double their movement this turn.</td></tr>
+      <tr><td>"I Help"</td><td>One ally gets <b>advantage</b> on their next attack/check (the helper spends their action).</td></tr>
+      <tr><td>"I Hide"</td><td>Stealth vs. enemies' passive Perception; if hidden, their first attack has advantage and reveals them.</td></tr>
+      <tr><td>"I Ready…"</td><td>They name a trigger now; it fires later as their <b>Reaction</b>.</td></tr>
+      <tr><td>"Can I [clever thing]?"</td><td>Usually yes, with a roll — pick the ability ＋ a DC and keep it moving. Lean toward yes.</td></tr>
+    </table>
+    <hr>
+    <p style="margin:.2rem 0;font-size:.9rem"><b>Opportunity attack (reaction):</b> when a creature leaves another's reach without Disengaging, the other may spend its Reaction on <b>one melee attack</b>. One reaction per round, each side.</p>
+    <p style="margin:.2rem 0;font-size:.9rem"><b>Concentration:</b> a caster (PC or monster) holding a concentration spell who takes damage makes a <b>Con save, DC 10 or half the damage taken, whichever is higher</b> — fail drops the spell. Call for it <i>every</i> time the held caster is hit. <i>(Big one this module: it's how the party breaks the Overseer's </i>hold person<i>.)</i></p>
+    <p style="margin:.2rem 0;font-size:.9rem"><b>At 0 HP:</b> a PC drops, and on each of their turns rolls a <b>death save</b> (d20 — 10+ success, under = fail; <b>3 successes = stable, 3 fails = dead; nat 20 = up at 1 HP; nat 1 = two fails</b>). Taking damage while down = an auto-fail (a crit = two). Any healing wakes them.</p>
+  </div>
+</details>
 
 <div class="zone dm-only">
   <h4>⚔️ Encounter — Medium</h4>
-  <div class="budget"><b>Budget check:</b> 6 Wolves ×50 = 300 base ×2 (3–6 band) = <b>600 adjusted → Medium.</b> <span class="pill">Party 300 / 600 / 900 / 1,600</span></div>
+  <div class="budget"><b>Budget check:</b> 8 Wolves ×50 = 400 base ×2.5 (7–10 band) = <b>1,000 adjusted → Medium.</b> <span class="pill">Party 375 / 750 / 1,125 / 2,000</span></div>
   <p class="lbl">Roster &amp; tactics</p>
-  <p>6 <b>Wolves</b> (reflavor: <i>bramble-wolves</i>). <b>Pack Tactics</b> — gang up for advantage; <b>Keen Hearing &amp; Smell</b> makes surprise hard. Focus the frontline, knock prone (Bite rider), drive PCs <i>back toward the road's edge</i>.</p>
+  <p>8 <b>Wolves</b> (reflavor: <i>bramble-wolves</i>). <b>Pack Tactics</b> — gang up for advantage; <b>Keen Hearing &amp; Smell</b> makes surprise hard. Focus the frontline, knock prone (Bite rider), drive PCs <i>back toward the road's edge</i>.</p>
   <p><b>Morale (end it in ~2 rounds):</b> as forest-puppets they don't flee for self-preservation, but the wood “lets them go” early — after ~2 rounds, or the moment the party turns to leave, lands solid hits, calms them, or the pack drops to <b>2</b>, the vines go slack and survivors melt into the wood.</p>
 </div>
 
-<div class="dm-only">${renderSB("wolf",{count:6})}</div>
+<div class="dm-only">${renderSB("wolf",{count:8})}</div>
 
 <div class="runfight dm-only">
   <h4>🎬 Run the fight — round by round</h4>
@@ -895,7 +953,7 @@ beat({ id:"scene1", nav:"Scene 1 · Bramble-Pack", icon:"🐺", name:"Scene 1 �
   </div>
   <div class="turns">
     <div class="turn-card">
-      <h5>🐺 Bramble-Wolves ×6 <span class="pri">Target: whoever pushes deepest in</span></h5>
+      <h5>🐺 Bramble-Wolves ×8 <span class="pri">Target: whoever pushes deepest in</span></h5>
       <ol>
         <li><b>Move &amp; gang up.</b> 40 ft. speed — get two wolves adjacent to one PC so <b>Pack Tactics</b> gives both <b>advantage</b>.</li>
         <li><b>Bite</b> +4 (reach 5 ft.): <b>7 (2d4+2) piercing</b>, then <b>DC 11 Str save or knocked prone</b>. A prone PC = easy pickings for the next wolf.</li>
@@ -905,8 +963,37 @@ beat({ id:"scene1", nav:"Scene 1 · Bramble-Pack", icon:"🐺", name:"Scene 1 �
   </div>
   <div class="rounds">
     <div class="rd"><b>Round 1</b> Lunge from the brush. Knock the lead PC prone, snarl, press. Let it feel dangerous.</div>
-    <div class="rd"><b>Round 2</b> The wood begins to "let go." If they retreat, land a couple of solid hits, calm the pack, or drop it to 2 — <b>end it now.</b></div>
-    <div class="rd"><b>End</b> Vines go slack, survivors melt into the trees. Don't grind all six down.</div>
+    <div class="rd"><b>Round 2</b> The wood begins to "let go." If they retreat, land a couple of solid hits, calm the pack, or drop it to 3 — <b>end it now.</b></div>
+    <div class="rd"><b>End</b> Vines go slack, survivors melt into the trees. Don't grind all eight down.</div>
+  </div>
+  <div class="attable">
+    <p class="lbl">🎲 At the table — the rolls, both sides</p>
+    <div class="turns">
+      <div class="turn-card q-you">
+        <h5>🎲 You roll <span class="pri">the pack's dice</span></h5>
+        <ul>
+          <li><b>Bite:</b> d20 <b>+4</b> vs. the PC's AC → <b>2d4+2</b> piercing. Then call <b>"Strength save, DC 11"</b> — the PC rolls; fail = knocked prone.</li>
+          <li><b>Pack Tactics:</b> a 2nd wolf within 5 ft. of your target → roll that bite with <b>advantage</b> (2d20, take higher).</li>
+          <li>That's the whole kit — no other saves to impose.</li>
+        </ul>
+      </div>
+      <div class="turn-card q-exp">
+        <h5>🎯 Expect from the party <span class="pri">first-fight instincts</span></h5>
+        <ul>
+          <li><b>Attacks vs. AC 13</b> — it's low, they'll land plenty; let them feel competent.</li>
+          <li>Someone <b>Helps</b>, <b>Shoves</b> a wolf prone (their Athletics vs. wolf's Athletics +1 / Acrobatics +2), or drops a save spell → <b>the wolf rolls the save vs. their DC.</b></li>
+          <li>Watch for the player who tries to <b>calm / read</b> the pack — that's the check just below; lean into it.</li>
+        </ul>
+      </div>
+      <div class="turn-card q-rx">
+        <h5>🔁 How to react <span class="pri">keep it ~2 rounds</span></h5>
+        <ul>
+          <li>A wolf has <b>11 HP</b> — most PC hits drop one. <b>Don't track all eight;</b> narrate them peeling off as they fall.</li>
+          <li>Retreat, a calmed pack, or two solid hits → <b>the wood "lets go"</b> (read on). Don't grind to zero.</li>
+          <li>Dice spike and a PC drops? Wolves <b>don't finish the downed</b> — they herd. Scare, don't kill.</li>
+        </ul>
+      </div>
+    </div>
   </div>
   <div class="ra reveal"><span class="ra-label">Read — the wood lets them go (the fight ends)</span>All at once the fight goes out of them. The thorns that drove the pack seem to <i>loosen</i> — the wolves shudder, whine low in their throats, and slink backward into the green dark, leaving only flattened ferns and the smell of sap. Whatever was holding their leash has decided you've been pushed back far enough.</div>
 </div>
@@ -935,7 +1022,7 @@ beat({ id:"scene1", nav:"Scene 1 · Bramble-Pack", icon:"🐺", name:"Scene 1 �
 beat({ id:"scene2", nav:"Scene 2 · Fenn's Hollow", icon:"🛖", name:"Scene 2 — Fenn's Hollow", play:true, tag:"MODULAR", type:"roleplay", time:"~30 min",
   subtitle:"Path Least Traveled On — follow the drag-marks / smoke off-trail. This is the clearest route to the Key.",
   readAloud:[
-    {label:"Read aloud", text:`The drag-trail ends at a sod-roofed hut grown half into a living oak, its door hung with bundles of dried herbs and little bone charms. An old woman sits on the step with a carving knife and a piece of heartwood, not looking up. “You smell of the road,” she says. “Of axes. Tell me true — did you come to cut my wood, or to save it? Lie, and the wood will know.”`}
+    {label:"Read aloud", text:`The drag-trail ends at a sod-roofed hut grown half into a living oak, its door hung with bundles of dried herbs and little bone charms. An old woman sits on the step with a carving knife and a piece of heartwood, not looking up. “You smell of the road,” she says. “Of axes, and of coin. Greywater sent you to kill the thing in my wood — don't trouble yourself denying it.” The knife never stops moving. At last she lifts her eyes to yours. “So tell me true, and spare me the kind word you think I want to hear: when you find what's been taking folk off that road — what will you <i>do</i>? Lie to me, and the wood will know.”`}
   ],
   body:`
 <div class="zone dm-only">
@@ -951,7 +1038,24 @@ beat({ id:"scene2", nav:"Scene 2 · Fenn's Hollow", icon:"🛖", name:"Scene 2 �
 
 <div class="zone dm-only">
   <h4>🗣️ How the conversation runs</h4>
-  <p><b>Step 1 — Her test (free, no roll).</b> She asks: <i>cut, or save?</i> The answer sets the <b>modifier</b> on the trust check. Honest concern or naming what they've seen leans her open; bluster, bounty-talk, or bared steel closes her.</p>
+  <div class="callout"><b>▸ "Cut or save?" is not a magic-word test — don't let it play like one.</b> Fenn isn't scoring the word <i>save</i>. She has buried every friend she had; she reads <b>sincerity and specifics</b>, not vocabulary. A glib "oh, we're here to <i>save</i> it!" with nothing behind it should land as <b>hollow</b> — she's heard kind words from axe-men before. And the <i>honest</i> answer is often <b>not</b> "save" at all: the party really was hired to kill a beast, and right now they may still believe that's all it is. <b>Reward the truth over the right word.</b> A party that admits the bounty but shows doubt — or says "we don't know yet; tell us what's really out there" — earns her faster than one performing the keyword.</div>
+  <p><b>Step 1 — Her test (free, no roll). Don't tee up a yes/no — make them commit.</b> She asks her open question (the read-aloud), then <b>presses with a follow-up</b> to get under any glib answer. The answers set the trust-check modifier below. Pick 1–2 probes that fit who's talking:</p>
+  <ul style="margin:.2rem 0 .5rem 1.1rem; font-size:.92rem">
+    <li>"There's a man in Greywater waiting on his sister Wren. When you find what took her — do you swing first, or do you <i>look</i> first?"</li>
+    <li>"The reeve put a price on its head. Is that the whole of why you're here, or is there more to you than coin?"</li>
+    <li>"Say it <i>is</i> a monster. Say it's been killing folk. What then — your mercy, or your blade?"</li>
+    <li>"What did you see by that cart? Tell me, and I'll know whether you've eyes worth trusting." <i>(rewards a party that found Clue 1/2)</i></li>
+  </ul>
+  <p class="lbl">📖 Read her — what opens her · what's hollow · what closes her</p>
+  <table class="tbl">
+    <tr><th>If the party…</th><th>How Fenn reads it (your eyes only)</th><th>Effect on the trust check</th></tr>
+    <tr><td>Names what they actually <b>saw</b> (Clue 1/2 — the churned roots, the victim pattern) and shows real doubt about the "beast"</td><td class="dmonly">These have eyes <i>and</i> a conscience. They already half-know the wood's truth.</td><td><b>Advantage</b></td></tr>
+    <tr><td><b>Honestly</b> admits "we were hired to kill it — but something about that story is wrong"</td><td class="dmonly">Honesty she can <i>use.</i> She'd take a truthful doubter over a smooth talker any day.</td><td><b>Advantage / leans open</b> — even without the word "save"</td></tr>
+    <tr><td>Performs the keyword — "we're here to <b>save</b> it!" — with nothing behind it</td><td class="dmonly">Hollow. Press them with a probe; if they can't back it up, it's just noise.</td><td><b>No bonus</b> — flat DC 15 (and see her read, below)</td></tr>
+    <tr><td>Talks bounty/reward, threatens, or keeps weapons bared</td><td class="dmonly">Another sword sent to do the cult's work for them. The door starts to close.</td><td><b>Disadvantage</b></td></tr>
+    <tr><td><b>Lies</b> to her face (false promise, invented story)</td><td class="dmonly"><b>The wood knows.</b> This is the Deception line in Step 2 — roll her read against it.</td><td>Deception miss → <b>turns hostile, flees</b> (journal only)</td></tr>
+  </table>
+  <p style="font-size:.88rem;color:var(--muted);margin:.35rem 0 0">Fenn reads people keenly — treat her as <b>passive Insight 13</b>, or roll it in the open against a hollow/performed answer. The aim isn't to "gotcha" anyone: it's that <i>specific, honest</i> talk should beat a magic word, so the scene rewards real roleplay instead of a coin-flip "save."</p>
 
   <div class="check">
     <div class="ck-head"><span class="ck-name">Step 2 — The trust check → the Key</span> <span class="dc">DC 15</span> <span class="pill">Persuasion / Insight / Deception</span></div>
@@ -1006,9 +1110,9 @@ beat({ id:"scene3", nav:"Scene 3 · Harvesters' Camp", icon:"⛺", name:"Scene 3
 
 <div class="zone dm-only">
   <h4>⚔️ Encounter — Hard</h4>
-  <div class="budget"><b>Budget check:</b> 1 Cult Fanatic (450) + 4 Cultists (4×25=100) = 550 base ×2 (5 monsters, 3–6 band) = <b>1,100 adjusted → Hard.</b> <i>Tougher party? Add a Thug or two.</i></div>
+  <div class="budget"><b>Budget check:</b> 1 Cult Fanatic (450) + 4 Cultists (4×25=100) + 1 Thug (100) = 650 base ×2 (6 monsters, 3–6 band) = <b>1,300 adjusted → Hard.</b> <i>Rescaled for 5 PCs — the Thug is now baseline. Even tougher? Add a 2nd Thug.</i></div>
   <p class="lbl">Roster &amp; tactics</p>
-  <p>The <b>Cult Fanatic</b> overseer hangs back, opens with <b>hold person</b> on the heaviest hitter and <b>spiritual weapon</b>, uses <b>command (“flee”/“grovel”)</b> — he <i>inflicts</i>, never heals. The <b>Cultists</b> swarm and protect the still.</p>
+  <p>The <b>Cult Fanatic</b> overseer hangs back, opens with <b>hold person</b> on the heaviest hitter and <b>spiritual weapon</b>, uses <b>command (“flee”/“grovel”)</b> — he <i>inflicts</i>, never heals. The <b>Cultists</b> swarm and protect the still; the <b>Thug</b> holds the frontline and plinks casters/archers with his heavy crossbow.</p>
   <p><b>Terrain:</b> catch-buckets (difficult footing); the still is a hazard — a hit on it sprays scalding sap, <b>DC 13 Dex or 1d6 fire</b>.</p>
   <p><b>Morale:</b> when the overseer falls or cultists drop to <b>2</b>, survivors break and beg/flee — <b>a captured cultist is a goldmine</b> (the rite, the timing, Mother Sere at the grove).</p>
 </div>
@@ -1024,7 +1128,7 @@ beat({ id:"scene3", nav:"Scene 3 · Harvesters' Camp", icon:"⛺", name:"Scene 3
   <div class="initline">
     <span class="ini">Overseer <b>init +2</b></span>
     <span class="ini">Cultists <b>init +1</b> <span class="die">(one group roll)</span></span>
-    <span class="ini">Thug (opt.) <b>init +0</b></span>
+    <span class="ini">Thug <b>init +0</b></span>
     <span class="ini">⚠ Still hazard: a hit on it sprays scalding sap — <b>DC 13 Dex or 1d6 fire</b></span>
   </div>
   <div class="turns">
@@ -1044,11 +1148,47 @@ beat({ id:"scene3", nav:"Scene 3 · Harvesters' Camp", icon:"⛺", name:"Scene 3
         <li>Fight in the catch-bucket clutter (difficult footing for chargers). No clever tricks — they're fodder with conviction.</li>
       </ul>
     </div>
+    <div class="turn-card">
+      <h5>🪓 Thug <span class="pri">Frontline muscle · ranged threat</span></h5>
+      <ul>
+        <li><b>Heavy Crossbow</b> +2, <b>5 (1d10) piercing</b> at range 100/400 — opens on a backline caster/archer before closing.</li>
+        <li><b>Multiattack: two Mace</b> +4, <b>5 (1d6+2) bludgeoning</b> in melee. <b>Pack Tactics</b> — adv. if a cultist is adjacent to his target. 32 HP — he soaks a round the cultists can't.</li>
+      </ul>
+    </div>
   </div>
   <div class="rounds">
-    <div class="rd"><b>Round 1</b> Overseer Holds the tank &amp; raises the blade; cultists line up at the still.</div>
+    <div class="rd"><b>Round 1</b> Overseer Holds the tank &amp; raises the blade; cultists line up at the still; the Thug opens with a crossbow bolt at a caster.</div>
     <div class="rd"><b>Rounds 2–3</b> Inflict wounds on anyone who reaches him; Command to split the party; cultists swarm.</div>
     <div class="rd"><b>Break</b> Overseer down <i>or</i> cultists cut to 2 → survivors beg/flee. <b>Capture one</b> → Clue 3 spills out.</div>
+  </div>
+  <div class="attable">
+    <p class="lbl">🎲 At the table — the rolls, both sides</p>
+    <div class="turns">
+      <div class="turn-card q-you">
+        <h5>🎲 You roll <span class="pri">cult dice & DCs</span></h5>
+        <ul>
+          <li><b>Overseer:</b> <i>hold person</i> → <b>"Wisdom save, DC 11"</b> (fail = paralyzed; melee within 5 ft. auto-crits, re-save at end of each of its turns). <i>inflict wounds</i> = spell attack d20 <b>+3</b> vs. AC → <b>3d10</b>. <i>sacred flame</i> → <b>"Dex save, DC 11"</b>, ignores cover. <i>spiritual weapon</i> +3 → 1d8+1 (bonus action).</li>
+          <li><b>Cultists:</b> Scimitar <b>+3</b> → 1d6+1. <b>Thug:</b> two Maces <b>+4</b> → 1d6+2 (adv. via Pack Tactics if a cultist's adjacent), or Heavy Crossbow <b>+2</b> → 1d10.</li>
+          <li><b>Still hazard:</b> a hit on the still → <b>"Dex save, DC 13"</b> for adjacent creatures → 1d6 fire.</li>
+        </ul>
+      </div>
+      <div class="turn-card q-exp">
+        <h5>🎯 Expect from the party <span class="pri">a real fight now</span></h5>
+        <ul>
+          <li><b>Attacks vs.</b> Cultist AC 12 · Overseer AC 13 · Thug AC 11.</li>
+          <li>A held PC can't be freed by allies pulling — only a save or the caster losing concentration ends it. Expect them to <b>pile onto the Overseer</b> to break it. Reward that read.</li>
+          <li>Crowd-control, smashing the still, sneaking a crate, or trying to <b>capture</b> a cultist. Say yes to capture — it's the payoff (Clue 3).</li>
+        </ul>
+      </div>
+      <div class="turn-card q-rx">
+        <h5>🔁 How to react <span class="pri">concentration & morale</span></h5>
+        <ul>
+          <li><b>Overseer concentrating</b> (hold person / spiritual weapon / shield of faith) takes damage → roll his <b>Con save, DC 10 or half the damage</b>; fail drops the spell (frees the held PC). Announce it — it makes "focus the caster" feel smart.</li>
+          <li><b>Morale:</b> Overseer down <i>or</i> cultists cut to 2 → survivors beg / flee. Don't fight to the last fodder.</li>
+          <li>Too easy vs. 5 PCs? Thug holds a round longer, or add a 2nd Thug. Too hard? Cultists break early.</li>
+        </ul>
+      </div>
+    </div>
   </div>
   <div class="ra reveal"><span class="ra-label">Read — the camp breaks (a captured cultist)</span>The fight goes out of them the moment the overseer drops. The last grey-robe throws down a sap-slick blade and presses into the dirt, hands over his head. "Please — please, I only carry the crates," he babbles, eyes darting to the green-lit hollow uphill. "It's all up at the grove. Whatever you want to know — just don't put me in the ground."</div>
 </div>
@@ -1083,7 +1223,7 @@ beat({ id:"scene3", nav:"Scene 3 · Harvesters' Camp", icon:"⛺", name:"Scene 3
 beat({ id:"scene4", nav:"Scene 4 · Warded Grove", icon:"🗿", name:"Scene 4 — The Warded Grove", play:true, tag:"MODULAR", type:"exploration / puzzle", time:"~30 min",
   subtitle:"Both paths funnel here — the approach to the Showdown.",
   readAloud:[
-    {label:"Read aloud", text:`The air thickens, sweet and grievous. Ahead, a ring of standing stones leans around the oldest trees you've ever seen — and the way <i>shifts</i>: paths double back, a fallen log is suddenly a yawning ravine, birdsong loops like a stuck bell. Old fey wards still guard this place, tangled now with the wood's grief. On the nearest stone, worn carvings catch the green light: a great tree <b>crowned in leaves</b>, a procession of small robed figures — and, over and over, others laid into the earth.`}
+    {label:"Read aloud", text:`The air thickens, sweet and grievous. Ahead, a ring of standing stones leans around the oldest trees you've ever seen — and the way <i>shifts</i>: paths double back, a fallen log is suddenly a yawning ravine, birdsong loops like a stuck bell. Old fey wards still guard this place, tangled now with the wood's grief. Each leaning stone is cut with a single deep, antler-straight <b>tree-rune</b>; on the nearest, worn carvings catch the green light: a great tree <b>crowned in leaves</b>, a procession of small robed figures — and, over and over, others laid into the earth. At the centre, a <b>stone crown of five leaves</b> lies toppled in the moss.`}
   ],
   body:`
 <div class="zone dm-only">
@@ -1094,44 +1234,77 @@ beat({ id:"scene4", nav:"Scene 4 · Warded Grove", icon:"🗿", name:"Scene 4 �
 <div class="callout dm-only"><b>▸ What the carvings are (and aren't).</b> They reveal the <b>guardian's nature</b> — an old, grieving protector that takes only those who <i>harm</i> the wood. But they're cut in <b>old stone, so they can't show the modern Withering cult.</b> They <b>reinforce</b> the truth; they are <b>not the full Key.</b> A party with no Clue 3 or 4 still arrives <b>without the Key → Version A / Ending A.</b></div>
 
 <div class="zone">
-  <h4>🧩 The Weeping Crown — the puzzle at the warded ring</h4>
-  <p>At the heart of the standing stones lies the grove's broken emblem: a <b>stone crown of five leaves</b>, toppled and scattered, its ward humming wrong. The grove won't let strangers pass until the crown is made whole <b>in the true order of its grief.</b> Each fallen leaf carries a worn carving — a moment of the grove's life. <b>Set them in order</b> and the crown greens, the ward opens, and the wood marks you as one who <i>understands</i>.</p>
-  <div class="crown-verse">“Read me true, axe-bearer. Lay my leaves as my life was lived — from the green years to the grey — and I will let you pass. Lay them wrong, and the wood will turn you in circles till you do.”</div>
-  <div class="ra reveal"><span class="ra-label">Read — the stones speak (the riddle)</span>As you step into the ring, the carvings seem to <i>stir.</i> Five fallen leaves of worn stone lie scattered among the standing stones, each cut with a faded scene. A voice that is the whole grove at once sighs through the branches: <i>“Lay my leaves as my life was lived, and pass. Lay them wrong, and wander.”</i></div>
-  <p style="font-size:.85rem;color:var(--muted);margin:.4rem 0 0">Tap a fallen leaf to set it on the crown; tap a placed leaf to take it back; nudge it with ◀ ▶. The crown checks itself — when it's whole, the ward opens. <span class="dm-only">(Drive it with the skill challenge below — each success seats a leaf — or just let the players reason it out and click.)</span></p>
+  <h4>🧩 The Weeping Crown — the rune-riddle at the warded ring</h4>
+  <p>At the heart of the standing stones lies the grove's broken emblem: a <b>stone crown of five leaves</b>, toppled and scattered, its ward humming wrong. Each fallen leaf bears a single deep-cut <b>tree-rune</b> (Ogham — the old wood-alphabet) and a worn scene the years have all but erased; ringing them, <b>five leaning stones</b> each murmur a line of the grove's grief. The leaves don't announce themselves — the party must <b>read the runes</b> to know which leaf is which, then <b>weigh the five stones</b> to find their order. Lay them right and the crown greens, the ward opens, and the wood marks you as one who <i>understands</i>.</p>
+  <div class="crown-verse">“Read me true, axe-bearer. I will <b>not</b> give you my grief in the order it fell — <b>read the wood-runes, weigh my five stones,</b> and lay each leaf where it belongs. Lay them wrong, and the wood will turn you in circles till you do.”</div>
+
+  <div class="rune-cipher">
+    <div class="rune-cipher-lbl">🪶 The wood-runes carved round the ring — the cipher (show or read to the players)</div>
+    <div class="rune-row">
+      <div class="rune-cell"><span class="rune-glyph">ᚇ</span><b>Dair</b> · Oak<br><span class="rune-q">the heart · the crown</span></div>
+      <div class="rune-cell"><span class="rune-glyph">ᚉ</span><b>Coll</b> · Hazel<br><span class="rune-q">wisdom · the keepers</span></div>
+      <div class="rune-cell"><span class="rune-glyph">ᚎ</span><b>Straif</b> · Blackthorn<br><span class="rune-q">thorns · the wood's hand</span></div>
+      <div class="rune-cell"><span class="rune-glyph">ᚔ</span><b>Iodhadh</b> · Yew<br><span class="rune-q">death &amp; the undying</span></div>
+      <div class="rune-cell"><span class="rune-glyph">ᚄ</span><b>Saille</b> · Willow<br><span class="rune-q">grief · weeping</span></div>
+    </div>
+  </div>
+
+  <div class="ra reveal"><span class="ra-label">Read — the five stones speak (the riddle)</span>As you step into the ring the carvings <i>stir,</i> and five voices that are the whole grove at once sigh through the branches, one from each leaning stone:
+    <ol class="stone-riddle">
+      <li>“Where the wood <b>began</b>, the <b>Oak</b> stands first — the heart from which all green things grew.”</li>
+      <li>“<b>Last</b> comes the <b>Willow</b>, that weeps only when the whole tale is told.”</li>
+      <li>“The <b>Blackthorn</b> holds the <b>centre</b> — its thorns the wood's own hand, dragging down all who came to take.”</li>
+      <li>“The <b>Hazel's</b> wisdom tended the heart <i>long before</i> the first thorn was raised in anger.”</li>
+      <li>“And <i>only after</i> the thorns drew blood did <b>that one</b> walk in — and steal the crown away.”</li>
+    </ol>
+  </div>
+  <p style="font-size:.85rem;color:var(--muted);margin:.4rem 0 0">Tap a fallen leaf to set it on the crown; tap a placed leaf to take it back; nudge it with ◀ ▶. The crown checks itself — when it's whole, the ward opens. <span class="dm-only">(Drive it with the skill challenge below — each success decodes a rune or seats a leaf — or just let the players reason it out and click.)</span></p>
   <div id="crownPuz"></div>
 </div>
 
 <div class="zone secret dm-only">
-  <h4><span class="dm-tag">DM — SOLUTION &amp; THE CROWN'S 5TH LEAF</span> 🔑 How the crown ties it together</h4>
-  <p><b>The true order (green years → grey):</b></p>
+  <h4><span class="dm-tag">DM — SOLUTION &amp; THE CROWN'S KEY LEAF</span> 🔑 How the rune-riddle solves</h4>
+  <p><b>Step 1 — decode the runes</b> (which leaf is which). Each Ogham rune names a tree, and the tree names the scene:</p>
+  <table class="tbl">
+    <tr><th>Rune</th><th>Tree</th><th>The leaf it marks</th></tr>
+    <tr><td style="text-align:center;font-size:1.3rem">ᚇ <span style="font-size:.8rem">Dair</span></td><td>Oak</td><td>🌿 <b>The Living Crown</b> — the great tree crowned in living leaves, the wood green and whole.</td></tr>
+    <tr><td style="text-align:center;font-size:1.3rem">ᚉ <span style="font-size:.8rem">Coll</span></td><td>Hazel</td><td>🍞 <b>The Keepers' Gift</b> — robed wardens (the grove-wardens <b>before Fenn</b>) leave bread at its roots.</td></tr>
+    <tr><td style="text-align:center;font-size:1.3rem">ᚎ <span style="font-size:.8rem">Straif</span></td><td>Blackthorn</td><td>🪓 <b>The Axe-Bearers</b> — those who come to <i>take</i> are dragged into the earth <i>(Clues 1 &amp; 2 — it strikes only those who wound it).</i></td></tr>
+    <tr><td style="text-align:center;font-size:1.3rem"><span class="leaf-key">ᚔ <span style="font-size:.8rem">Iodhadh</span></span></td><td>Yew <span class="pill">death &amp; the undying</span></td><td><span class="leaf-key">👑 <b>The Stolen Crown</b></span> — grey-robes cut the crown away, branded and withered, to buy a life that never ends. <b>The Key leaf.</b></td></tr>
+    <tr><td style="text-align:center;font-size:1.3rem">ᚄ <span style="font-size:.8rem">Saille</span></td><td>Willow</td><td>💧 <b>The Weeping</b> — the tree alone, crown broken and fallen, bleeding sap. <i>(Now.)</i></td></tr>
+  </table>
+  <p><b>Step 2 — solve the order from the five stones.</b> It is deliberately <b>not</b> plain chronology (that's the trap the old verse fell into) — it's a small logic puzzle:</p>
   <ol style="margin:.2rem 0 .4rem">
-    <li>🌿 <b>The Living Crown</b> — the great tree crowned in living leaves, the wood green and whole.</li>
-    <li>🍞 <b>The Keepers' Gift</b> — small robed wardens leave bread at its roots (the line of grove-wardens <b>before Fenn</b>).</li>
-    <li>🪓 <b>The Axe-Bearers</b> — those who come to <i>take</i> are pulled down into the earth <i>(this is Clues 1 &amp; 2 — it strikes only those who wound it).</i></li>
-    <li><span class="leaf-key">👑 <b>The Stolen Crown</b></span> — grey-robes cut the crown away, branded and withered, and carry it off.</li>
-    <li>💧 <b>The Weeping</b> — the tree alone, crown broken and fallen, bleeding sap. <i>(Now.)</i></li>
+    <li>Stone 1 fixes <b>Oak = 1st.</b></li>
+    <li>Stone 2 fixes <b>Willow = 5th (last).</b></li>
+    <li>Stone 3 fixes <b>Blackthorn = 3rd (the centre).</b></li>
+    <li>Stone 4 (Hazel <i>before</i> the thorn) → only slot left before centre is 2nd → <b>Hazel = 2nd.</b></li>
+    <li>Stone 5 (Yew <i>after</i> the thorn) → only slot left → <b>Yew = 4th.</b></li>
   </ol>
-  <div class="callout"><b>The 5th leaf is the Key in puzzle form.</b> Leaf 4 — <span class="leaf-key">the Stolen Crown</span> — is the one a party <b>cannot truly read without the Key</b> (Clue 3 or 4): old stone can't depict the modern cult. So:
+  <p style="margin:.2rem 0"><b>→ Solution: ᚇ🌿 Oak (1) · ᚉ🍞 Hazel (2) · ᚎ🪓 Blackthorn (3) · <span class="leaf-key">ᚔ👑 Yew (4)</span> · ᚄ💧 Willow (5).</b></p>
+  <div class="callout"><b>The 4th leaf is the Key in puzzle form.</b> The <span class="leaf-key">Yew / Stolen-Crown</span> leaf — Stone 5's "that one … steal the crown away" — is the one a party <b>cannot truly read without the Key</b> (Clue 3 or 4): old stone can't name the modern cult, and the Yew's double meaning (<i>death</i> &amp; <i>the undying</i>) is exactly Mother Sere's rite. So:
     <ul style="margin:.4rem 0 0">
-      <li><b>No Key:</b> that leaf stays a <b>cracked, unreadable stone</b> — the crown opens the ward on its four <i>grief</i> leaves (grief is enough to pass), but a <b>visible gap</b> remains. Let that gap nag at them — it pays off when they meet Mother Sere's dead-branch crown at the Showdown.</li>
-      <li><b>With the Key:</b> the stolen-crown leaf is readable. Complete all five and the grove <b>recognizes</b> you — the same emblem they've now seen <i>living → branded → worn dead.</i></li>
+      <li><b>No Key:</b> the structure still hands them slot 4 <i>by elimination</i> — but its carving stays a <b>cracked, unreadable stone.</b> They seat the four <i>grief</i> leaves, the ward opens, and a <b>visible gap</b> remains where the truth should be. Let it nag — it pays off at Mother Sere's dead-branch crown.</li>
+      <li><b>With the Key:</b> the Yew leaf is readable. Complete all five and the grove <b>recognizes</b> them — the same emblem now seen <i>living → branded → worn dead.</i></li>
     </ul>
   </div>
-  <p style="font-size:.85rem;color:var(--muted)">The crown reads the live <b>clue tracker</b>: tick Clue 3 or 4 and the stolen-crown leaf unlocks automatically.</p>
+  <p style="font-size:.85rem;color:var(--muted)">The crown reads the live <b>clue tracker</b>: tick Clue 3 or 4 and the Yew (stolen-crown) leaf unlocks automatically. The "💡 DM: reveal the order" button on the crown gives you the full answer at the table.</p>
 </div>
 
 <div class="zone dm-only">
-  <h4>🎲 How to run the skill challenge (drives the crown)</h4>
+  <h4>🎲 How to run the rune-riddle (drives the crown)</h4>
+  <p>Run it as a <b>two-layer skill challenge</b> — <i>decode</i>, then <i>deduce</i> — so it rewards heads <b>and</b> dice. It is <b>modular &amp; never a dead end</b> (MMOS): a stuck party always gets through — only the <b>edge</b> is at stake, and the rite-clock keeps ticking while they puzzle.</p>
   <ol>
-    <li><b>Name the goal &amp; stakes:</b> reach the grove's heart before the wards — or the rite — turn on you.</li>
-    <li><b>Go round the table:</b> each PC <b>describes how they push forward</b>, then rolls the fitting skill at <b>DC 15</b>. Don't let everyone roll the same skill (the same one twice running gets harder or is disallowed).</li>
-    <li><b>Narrate every roll:</b> a <b>hit reads &amp; seats one leaf of the Crown</b> above (click it into place) — ground gained; a miss = a looping path, a false floor, a leaf set wrong.</li>
-    <li><b>Tally to 4 successes</b> = the four <i>grief</i> leaves are seated → the <b>ward opens</b> (the crown checks itself). <b>Or 3 failures</b> = through it the <i>hard</i> way. Never a dead end.</li>
+    <li><b>Name the goal &amp; stakes:</b> read the crown right and cross with the grove's blessing — or be turned in circles and stumble in <i>off-balance</i> (and the rite ticks on).</li>
+    <li><b>Layer 1 — read the runes</b> (which leaf is which). <b>History / Arcana / Nature / Investigation DC 15.</b> Each success identifies a leaf's tree (hand them one rune from the cipher). A natural reader — druid, ranger, an elf or Outlander — may get one free.</li>
+    <li><b>Layer 2 — weigh the stones</b> (the order). <b>Insight / Investigation / Religion DC 15.</b> Each success locks one stone's clue → seats or rules out a leaf. <b>Reward reasoning over rolls:</b> if a player <i>argues the logic correctly out loud</i>, that beat seats the leaf with no die.</li>
+    <li><b>Narrate every roll:</b> a hit reads a rune or seats a leaf (click it into place); a miss = a looping path, a false floor, birdsong that resets, a leaf laid wrong.</li>
+    <li><b>Resolve:</b> the <b>four grief leaves seated</b> → the ward opens (the crown checks itself). <b>Or 3 failures</b> → through the <i>hard</i> way, off-balance (no edge). <b>Never a dead end.</b></li>
   </ol>
-  <p style="font-size:.85rem;color:var(--muted)">If they hold the <b>Key</b> (Clue 3/4), the <span class="leaf-key">stolen-crown</span> leaf is also readable — let a 5th success (or a beat of recognition) seat it for the full, <i>recognized</i> crown.</p>
-  <p class="lbl">Skill avenues — DC 15 each (each maps to a leaf)</p>
-  <p><span class="pill">Survival / Nature — true ground from illusion</span><span class="pill">Arcana — step through the fey wards</span><span class="pill">Perception / Investigation — looped birdsong; read carvings</span><span class="pill">Athletics / Acrobatics — clear a ravine / grasping roots</span></p>
+  <p style="font-size:.85rem;color:var(--muted)">Holding the <b>Key</b> (Clue 3/4)? The <span class="leaf-key">Yew / stolen-crown</span> leaf is also readable — a 5th success (or a beat of recognition) seats it for the full, <i>recognized</i> crown.</p>
+  <div class="callout"><b>🪶 Dial the difficulty.</b> <b>Harder (your 5-player table wants a real head-scratcher):</b> hand them the rune cipher + the five stone-lines as a prop and make them solve it <i>cold</i> — no Layer-1 rolls — or hide one stone-line behind a <b>Perception DC 15</b> (moss-grown), or drop the "centre" hint so they must infer Blackthorn's place. <b>Easier / short on time:</b> give the cipher free, run only Layer 2, or skip to the single <b>Nature/Arcana DC 15</b> bypass below. <i>(Two-clue tip from forest-puzzle lore: leave a little redundancy so the table lands ~70% of the time — Stones 4 &amp; 5 each pin a slot, so missing one still leaves it gettable.)</i></div>
+  <p class="lbl">Skill avenues — DC 15 each</p>
+  <p><span class="pill">History / Arcana — read the Ogham runes</span><span class="pill">Nature / Survival — name the trees · true ground from illusion</span><span class="pill">Insight / Religion — weigh the grief-riddle</span><span class="pill">Investigation / Perception — find &amp; read the worn stone-lines</span><span class="pill">Athletics / Acrobatics — clear a ravine / grasping roots</span></p>
 </div>
 
 <div class="zone dm-only">
@@ -1189,19 +1362,19 @@ beat({ id:"showdown", nav:"Showdown", icon:"🌳", name:"The Showdown — The We
     <div class="zone">
       <h4>Version A — “The Beast” (no Key) · Deadly</h4>
       <p>The party fights the <b>Guardian</b> itself. Tragic: they “win the quest” by killing the grove's wounded protector; the cult slips away to finish elsewhere.</p>
-      <div class="budget"><b>Budget check:</b> Guardian (Shambling Mound, 1,800) + 3 thorn-spawn (Twig Blights, 25 ea — <i>ignored for the multiplier</i>) ≈ <b>1,800 adjusted → Deadly.</b></div>
+      <div class="budget"><b>Budget check:</b> Guardian (Shambling Mound, 1,800) + 6 thorn-spawn (Twig Blights, 25 ea — <i>ignored for the multiplier</i>) ≈ <b>1,950 adjusted → Deadly</b> (5-PC Deadly = 2,000). <i>Rescaled for 5: extra thorn-spawn fix the action economy vs a lone boss.</i></div>
       <p><b>Tactics:</b> the Guardian <b>grapples + Engulfs</b> the heaviest-armored PC (rooting them in living wood), slams the rest; thorn-spawn harry the backline. <b>Immune to lightning (absorbs it), resists cold &amp; fire</b> — note this before a caster wastes a <i>fireball</i>. It fights with grief, not malice: if reduced low it <i>keens</i> and gives one more chance to stop (a final <b>Persuasion DC 20</b> can still flip to Version B).</p>
     </div>
-    <div class="callout danger"><b>▸ Running Version A safely — your biggest TPK risk.</b> A solo CR 5 Engulfer (~1,800 vs the 1,600 Deadly line) that can take a PC out of the fight. Keeping it survivable is by design:
+    <div class="callout danger"><b>▸ Running Version A safely — your biggest TPK risk.</b> A near-solo CR 5 Engulfer (~1,950 with 6 thorn-spawn, vs the 2,000 Deadly line for 5 PCs) that can take a PC out of the fight. Keeping it survivable is by design:
       <ul style="margin:.4rem 0 0">
         <li><b>Grief, not bloodlust.</b> It doesn't chase fleeing PCs or finish the downed; it grapples and Engulfs to <b>stop</b> them, keening the whole time.</li>
         <li><b>Engulf has an exit.</b> Only <b>one</b> creature at a time; <b>escape DC 14</b>, or free them by dropping it low. A PC at 0 HP inside it still makes <b>death saves</b>.</li>
         <li><b>The flip is always open.</b> Any round, lowering weapons or a <b>DC 20 Persuasion</b> ends it into Version B (Sorrowroot becomes an ally).</li>
-        <li><b>Dial it live.</b> Cut a thorn-spawn or two; or have it Engulf and <i>hold</i> a downed PC “in the roots” (no damage) instead of crushing.</li>
+        <li><b>Dial it live (both ways).</b> Boss dropping too fast vs 5 PCs? Give it <b>+20–25 HP (≈160)</b> or a bonus-action <b>“grasping roots”</b> (grapple a 2nd PC, no damage). Table on the ropes? Cut a thorn-spawn or two, or Engulf-and-<i>hold</i> a downed PC “in the roots” (no damage) instead of crushing.</li>
       </ul>
     </div>
     ${renderSB("mound")}
-    ${renderSB("twig",{count:3})}
+    ${renderSB("twig",{count:6})}
     <div class="runfight">
       <h4>🎬 Run Version A — the grieving Guardian</h4>
       <div class="initline">
@@ -1224,6 +1397,36 @@ beat({ id:"showdown", nav:"Showdown", icon:"🌳", name:"The Showdown — The We
         <div class="rd"><b>Rounds 2+</b> Slam the casters, hold the engulfed PC (escape DC 14). Mind the lightning heal.</div>
         <div class="rd"><b>If it drops low</b> It <i>keens</i> — offer one more chance: lowering weapons or <b>Persuasion DC 20</b> flips to Version B (it stops, becomes an ally).</div>
       </div>
+      <div class="attable">
+        <p class="lbl">🎲 At the table — the rolls, both sides</p>
+        <div class="turns">
+          <div class="turn-card q-you">
+            <h5>🎲 You roll <span class="pri">the Guardian's dice</span></h5>
+            <ul>
+              <li><b>Two Slams:</b> d20 <b>+7</b> each vs. AC → 2d8+4. <b>Both hit one Medium-or-smaller PC</b> → grappled (escape DC 14) ＋ <b>Engulf.</b></li>
+              <li><b>Engulf:</b> at the start of each of its turns the engulfed PC makes <b>"Con save, DC 14"</b> → 2d8+4 on a fail. One PC at a time.</li>
+              <li>No spells, no saves to impose — it's a brute. <b>Say the resistances aloud</b> before a caster commits.</li>
+            </ul>
+          </div>
+          <div class="turn-card q-exp">
+            <h5>🎯 Expect from the party <span class="pri">and what trips them</span></h5>
+            <ul>
+              <li><b>Attacks vs. AC 15</b>; it has <b>136 HP</b> — this is a grind, by design.</li>
+              <li><b>Lightning heals it; it resists cold & fire</b> — a caster <i>will</i> ask. Tell them straight (or via a Nature/Arcana check) so no one wastes a <i>fireball</i>.</li>
+              <li><b>Freeing the engulfed PC:</b> the trapped PC spends an action on <b>escape DC 14</b> (Athletics/Acrobatics), or allies drop it low. Expect panic — point out the exit.</li>
+              <li>Someone may try to <b>talk it down</b> — that's the flip, always open.</li>
+            </ul>
+          </div>
+          <div class="turn-card q-rx">
+            <h5>🔁 How to react <span class="pri">your TPK valve</span></h5>
+            <ul>
+              <li>It <b>doesn't finish the downed or chase fleers</b> — it grapples to <i>stop</i> the axes. A PC at 0 inside it still rolls death saves.</li>
+              <li><b>Dropping too fast?</b> +20–25 HP, or bonus-action "grasping roots" (grapple a 2nd PC, no damage). <b>On the ropes?</b> Cut thorn-spawn, or Engulf-and-<i>hold</i> (no damage).</li>
+              <li><b>The flip is live every round:</b> lowering weapons or <b>Persuasion DC 20</b> → Version B; it becomes an ally.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
       <div class="callout danger" style="margin-top:.6rem"><b>🛟 Pressure valves (this is your TPK risk):</b> the flip is open <b>every round</b>; cut a thorn-spawn or two; or have it Engulf-and-<i>hold</i> a downed PC "in the roots" (no damage) if the table's on the ropes.</div>
     </div>
   </div>
@@ -1231,17 +1434,19 @@ beat({ id:"showdown", nav:"Showdown", icon:"🌳", name:"The Showdown — The We
   <div class="ver-block" data-verblock="B">
     <div class="zone">
       <h4>Version B — “The True Harvest” (has the Key) · Deadly</h4>
-      <p>The party turns the Guardian on the cult. <b>Mother Sere + her cultists</b> are the enemy; the <b>Guardian fights as the party's ally</b> (DM runs it; it focuses Mother Sere).</p>
-      <div class="budget"><b>Budget check (enemies only):</b> Mother Sere (Green Hag, 700) + 4 Cultists (100) = 800 base ×2 (5 monsters) = <b>1,600 adjusted → Deadly</b> — the <b>Guardian ally</b> tips it to a winnable, heroic Deadly. <i>Add the Cult Fanatic overseer if he survived/escaped Scene 3.</i></div>
+      <p>The party turns the Guardian on the cult. <b>Mother Sere, her Harvest Overseer + cultists</b> are the enemy; the <b>Guardian fights as the party's ally</b> (DM runs it; it focuses Mother Sere).</p>
+      <div class="budget"><b>Budget check (enemies only):</b> Mother Sere (Green Hag, 700) + Harvest Overseer (Cult Fanatic, 450) + 4 Cultists (100) = 1,250 base ×2 (6 monsters) = <b>2,500 adjusted → Deadly+</b>, brought back to a winnable, heroic Deadly by the <b>Guardian ally</b>. <i>Rescaled for 5 — the Overseer joins by default; if he fell at Scene 3, use 6 Cultists instead.</i></div>
       <p><b>Tactics:</b> <b>Mother Sere</b> opens with <b>Invisible Passage</b> and <b>Illusory Appearance</b> (she may look like a frightened captive — let a PC's Insight or the Guardian's senses cut through), strikes with <b>Claws (2d8+4)</b>, uses <b>vicious mockery / minor illusion</b> to split the party; cultists screen her and tend the green fire (the rite — a <b>clock: 3 rounds to completion</b> unless disrupted; smashing the fire/vial sets it back). The <b>Guardian</b> grapples and Engulfs Mother Sere if it can. <b>Morale:</b> cultists break when she falls.</p>
     </div>
     ${renderSB("hag")}
+    ${renderSB("fanatic",{count:1})}
     ${renderSB("cultist",{count:4})}
     ${renderSB("mound")}
     <div class="runfight">
       <h4>🎬 Run Version B — Mother Sere &amp; the rite</h4>
       <div class="initline">
         <span class="ini">Mother Sere <b>init +1</b></span>
+        <span class="ini">Overseer (if alive) <b>init +2</b></span>
         <span class="ini">Cultists <b>init +1</b></span>
         <span class="ini">Sorrowroot (ally) <b>init −1</b> <span class="die">(you run it — it focuses Sere)</span></span>
       </div>
@@ -1270,6 +1475,35 @@ beat({ id:"showdown", nav:"Showdown", icon:"🌳", name:"The Showdown — The We
         <div class="rd"><b>Round 1</b> Sere hidden/illusory; cultists feed the fire (<b>clock 1</b>). Guardian crashes toward her.</div>
         <div class="rd"><b>Round 2</b> <b>Clock 2.</b> Sere claws a caster &amp; mocks; reward anyone who smashes the fire/vial (−1 clock).</div>
         <div class="rd"><b>Round 3</b> <b>Clock 3 = rite completes</b> unless disrupted — drop her or break the fire <i>now.</i> When Sere falls, the rite shatters.</div>
+      </div>
+      <div class="attable">
+        <p class="lbl">🎲 At the table — the rolls, both sides</p>
+        <div class="turns">
+          <div class="turn-card q-you">
+            <h5>🎲 You roll <span class="pri">Sere, cult & the ally</span></h5>
+            <ul>
+              <li><b>Mother Sere — Claws:</b> d20 <b>+6</b> vs. AC → 2d8+4. <i>vicious mockery</i> → <b>"Wisdom save, DC 12"</b> (fail = 1d4 psychic ＋ disadv. on her target's next attack).</li>
+              <li><b>Cultists:</b> Scimitar <b>+3</b> → 1d6+1. <b>Overseer (if alive):</b> spells as Scene 3 (hold person Wis DC 11; inflict wounds +3 → 3d10; sacred flame Dex DC 11).</li>
+              <li><b>Sorrowroot (you run the ally):</b> Slams +7 → 2d8+4; tries to grapple ＋ Engulf Sere (escape DC 14). Keep it on Sere so it doesn't steal the players' kills.</li>
+            </ul>
+          </div>
+          <div class="turn-card q-exp">
+            <h5>🎯 Expect from the party <span class="pri">see-through & smash</span></h5>
+            <ul>
+              <li><b>Finding Sere:</b> she opens invisible / posing as a captive. <b>Insight DC 14</b> (Mimicry) or <b>Investigation DC 20</b> sees through it; the Guardian's blindsight ignores it — let a PC's check or the ally out her.</li>
+              <li><b>Attacks vs.</b> Sere AC 17 (high — they'll miss; that's the boss) · Cultist AC 12.</li>
+              <li>Expect them to <b>smash the green fire / vial</b> to beat the clock — say yes (AC 12 object, or one clean action) → −1 round.</li>
+            </ul>
+          </div>
+          <div class="turn-card q-rx">
+            <h5>🔁 How to react <span class="pri">run the clock</span></h5>
+            <ul>
+              <li><b>Rite clock (3 rounds):</b> tick it up at the END of each round on the Tools rail / table. Round 3 completes it <i>unless</i> Sere falls or the fire's broken. Make the ticks loud — that's the tension.</li>
+              <li><b>Concentration:</b> Overseer holding a spell takes damage → Con save DC 10 / half. Sere's invisibility ends the instant she attacks or casts.</li>
+              <li><b>Morale:</b> cultists break when Sere falls; when she drops, the rite shatters — cue the ending.</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1689,9 +1923,9 @@ function renderCrown(){
     }
     const leafObj=crownLeaf(id);
     const correct = id===CROWN[i].id;
-    return `<div class="crown-slot filled ${solved?(correct?'correct':''):(correct?'':'')}" data-crownslot="${i}" role="button" tabindex="0" aria-label="${leafObj.n} in slot ${i+1}; tap to remove">
+    return `<div class="crown-slot filled ${solved?(correct?'correct':''):(correct?'':'')}" data-crownslot="${i}" role="button" tabindex="0" title="${leafObj.t}" aria-label="${leafObj.n} (${leafObj.t}) in slot ${i+1}; tap to remove">
       <span class="slotno">${i+1}</span>
-      <span class="leaf-g">${leafObj.g}</span><span class="leaf-n">${leafObj.n}</span>
+      <span class="leaf-rune">${leafObj.r}</span><span class="leaf-g">${leafObj.g}</span><span class="leaf-n">${leafObj.n}</span>
       <span class="crown-reorder"><button data-crownmove="${i}" data-dir="-1" title="move left" aria-label="move left">◀</button><button data-crownmove="${i}" data-dir="1" title="move right" aria-label="move right">▶</button></span>
     </div>`;
   }).join("");
@@ -1700,9 +1934,9 @@ function renderCrown(){
     if(slots.includes(id)) return "";
     const leaf=crownLeaf(id);
     if(leaf.key && !key){
-      return `<div class="tray-leaf disabled" title="You don't yet know this part of the story (needs Clue 3 or 4)"><span class="leaf-g">👑</span><span class="leaf-n">? ? ?</span></div>`;
+      return `<div class="tray-leaf disabled" title="The Yew-rune is plain — but its meaning won't read without the Key (needs Clue 3 or 4)"><span class="leaf-rune">${leaf.r}</span><span class="leaf-g">👑</span><span class="leaf-n">? ? ?</span></div>`;
     }
-    return `<div class="tray-leaf" data-crownleaf="${id}" role="button" tabindex="0" title="${leaf.desc}"><span class="leaf-g">${leaf.g}</span><span class="leaf-n">${leaf.n}</span></div>`;
+    return `<div class="tray-leaf" data-crownleaf="${id}" role="button" tabindex="0" title="${leaf.desc}"><span class="leaf-rune">${leaf.r}</span><span class="leaf-g">${leaf.g}</span><span class="leaf-n">${leaf.n}</span></div>`;
   }).join("");
   const trayHasItems = CROWN_TRAY_ORDER.some(id=>!slots.includes(id) && (key || !crownLeaf(id).key));
   // BANNER
@@ -1727,7 +1961,8 @@ function renderCrown(){
       ${solved?'':'<button class="btn ghost" id="crownHintBtn">💡 DM: reveal the order</button>'}
     </div>
     <div class="crown-hint" id="crownHint" hidden>
-      <b>True order:</b> 🌿 Living Crown → 🍞 Keepers' Gift → 🪓 Axe-Bearers → <span class="leaf-key">👑 Stolen Crown</span> → 💧 Weeping. <span class="leaf-key">The 4th leaf needs the Key.</span>
+      <b>Order from the stones</b> (Oak 1st · Willow last · Blackthorn centre · Hazel before the thorn · Yew after it):<br>
+      ᚇ 🌿 Oak/Living Crown → ᚉ 🍞 Hazel/Keepers' Gift → ᚎ 🪓 Blackthorn/Axe-Bearers → <span class="leaf-key">ᚔ 👑 Yew/Stolen Crown</span> → ᚄ 💧 Willow/Weeping. <span class="leaf-key">The 4th (Yew) leaf needs the Key.</span>
     </div>`;
 }
 function crownPlace(id){

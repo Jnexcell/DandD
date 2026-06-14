@@ -1,6 +1,6 @@
 # The Weeping Grove — one-shot (its own folder)
 
-A run-ready **level-3, 4-player, ~3–4 hour** forest mystery-adventure built with the Session Creator
+A run-ready **level-3, 5-player, ~3–4 hour** forest mystery-adventure built with the Session Creator
 (`../../tools/session-creator.md`) on the MMOS framework. It lives in its own folder so you can **tweak
 pieces as you go** and drop **handouts, maps, and clue cards** alongside it.
 
@@ -20,8 +20,8 @@ Creator** (`../../tools/character-creator.md`) if you haven't.
   **Withering**, a death-cult harvesting heartwood for **Mother Sere's** immortality rite —
   and they seeded the "beast" rumor so heroes would kill the Guardian for them.
 - **Two Paths:** the road (fast, tragic) vs. the drag-marks off-trail (slower, the Key, a heroic finish).
-- **Difficulty (4×L3):** Easy 300 / Med 600 / Hard 900 / **Deadly 1,600**. Fights: Bramble-Pack (Medium),
-  Harvesters' Camp (Hard), the Showdown (Deadly).
+- **Difficulty (5×L3):** Easy 375 / Med 750 / Hard 1,125 / **Deadly 2,000**. Fights: Bramble-Pack (8 wolves → Medium),
+  Harvesters' Camp (+1 Thug → Hard), the Showdown (Deadly — Version A adds thorn-spawn, Version B adds the Overseer).
 
 ## Tweak freely
 Everything's editable in place. If you change an encounter, re-check its budget line against

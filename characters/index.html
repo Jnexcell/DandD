@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Party — The Weeping Grove</title>
+<style>
+/* ============================================================
+   THE WEEPING GROVE — the party roster.
+   "Illuminated Grove" look (matches the character sheets):
+   aged parchment, deep forest green, gold-leaf accents.
+   Single file · offline · no CDN. Add heroes in the PARTY list below.
+   ============================================================ */
+:root,html[data-theme="dark"]{ --bg:#10150e; --bg2:#0b0f09; --panel:#1a2015; --panel2:#212a1b;
+  --ink:#ece2c8; --ink-soft:#d7cdb0; --muted:#9c9577; --line:#3a4327;
+  --gold:#cbaa5c; --gold-2:#e8cf86; --green-2:#a7cf8a;
+  --serif:"Hoefler Text","Iowan Old Style",Garamond,"Palatino Linotype",Palatino,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --shadow:0 18px 42px -22px rgba(0,0,0,.75); --shadow-s:0 8px 20px -12px rgba(0,0,0,.6); }
+html[data-theme="light"]{ --bg:#e7dcc2; --bg2:#ddd0b0; --panel:#f6efdd; --panel2:#efe6cf;
+  --ink:#2a2316; --ink-soft:#3f3623; --muted:#6f6147; --line:#cdbd99;
+  --gold:#9a7b2e; --gold-2:#7d6322; --green-2:#2c4d2c;
+  --shadow:0 16px 36px -20px rgba(60,45,20,.45); --shadow-s:0 8px 18px -12px rgba(60,45,20,.35); }
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{ font-family:var(--sans); background:var(--bg); color:var(--ink); line-height:1.55; min-height:100vh;
+  background-image:radial-gradient(135% 75% at 50% -5%, var(--bg) 0%, var(--bg2) 92%); }
+h1,h2,h3{ font-family:var(--serif); font-weight:600; margin:0; line-height:1.15; }
+a{ color:inherit; }
+
+.bar{ position:sticky; top:0; z-index:10; display:flex; align-items:center; gap:.55rem; padding:.5rem .95rem;
+  background:linear-gradient(180deg,#1c2614,#13190e); border-bottom:1px solid var(--line); color:#f2ead2; box-shadow:var(--shadow-s); }
+html[data-theme="light"] .bar{ background:linear-gradient(180deg,#3f6b3f,#33572f); color:#f5efdc; border-bottom-color:#2c4d2c; }
+.bar .brand{ display:flex; align-items:center; gap:.5rem; }
+.bar .mk{ width:22px; height:22px; color:var(--gold-2); flex:0 0 auto; }
+html[data-theme="light"] .bar .mk{ color:#f0e3b8; }
+.bar .t{ font-family:var(--serif); font-size:1.04rem; letter-spacing:.2px; white-space:nowrap; }
+.bar .t .s{ display:block; font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; opacity:.82; margin-top:.1rem; font-family:var(--sans); }
+.bar .spacer{ flex:1; }
+.tbtn{ background:rgba(0,0,0,.22); color:inherit; border:1px solid rgba(232,207,134,.32); border-radius:9px;
+  padding:.4rem .65rem; font-size:.8rem; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:.32rem; font-family:inherit; }
+.tbtn:hover{ background:rgba(0,0,0,.36); }
+html[data-theme="light"] .tbtn{ border-color:rgba(255,255,255,.42); }
+
+.wrap{ max-width:980px; margin:0 auto; padding:1.9rem 1.05rem 4rem; }
+.hero-head{ text-align:center; margin-bottom:1.9rem; }
+.hero-head .eyebrow{ font-size:.64rem; letter-spacing:.2em; text-transform:uppercase; font-weight:700; color:var(--gold); }
+.hero-head h1{ font-size:2.15rem; color:var(--ink); margin:.3rem 0 .45rem; }
+.hero-head p{ font-style:italic; font-family:var(--serif); color:var(--muted); max-width:56ch; margin:0 auto; font-size:1.05rem; }
+
+.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.1rem; }
+.card{ display:flex; flex-direction:column; background:var(--panel); border:1px solid var(--line); border-radius:14px;
+  overflow:hidden; box-shadow:var(--shadow-s); text-decoration:none; color:inherit;
+  transition:border-color .15s ease, transform .1s ease, box-shadow .15s ease; }
+a.card:hover{ border-color:var(--gold); transform:translateY(-2px); box-shadow:0 0 0 1px rgba(203,170,92,.3), var(--shadow); }
+.card .pic{ height:172px; background:var(--panel2); position:relative; overflow:hidden; }
+.card .pic img{ width:100%; height:100%; object-fit:cover; object-position:78% center; display:block; }
+.card .pic .emptyart{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--muted);
+  background:repeating-linear-gradient(135deg,transparent 0 9px, rgba(203,170,92,.05) 9px 10px), var(--panel2); }
+.card .pic .emptyart svg{ width:52px; height:52px; opacity:.5; }
+.card .body{ padding:.85rem .95rem 1rem; display:flex; flex-direction:column; gap:.22rem; flex:1; }
+.card .nm{ font-family:var(--serif); font-size:1.3rem; color:var(--ink); }
+.card .meta{ font-size:.82rem; color:var(--gold-2); font-weight:600; }
+.card .who{ font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+.card .blurb{ font-size:.88rem; color:var(--ink-soft); font-style:italic; font-family:var(--serif); margin-top:.25rem; flex:1; }
+.card .go{ margin-top:.75rem; font-size:.8rem; font-weight:800; color:var(--gold); letter-spacing:.03em; }
+.card.empty{ border-style:dashed; opacity:.85; }
+.card.empty .nm{ color:var(--muted); }
+
+.foot{ text-align:center; margin-top:2.1rem; color:var(--muted); font-size:.92rem; }
+.foot a{ color:var(--gold-2); }
+@media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">
+    <svg class="mk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 C9 7 6 8 4 8 c0 8 4 12 8 14 c4 -2 8 -6 8 -14 c-2 0 -5 -1 -8 -6z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 6 L12 19" stroke="currentColor" stroke-width="1"/></svg>
+    <span class="t">The Weeping Grove<span class="s">The Party</span></span>
+  </div>
+  <div class="spacer"></div>
+  <a class="tbtn" href="../index.html" title="Open the character builder">✛ Build a hero</a>
+  <button class="tbtn" id="themeBtn" title="Toggle light / dark">☀️ Daylight</button>
+</header>
+
+<main class="wrap">
+  <div class="hero-head">
+    <span class="eyebrow">The heroes of the Mournwood</span>
+    <h1>The Party</h1>
+    <p>Five travelers answer the call of the Briar Road. Click a hero to open their character sheet.</p>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="foot">Don't have a hero yet? <a href="../index.html">Build one in the character creator →</a></div>
+</main>
+
+<script>
+"use strict";
+/* ════════════════════════════════════════════════════════════════════════
+   ███  EDIT ME  ███  Add a hero object as each player's sheet is finished.
+   Each entry: { name, player, meta, blurb, sheet (path to their .html), portrait }.
+   Leave `null` for an open seat (renders a dashed "awaiting a hero" placeholder).
+   ════════════════════════════════════════════════════════════════════════ */
+const PARTY = [
+  { name:"Alary Fern", player:"Mackenzie", meta:"Half-Elf Druid · Circle of the Land",
+    blurb:"The curious naturalist who reads the wild like a storybook and believes every living thing has a tale worth hearing.",
+    sheet:"alary-fern/alary-fern.html", portrait:"alary-fern/portrait.png" },
+  null, null, null, null,   // four open seats — swap each for a hero object as sheets come in
+];
+
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (m) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[m]));
+const EMPTY = `<div class="emptyart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="12" cy="9" r="3.4"/><path d="M5 20 c0 -4 3.4 -6 7 -6 s7 2 7 6"/></svg></div>`;
+
+document.getElementById("grid").innerHTML = PARTY.map((h) => {
+  if (!h) return `<div class="card empty"><div class="pic">${EMPTY}</div><div class="body">
+      <div class="nm">Open seat</div><div class="who">Awaiting a hero</div>
+      <div class="blurb">A character sheet will appear here once this player builds their hero.</div></div></div>`;
+  const pic = h.portrait ? `<img src="${esc(h.portrait)}" alt="Portrait of ${esc(h.name)}">` : EMPTY;
+  return `<a class="card" href="${esc(h.sheet)}"><div class="pic">${pic}</div><div class="body">
+      <div class="nm">${esc(h.name)}</div>
+      <div class="meta">${esc(h.meta)}</div>
+      ${h.player ? `<div class="who">Played by ${esc(h.player)}</div>` : ""}
+      <div class="blurb">${esc(h.blurb)}</div>
+      <div class="go">Open character sheet →</div>
+    </div></a>`;
+}).join("");
+
+/* theme toggle (matches the sheets) */
+const TK = "wg-party-theme";
+function applyTheme(t){ document.documentElement.setAttribute("data-theme", t);
+  document.getElementById("themeBtn").textContent = t === "dark" ? "☀️ Daylight" : "🌙 Nightfall"; }
+applyTheme(localStorage.getItem(TK) || "dark");
+document.getElementById("themeBtn").onclick = () => {
+  const n = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  localStorage.setItem(TK, n); applyTheme(n);
+};
+</script>
+</body>
+</html>

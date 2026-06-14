@@ -127,8 +127,9 @@ citations back to the PDFs (the PDFs remain the source of truth).
 - `sessions/` — **live session-state files** (kept by the DM Assistant while you play; pause/resume) + `_TEMPLATE.md` + `README.md`
 - `PROGRESS.md` — build tracker / resume guide (see "Build status" below)
 - `.build/` — regenerable page-tagged text dumps of each PDF (for live lookups) — **gitignored** (copyrighted text)
-- **Web / hosting:** `index.html` (players' landing page) + `modules/the-weeping-grove/site/` (interactive
-  **character builder** + the **DM screen**), published via **GitHub Pages** — see the next section.
+- **Web / hosting:** `index.html` (the players' **character builder** — a byte-identical copy of
+  `modules/the-weeping-grove/site/character-builder.html`) + `modules/the-weeping-grove/site/index.html`
+  (the **DM screen**), published via **GitHub Pages** — see the next section.
 
 ## Player-facing web pages, hosting & source control
 
@@ -148,23 +149,36 @@ link, and so the work is backed up.
 
 ### GitHub Pages (the live site)
 - **Settings → Pages → Deploy from a branch → `main` / `/ (root)`.**
-- **Player link (share this one): https://jnexcell.github.io/DandD/** → landing page → "Build Your Character".
-- Direct builder URL: `https://jnexcell.github.io/DandD/modules/the-weeping-grove/site/character-builder.html`.
+- **Player link (share this one): https://jnexcell.github.io/DandD/** → opens **straight into the character
+  builder** (its own Welcome step carries the quest hook — there is **no separate landing page** anymore).
+- The same builder is also served at `…/DandD/modules/the-weeping-grove/site/character-builder.html` (an
+  identical copy, so any older links still resolve).
 
 ### The HTML pages
-- **`index.html`** (repo root) — players' **landing page** (grove-themed; the public quest hook + a big button
-  to the builder). Intentionally **does not link the DM screen**.
-- **`modules/the-weeping-grove/site/character-builder.html`** — the **interactive player character builder**:
-  the HTML, click-through version of `characters/_CHOOSER.md`. Beginner-friendly; collects the **big picks**
-  (race + subrace, class + its level-1 sub-choice, background) + **ability scores** (Standard Array / Point Buy
-  with live 27-pt math / dice roller / manual), applies **race bonuses live**, captures name + personality,
-  autosaves to the device, and **exports Markdown** via Copy / Download / Print / **Email** (the DM's address is
-  the `DM_EMAIL` constant near the top of its `<script>`). Its output is the **intake** for
-  `tools/character-creator.md` — it deliberately stops at level-1-style picks + raw scores; **the DM runs the
-  Character Creator to do the full math and level the hero to 3.**
+- **`index.html`** (repo root) **and** **`modules/the-weeping-grove/site/character-builder.html`** are **the same
+  file**, kept byte-identical — the **interactive player character builder**, *"The Weeping Grove — Build Your
+  Hero"* (the click-through equivalent of `characters/_CHOOSER.md`). Root is the public entry point; the second
+  path is a copy kept so older links resolve. **To edit: change one file, then copy it over the other so they stay
+  in sync** (e.g. `cp modules/the-weeping-grove/site/character-builder.html index.html`).
+  - **Flavor-first & beginner-friendly.** 7-step flow (Welcome → Race → Class → Background → Ability Scores →
+    Personality → Finish). Race / Class / Background cards show **personality & feel** ("what kind of character
+    you're making"), **not** stats. The rules data (ability bonuses, speed, Hit Die, skills, features) still lives
+    in the code and still flows to the DM in the export — it's just **hidden from the player's view**. Official
+    names are never reworded; only the descriptive subtext is friendly/flavor.
+  - **Ability scores auto-fill** to suit the chosen class + race (race bonuses applied live; bonus picks for
+    Variant Human / Half-Elf assigned automatically and RAW-correctly) and stay **fully editable** — the Standard
+    Array / Point Buy / Dice / Manual tabs remain as the edit path.
+  - Captures name, alignment, a free-form **Backstory** wall-of-text (its own field under Alignment), and the
+    trait/ideal/bond/flaw. **Autosaves** to the device (`localStorage`, key `weeping-grove-character-v2`).
+  - **Export = Copy to clipboard** (primary) **+ Download `.md`** (fallback); the player pastes it into their own
+    email/message to the DM. *(The old mailto **Email** button, the **DM's-email** field, and **Print/Save PDF**
+    were removed as unreliable/pointless on a static site — there is **no** hardcoded `DM_EMAIL`.)*
+  - Its Markdown output is the **intake** for `tools/character-creator.md` — it deliberately stops at
+    level-1-style picks + raw scores; **the DM runs the Character Creator to do the full math and level the hero
+    to 3.**
 - **`modules/the-weeping-grove/site/index.html`** — the offline **DM screen** (full spoilers: every scene, the
   Key, stat blocks, trackers). ⚠️ **It is reachable on the public Pages site** at
-  `…/DandD/modules/the-weeping-grove/site/index.html` (not linked from the landing, but not truly hidden) — do
+  `…/DandD/modules/the-weeping-grove/site/index.html` (not linked from the builder, but not truly hidden) — do
   **not** share that URL with players. (If true privacy is wanted later: move it off the published path or to a
   separate private deploy.)
 

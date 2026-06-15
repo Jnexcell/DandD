@@ -117,7 +117,9 @@ const PARTY = [
   { name:"Tuf", player:"Bee", meta:"Rock Gnome Barbarian · Path of the Berserker",
     blurb:"A pint-sized, triple-thick gnome leg-breaker who flies into a blind rage at the word 'little,' trusts exactly two things — cold hard cash and a rock named Rocko — and absolutely should not be allowed to do the talking.",
     sheet:"tuf/tuf.html", portrait:"tuf/portrait.png" },
-  null,   // one open seat — swap for a hero object as sheets come in
+  { name:"Jarlaxle Smith", player:"Liam", meta:"Drow Ranger · Beast Master",
+    blurb:"An adopted Drow raised by human trappers — a deadly archer and quiet smuggler for a hidden Drow network, with his faithful dog Ol' Moe always at his heel.",
+    sheet:"jarlaxle-smith/jarlaxle-smith.html", portrait:"jarlaxle-smith/portrait.png" },
 ];
 
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (m) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[m]));

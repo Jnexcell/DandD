@@ -69,6 +69,8 @@ a.card:hover{ border-color:var(--gold); transform:translateY(-2px); box-shadow:0
 
 .foot{ text-align:center; margin-top:2.1rem; color:var(--muted); font-size:.92rem; }
 .foot a{ color:var(--gold-2); }
+.cta{ display:inline-flex; align-items:center; gap:.5rem; margin-top:1.2rem; padding:.85rem 1.7rem; border-radius:12px; font-size:1.18rem; font-weight:800; text-decoration:none; background:linear-gradient(180deg,var(--gold),#b8923f); color:#1a140b; border:1px solid #a07d2e; box-shadow:var(--shadow-s); }
+.cta:hover{ filter:brightness(1.07); transform:translateY(-1px); }
 @media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
 </style>
 </head>
@@ -80,7 +82,7 @@ a.card:hover{ border-color:var(--gold); transform:translateY(-2px); box-shadow:0
     <span class="t">The Weeping Grove<span class="s">The Party</span></span>
   </div>
   <div class="spacer"></div>
-  <a class="tbtn" href="../index.html" title="Open the character builder">✛ Build a hero</a>
+  <a class="tbtn" href="../modules/the-weeping-grove/site/character-builder.html" title="Open the character builder">✛ Build a hero</a>
   <button class="tbtn" id="themeBtn" title="Toggle light / dark">☀️ Daylight</button>
 </header>
 
@@ -89,9 +91,10 @@ a.card:hover{ border-color:var(--gold); transform:translateY(-2px); box-shadow:0
     <span class="eyebrow">The heroes of the Mournwood</span>
     <h1>The Party</h1>
     <p>Five travelers answer the call of the Briar Road. Click a hero to open their character sheet.</p>
+    <div><a class="cta" href="../modules/the-weeping-grove/site/character-builder.html">✛ Build your character</a></div>
   </div>
   <div class="grid" id="grid"></div>
-  <div class="foot">Don't have a hero yet? <a href="../index.html">Build one in the character creator →</a></div>
+  <div class="foot">Don't have a hero yet? <a href="../modules/the-weeping-grove/site/character-builder.html">Build one in the character creator →</a></div>
 </main>
 
 <script>

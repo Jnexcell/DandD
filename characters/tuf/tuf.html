@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tuf — The Weeping Grove</title>
+<style>
+/* ============================================================
+   THE WEEPING GROVE — player's at-the-table reference sheet
+   "Illuminated Grove" look: aged parchment, deep forest green,
+   gold-leaf + amber accents. Single file · offline · no CDN.
+   A static "how to play THIS character" guide — not a live tracker.
+   ============================================================ */
+:root, html[data-theme="dark"]{
+  --bg:#10150e; --bg2:#0b0f09; --panel:#1a2015; --panel2:#212a1b; --panel3:#262f1d;
+  --ink:#ece2c8; --ink-soft:#d7cdb0; --muted:#9c9577;
+  --line:#3a4327; --line2:#2b331c;
+  --gold:#cbaa5c; --gold-2:#e8cf86; --green:#84ad68; --green-2:#a7cf8a;
+  --accent:#d6a35e; --danger:#e0796a; --good:#8fcf7c; --warn:#d8b15e;
+  --medal:#1b2414; --chip:#262f1d;
+  --head-grad:linear-gradient(180deg,#283517,#1d2712);
+  --serif:"Hoefler Text","Iowan Old Style",Garamond,"Palatino Linotype",Palatino,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --radius:14px; --radius-s:10px;
+  --shadow:0 18px 42px -22px rgba(0,0,0,.75);
+  --shadow-s:0 8px 20px -12px rgba(0,0,0,.6);
+}
+html[data-theme="light"]{
+  --bg:#e7dcc2; --bg2:#ddd0b0; --panel:#f6efdd; --panel2:#efe6cf; --panel3:#e9ddbf;
+  --ink:#2a2316; --ink-soft:#3f3623; --muted:#6f6147;
+  --line:#cdbd99; --line2:#ddd0ad;
+  --gold:#9a7b2e; --gold-2:#7d6322; --green:#3f6b3f; --green-2:#2c4d2c;
+  --accent:#8a5a2b; --danger:#9c2f25; --good:#3f6b3f; --warn:#8a6212;
+  --medal:#f3e8c8; --chip:#e4d8b8;
+  --head-grad:linear-gradient(180deg,#3f6b3f,#33572f);
+  --shadow:0 16px 36px -20px rgba(60,45,20,.45);
+  --shadow-s:0 8px 18px -12px rgba(60,45,20,.35);
+}
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{ font-family:var(--sans); background:var(--bg); color:var(--ink); line-height:1.55; font-size:16px;
+  -webkit-text-size-adjust:100%; -webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(135% 75% at 50% -5%, var(--bg) 0%, var(--bg2) 92%); }
+h1,h2,h3,h4{ line-height:1.16; margin:0; font-family:var(--serif); font-weight:600; }
+:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; border-radius:8px; }
+.svg-defs{ position:absolute; width:0; height:0; overflow:hidden; }
+
+/* ============================== TOOLBAR ============================== */
+.bar{ position:sticky; top:0; z-index:60; display:flex; align-items:center; gap:.55rem;
+  padding:.5rem .95rem; color:#f2ead2;
+  background:linear-gradient(180deg,#1c2614,#13190e); border-bottom:1px solid var(--line); box-shadow:var(--shadow-s); }
+html[data-theme="light"] .bar{ background:linear-gradient(180deg,#3f6b3f,#33572f); color:#f5efdc; border-bottom-color:#2c4d2c; }
+.bar .brand{ display:flex; align-items:center; gap:.5rem; min-width:0; }
+.bar .brand .mk{ width:22px; height:22px; flex:0 0 auto; color:var(--gold-2); }
+html[data-theme="light"] .bar .brand .mk{ color:#f0e3b8; }
+.bar .brand .t{ font-family:var(--serif); font-weight:600; font-size:1.04rem; letter-spacing:.2px; white-space:nowrap; }
+.bar .brand .t .s{ display:block; font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; opacity:.82; font-weight:600; margin-top:.1rem; font-family:var(--sans); }
+.bar .spacer{ flex:1 1 auto; }
+.tbtn{ background:rgba(0,0,0,.22); color:inherit; border:1px solid rgba(232,207,134,.32); border-radius:9px;
+  padding:.4rem .65rem; font-size:.8rem; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap:.32rem; font-family:inherit; }
+.tbtn:hover{ background:rgba(0,0,0,.36); }
+html[data-theme="light"] .tbtn{ border-color:rgba(255,255,255,.42); }
+
+/* ============================== SHEET SHELL ============================== */
+.sheet{ max-width:1040px; margin:0 auto; padding:1.3rem 1.05rem 4rem; }
+.sec{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+  margin-bottom:1.05rem; box-shadow:var(--shadow-s); break-inside:avoid; }
+.sec > .sec-h{ display:flex; align-items:center; gap:.5rem; padding:.55rem .9rem;
+  background:var(--head-grad); color:var(--gold-2); font-family:var(--serif); font-size:1.14rem; border-bottom:1px solid var(--line); }
+html[data-theme="light"] .sec > .sec-h{ color:#f5efdc; }
+.sec > .sec-h .ic{ font-size:1.04rem; }
+.sec > .sec-b{ padding:.85rem .95rem 1rem; }
+.lead{ font-size:.9rem; color:var(--muted); font-style:italic; font-family:var(--serif); margin:0 0 .7rem; }
+.lead b{ color:var(--green-2); font-style:normal; }
+
+/* ============================== HEADER ============================== */
+.head{ display:flex; gap:1.2rem; align-items:stretch; background:var(--panel);
+  border:1px solid var(--line); border-radius:var(--radius); padding:1rem; margin-bottom:1.05rem; box-shadow:var(--shadow-s);
+  position:relative; overflow:hidden; }
+.head .watermk{ position:absolute; right:-26px; top:-26px; width:200px; height:200px; opacity:.07; pointer-events:none; }
+.portrait-col{ flex:0 0 auto; display:flex; flex-direction:column; gap:.5rem; width:210px; }
+.portrait{ width:210px; height:258px; border-radius:14px; overflow:hidden; position:relative; flex:0 0 auto;
+  border:1px solid var(--line); background:var(--panel2); cursor:pointer; transition:border-color .15s ease, box-shadow .15s ease; }
+.portrait:hover{ border-color:var(--gold); box-shadow:0 0 0 1px rgba(203,170,92,.35); }
+.portrait img{ width:100%; height:100%; object-fit:cover; display:block; }
+.portrait .remove{ position:absolute; top:.45rem; right:.45rem; width:26px; height:26px; border-radius:50%; cursor:pointer;
+  border:1px solid rgba(203,170,92,.5); background:rgba(16,21,14,.72); color:var(--gold-2); font-size:.85rem; line-height:1;
+  display:none; align-items:center; justify-content:center; backdrop-filter:blur(3px); }
+.portrait:hover .remove{ display:flex; }
+.portrait .remove:hover{ background:rgba(16,21,14,.9); border-color:var(--gold); }
+.portrait .ph{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.55rem;
+  text-align:center; padding:.9rem; color:var(--muted); background:
+    repeating-linear-gradient(135deg, transparent 0 9px, rgba(203,170,92,.05) 9px 10px), var(--panel2); }
+.portrait .ph svg{ width:42px; height:42px; opacity:.55; }
+.portrait .ph .t{ font-size:.84rem; line-height:1.4; }
+.portrait .ph .m{ font-family:var(--mono); font-size:.62rem; letter-spacing:.04em; opacity:.7; }
+
+.identity{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; }
+.identity .eyebrow{ font-size:.64rem; letter-spacing:.2em; text-transform:uppercase; font-weight:700; color:var(--gold); }
+.identity .cname{ font-size:1.85rem; color:var(--ink); margin:.12rem 0 .14rem; line-height:1.08; }
+.identity .blurb{ font-style:italic; font-family:var(--serif); color:var(--muted); font-size:1.02rem; margin:0 0 .7rem; max-width:52ch; }
+.chips{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:auto; }
+.chip{ display:inline-flex; align-items:baseline; gap:.32rem; background:var(--chip); border:1px solid var(--line);
+  border-radius:20px; padding:.28rem .68rem; font-size:.82rem; color:var(--ink-soft); }
+.chip b{ color:var(--gold-2); font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; }
+.chip.lvl{ background:linear-gradient(180deg,#2a3818,#1f2912); border-color:var(--gold); color:var(--gold-2); font-weight:700; }
+html[data-theme="light"] .chip.lvl{ background:#3f6b3f; color:#fff; border-color:#2c4d2c; }
+html[data-theme="light"] .chip.lvl b{ color:#dff0d0; }
+
+/* ============================== CORE STATS ============================== */
+.statrow{ display:grid; grid-template-columns:repeat(5,1fr); gap:.65rem; margin-bottom:1.05rem; }
+.stat{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:.75rem .6rem .7rem;
+  text-align:center; box-shadow:var(--shadow-s); break-inside:avoid; display:flex; flex-direction:column; }
+.stat .k{ font-size:.6rem; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--gold); }
+.stat .v{ font-family:var(--serif); font-size:2.25rem; font-weight:600; color:var(--ink); line-height:1; margin:.18rem 0 .12rem; font-variant-numeric:tabular-nums; }
+.stat .v small{ font-size:.95rem; color:var(--muted); font-weight:400; }
+.stat .sub{ font-size:.68rem; color:var(--muted); line-height:1.25; margin-top:auto; }
+
+/* ============================== HOW TO PLAY (centerpiece) ============================== */
+.play{ position:relative; border-radius:var(--radius); margin-bottom:1.15rem; overflow:hidden; break-inside:avoid;
+  border:1.5px solid var(--gold); box-shadow:0 0 0 1px rgba(203,170,92,.25), var(--shadow);
+  background:linear-gradient(180deg,var(--panel2),var(--panel)); }
+.play .play-h{ display:flex; align-items:center; gap:.55rem; flex-wrap:wrap; padding:.7rem 1rem;
+  background:var(--head-grad); border-bottom:1px solid var(--line); color:var(--gold-2); }
+html[data-theme="light"] .play .play-h{ color:#f5efdc; }
+.play .play-h h2{ font-size:1.32rem; }
+.play .role{ margin-left:auto; background:var(--gold); color:#1a140b; font-family:var(--sans); font-weight:800;
+  font-size:.72rem; letter-spacing:.04em; padding:.24rem .7rem; border-radius:20px; }
+.play .play-b{ padding:1rem 1.05rem 1.1rem; }
+.turn1{ background:var(--panel3); border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:var(--radius-s);
+  padding:.7rem .85rem; margin-bottom:.9rem; font-size:1rem; }
+.turn1 .lbl{ display:block; font-size:.64rem; letter-spacing:.14em; text-transform:uppercase; font-weight:800; color:var(--accent); margin-bottom:.15rem; }
+.gw{ display:grid; grid-template-columns:1fr 1fr; gap:.85rem; margin-bottom:.9rem; }
+.gw .box{ background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-s); padding:.6rem .8rem; }
+.gw .box h4{ font-family:var(--sans); font-size:.74rem; letter-spacing:.08em; text-transform:uppercase; font-weight:800; margin-bottom:.4rem; display:flex; align-items:center; gap:.35rem; }
+.gw .box.good h4{ color:var(--good); }
+.gw .box.warn h4{ color:var(--warn); }
+.gw ul{ margin:0; padding-left:1.05rem; }
+.gw li{ margin:.28rem 0; font-size:.9rem; color:var(--ink-soft); }
+.sig{ background:linear-gradient(180deg,rgba(214,163,94,.14),rgba(214,163,94,.05)); border:1px solid var(--gold);
+  border-radius:var(--radius-s); padding:.7rem .85rem; }
+.sig .lbl{ display:inline-flex; align-items:center; gap:.35rem; font-size:.64rem; letter-spacing:.14em; text-transform:uppercase; font-weight:800; color:var(--gold-2); margin-bottom:.18rem; }
+.sig .txt{ font-size:1.02rem; color:var(--ink); font-family:var(--serif); }
+.sig .txt b{ color:var(--gold-2); }
+.howto{ margin-bottom:.9rem; }
+.howto > .lbl{ display:inline-flex; align-items:center; gap:.35rem; font-size:.64rem; letter-spacing:.14em; text-transform:uppercase; font-weight:800; color:var(--gold-2); margin-bottom:.3rem; }
+.howto ul{ margin:0; padding-left:1.1rem; }
+.howto li{ margin:.32rem 0; font-size:.92rem; color:var(--ink-soft); }
+.howto li b{ color:var(--ink); }
+
+/* ============================== TWO-COLUMN BODY ============================== */
+.cols{ display:grid; grid-template-columns:1fr 1fr; gap:1.05rem; align-items:start; }
+.col{ min-width:0; }
+
+/* abilities */
+.abil-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:.55rem; }
+.abil{ background:var(--panel2); border:1px solid var(--line); border-radius:var(--radius-s); padding:.55rem .35rem .5rem; text-align:center; position:relative; }
+.abil .a-name{ font-size:.6rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; color:var(--muted); }
+.abil .a-mod{ font-family:var(--serif); font-size:1.85rem; font-weight:600; color:var(--ink); line-height:1; margin:.1rem 0 .05rem; font-variant-numeric:tabular-nums; }
+.abil .a-score{ font-size:.72rem; color:var(--ink-soft); }
+.abil .a-save{ font-size:.66rem; color:var(--muted); margin-top:.28rem; padding-top:.28rem; border-top:1px dotted var(--line); }
+.abil .a-save b{ color:var(--green-2); font-variant-numeric:tabular-nums; }
+.abil.save-prof{ border-color:var(--gold); background:rgba(203,170,92,.10); }
+.abil.save-prof .a-save::after{ content:" ✦ proficient"; color:var(--gold); font-size:.6rem; }
+
+/* skills */
+.skills{ margin:.2rem 0 0; }
+.skill{ display:flex; align-items:baseline; gap:.5rem; padding:.24rem 0; border-bottom:1px dotted var(--line2); font-size:.86rem; }
+.skill:last-child{ border-bottom:none; }
+.skill .b{ font-variant-numeric:tabular-nums; font-weight:700; width:2.6ch; text-align:right; color:var(--ink-soft); flex:0 0 auto; }
+.skill .nm{ flex:1 1 auto; color:var(--ink); }
+.skill .nm .ab{ color:var(--muted); font-size:.72rem; }
+.skill .pf{ flex:0 0 auto; font-size:.6rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800; padding:.06rem .4rem; border-radius:20px; }
+.skill.prof .b{ color:var(--green-2); }
+.skill.prof .pf{ background:rgba(132,173,104,.18); color:var(--green-2); border:1px solid var(--green); }
+.skill.exp .pf{ background:var(--gold); color:#1a140b; border:1px solid var(--gold); }
+.strong{ margin-top:.85rem; background:var(--panel3); border:1px solid var(--line); border-left:4px solid var(--green); border-radius:var(--radius-s); padding:.65rem .8rem; }
+.strong h4{ font-family:var(--sans); font-size:.74rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800; color:var(--green-2); margin-bottom:.45rem; }
+.strong .s{ font-size:.86rem; margin:.34rem 0; color:var(--ink-soft); }
+.strong .s b{ color:var(--gold-2); font-weight:700; }
+
+/* proficiencies */
+.prof-list{ display:grid; grid-template-columns:max-content 1fr; gap:.35rem .7rem; font-size:.88rem; }
+.prof-list dt{ font-weight:700; color:var(--gold); }
+.prof-list dd{ margin:0; color:var(--ink-soft); }
+
+/* attacks */
+.atk{ border:1px solid var(--line); border-radius:var(--radius-s); padding:.6rem .7rem; margin-bottom:.55rem; background:var(--panel2); border-left:4px solid var(--gold); break-inside:avoid; }
+.atk .atk-top{ display:flex; align-items:baseline; gap:.5rem; }
+.atk .anm{ font-family:var(--serif); font-size:1.04rem; font-weight:600; color:var(--ink); }
+.atk .use{ margin-left:auto; font-size:.62rem; letter-spacing:.07em; text-transform:uppercase; font-weight:800; color:var(--accent); white-space:nowrap; }
+.atk .atk-stats{ display:flex; flex-wrap:wrap; gap:.3rem; margin:.42rem 0 .35rem; }
+.atk .stat{ font-size:.74rem; background:var(--chip); border:1px solid var(--line); border-radius:6px; padding:.14rem .5rem; color:var(--ink-soft); }
+.atk .stat b{ color:var(--green-2); font-variant-numeric:tabular-nums; font-weight:700; }
+.atk .atk-note{ font-size:.8rem; color:var(--muted); margin-top:.1rem; }
+.howbox{ font-size:.82rem; color:var(--muted); background:var(--panel2); border:1px solid var(--line); border-radius:var(--radius-s);
+  padding:.55rem .7rem; margin-top:.7rem; }
+.howbox b{ color:var(--ink-soft); }
+
+/* spellcasting */
+.spell-meta{ display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem; margin-bottom:.75rem; }
+.spell-meta div{ background:var(--panel2); border:1px solid var(--line); border-radius:var(--radius-s); padding:.45rem .4rem; text-align:center; }
+.spell-meta .k{ font-size:.56rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:700; }
+.spell-meta .v{ font-family:var(--serif); font-size:1.2rem; font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; }
+.slots{ display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.75rem; }
+.slot{ background:var(--chip); border:1px solid var(--line); border-radius:8px; padding:.3rem .6rem; font-size:.8rem; color:var(--ink-soft); }
+.slot b{ color:var(--gold-2); }
+.cast-primer{ font-size:.82rem; color:var(--muted); background:var(--panel2); border:1px solid var(--line); border-radius:var(--radius-s); padding:.6rem .75rem; margin-bottom:.85rem; }
+.cast-primer b{ color:var(--ink-soft); }
+.spell-group-h{ font-family:var(--sans); font-size:.68rem; letter-spacing:.09em; text-transform:uppercase; font-weight:800; color:var(--gold); margin:.6rem 0 .4rem; display:flex; align-items:center; gap:.45rem; }
+.spell-group-h::after{ content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--gold),transparent); opacity:.5; }
+.spell{ border:1px solid var(--line); border-radius:var(--radius-s); padding:.6rem .7rem; margin-bottom:.55rem; background:var(--panel2); break-inside:avoid; }
+.spell.cantrip{ border-left:4px solid var(--green); }
+.spell.leveled{ border-left:4px solid var(--accent); }
+.spell .top{ display:flex; align-items:baseline; gap:.5rem; }
+.spell .sname{ font-family:var(--serif); font-size:1.04rem; font-weight:600; color:var(--ink); }
+.spell .lvl{ margin-left:auto; font-size:.64rem; letter-spacing:.06em; text-transform:uppercase; font-weight:800; color:var(--muted); white-space:nowrap; }
+.spell .tags{ display:flex; flex-wrap:wrap; gap:.3rem; margin:.4rem 0 .45rem; }
+.spell .tag{ font-size:.68rem; background:var(--chip); border:1px solid var(--line); border-radius:6px; padding:.12rem .42rem; color:var(--ink-soft); }
+.spell .tag b{ color:var(--muted); font-weight:700; }
+.spell .tag.conc{ border-color:var(--accent); color:var(--accent); }
+.spell .eff{ font-size:.86rem; color:var(--ink-soft); margin:.2rem 0; }
+.spell .when{ font-size:.84rem; color:var(--ink); background:var(--panel3); border-radius:7px; padding:.4rem .55rem; margin-top:.4rem; }
+.spell .when b{ color:var(--green-2); }
+
+/* on-your-turn menu (the at-a-glance toolkit, grouped by what each option costs) */
+.turnmenu .tm-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:.6rem; margin:.1rem 0 .6rem; align-items:start; }
+.tm-group{ background:var(--panel2); border:1px solid var(--line); border-left:3px solid var(--line); border-radius:var(--radius-s); padding:.5rem .65rem; break-inside:avoid; }
+.tm-group.action{ border-left-color:var(--accent); }
+.tm-group.bonus{ border-left-color:var(--green); }
+.tm-group.reaction{ border-left-color:var(--gold); }
+.tm-group.passive{ border-left-color:var(--muted); }
+.tm-h{ font-family:var(--sans); font-size:.64rem; letter-spacing:.08em; text-transform:uppercase; font-weight:800; margin-bottom:.35rem; color:var(--gold-2); }
+.tm-group.action .tm-h{ color:var(--accent); }
+.tm-group.bonus .tm-h{ color:var(--green-2); }
+.tm-group.reaction .tm-h{ color:var(--gold-2); }
+.tm-list{ margin:0; padding-left:1rem; }
+.tm-list li{ font-size:.84rem; color:var(--ink-soft); margin:.22rem 0; }
+.tm-list li b{ color:var(--ink); }
+.tm-list .tm-note{ list-style:none; margin-left:-1rem; color:var(--muted); font-style:italic; font-size:.78rem; }
+.mi-meta{ color:var(--muted); font-size:.78rem; }
+.mi-tag{ font-size:.58rem; text-transform:uppercase; letter-spacing:.05em; font-weight:800; color:var(--gold); }
+.tm-passive{ font-size:.84rem; color:var(--ink-soft); line-height:1.5; }
+.tm-passive b{ color:var(--ink); }
+.tm-foot{ font-size:.8rem; color:var(--muted); margin-top:.55rem; }
+.tm-foot b{ color:var(--ink-soft); }
+
+/* features + personality (full width) */
+.fgroup{ margin-bottom:.95rem; }
+.fgroup:last-child{ margin-bottom:0; }
+.fgroup > .gh{ font-family:var(--sans); font-size:.68rem; letter-spacing:.09em; text-transform:uppercase; font-weight:800; color:var(--gold); margin-bottom:.5rem; display:flex; align-items:center; gap:.45rem; }
+.fgroup > .gh::after{ content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--gold),transparent); opacity:.45; }
+.feat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+.feat{ background:var(--panel2); border:1px solid var(--line); border-radius:var(--radius-s); padding:.6rem .75rem; break-inside:avoid; }
+.feat .feat-top{ display:flex; align-items:baseline; gap:.5rem; }
+.feat .fn{ font-family:var(--serif); font-size:1rem; font-weight:600; color:var(--ink); flex:1 1 auto; }
+.feat .ft{ font-size:.86rem; color:var(--ink-soft); margin:.22rem 0 .3rem; }
+.feat .fw{ font-size:.8rem; color:var(--muted); }
+.feat .fw b{ color:var(--green-2); }
+.ucost{ flex:0 0 auto; font-size:.56rem; letter-spacing:.05em; text-transform:uppercase; font-weight:800; white-space:nowrap; padding:.1rem .45rem; border-radius:20px; border:1px solid var(--line); color:var(--muted); }
+.ucost.action{ color:var(--accent); border-color:var(--accent); }
+.ucost.bonus{ color:var(--green-2); border-color:var(--green); }
+.ucost.reaction{ color:var(--gold-2); border-color:var(--gold); }
+.ucost.passive{ color:var(--muted); border-color:var(--line); }
+.persona{ margin-top:.4rem; border-top:1px solid var(--line); padding-top:.85rem; }
+.persona .pgrid{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+.persona .p{ background:var(--panel2); border:1px solid var(--line); border-radius:var(--radius-s); padding:.55rem .75rem; }
+.persona .p .pk{ font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; font-weight:800; color:var(--accent); }
+.persona .p .pv{ font-family:var(--serif); font-size:.98rem; color:var(--ink); font-style:italic; margin-top:.12rem; }
+.insp{ font-size:.83rem; color:var(--muted); margin-top:.8rem; background:var(--panel3); border:1px solid var(--line); border-radius:var(--radius-s); padding:.6rem .75rem; }
+.insp b{ color:var(--gold-2); }
+
+/* equipment */
+.gear{ columns:2; column-gap:1.4rem; margin:.2rem 0 0; padding:0; list-style:none; }
+.gear li{ break-inside:avoid; padding:.3rem 0 .3rem 1.3rem; position:relative; font-size:.9rem; color:var(--ink-soft); border-bottom:1px dotted var(--line2); }
+.gear li::before{ content:"❧"; position:absolute; left:0; top:.28rem; color:var(--gold); font-size:.82rem; }
+
+/* primer */
+.primer .sec-b{ background:
+   radial-gradient(120% 100% at 100% 0%, rgba(203,170,92,.05), transparent 60%); }
+.primer ol{ margin:.2rem 0 0; padding-left:1.3rem; counter-reset:step; list-style:none; }
+.primer li{ position:relative; padding:.4rem 0 .4rem .3rem; font-size:.9rem; color:var(--ink-soft); border-bottom:1px dotted var(--line2); }
+.primer li:last-child{ border-bottom:none; }
+.primer li::before{ counter-increment:step; content:counter(step); position:absolute; left:-1.3rem; top:.42rem;
+  width:1.35rem; height:1.35rem; border-radius:50%; background:var(--chip); border:1px solid var(--line);
+  color:var(--gold-2); font-size:.7rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
+.primer li b{ color:var(--ink); }
+.primer .close{ margin-top:.85rem; font-family:var(--serif); font-style:italic; color:var(--green-2); font-size:1rem; }
+
+/* medallion art */
+.em{ width:100%; height:100%; display:block; }
+.em .m-base{ fill:var(--medal); stroke:var(--gold); stroke-width:1.4; }
+.em .m-ring{ fill:none; stroke:var(--gold); stroke-width:.7; }
+.em .m-flour{ fill:none; stroke:var(--gold); stroke-width:.8; }
+.em .m-ink{ fill:none; stroke:var(--gold-2); stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.em .m-fill{ fill:var(--gold); }
+.em .m-edge{ stroke:var(--gold-2); }
+
+.toast{ position:fixed; bottom:1.3rem; left:50%; transform:translateX(-50%) translateY(160%);
+  background:var(--head-grad); color:var(--gold-2); border:1px solid var(--gold); padding:.6rem 1.2rem; border-radius:30px;
+  box-shadow:var(--shadow); font-size:.92rem; z-index:200; transition:transform .3s ease; }
+.toast.show{ transform:translateX(-50%) translateY(0); }
+
+/* ============================== RESPONSIVE ============================== */
+@media (max-width:860px){
+  .cols{ grid-template-columns:1fr; }
+  .statrow{ grid-template-columns:repeat(2,1fr); }
+  .turnmenu .tm-grid{ grid-template-columns:1fr; }
+}
+@media (max-width:620px){
+  .head{ flex-direction:column; align-items:center; text-align:center; }
+  .portrait-col{ width:210px; }
+  .identity{ align-items:center; }
+  .chips{ justify-content:center; }
+  .gw,.feat-grid,.persona .pgrid{ grid-template-columns:1fr; }
+  .gear{ columns:1; }
+  .identity .cname{ font-size:1.9rem; }
+}
+
+/* ============================== PRINT — dense, parchment ============================== */
+@media print{
+  :root, html[data-theme="dark"], html[data-theme="light"]{
+    --bg:#fff; --bg2:#fff; --panel:#fbf6ea; --panel2:#f4ecd8; --panel3:#efe5cd;
+    --ink:#231d12; --ink-soft:#3a3220; --muted:#675b43;
+    --line:#c9b98f; --line2:#ddd0ad; --chip:#efe5cd;
+    --gold:#8a6c24; --gold-2:#7a5e1f; --green:#3f6b3f; --green-2:#2c4d2c;
+    --accent:#8a5a2b; --good:#3f6b3f; --warn:#8a6212;
+    --medal:#f3e8c8; --head-grad:linear-gradient(180deg,#3f6b3f,#345a31);
+    --shadow:none; --shadow-s:none;
+  }
+  *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; box-shadow:none !important; }
+  @page{ margin:7mm; }
+  body{ background:#fff !important; background-image:none !important; font-size:9.3px; line-height:1.3; }
+  .bar, .portrait-acts, .toast{ display:none !important; }
+  .sheet{ max-width:none; padding:0; }
+  .sec .sec-h{ color:#fff !important; }
+  .play .play-h{ color:#fff !important; }
+  .head{ border-color:var(--line); }
+
+  /* THE PAGE-COUNT FIX: let big containers flow across page breaks (so they fill the page
+     instead of jumping whole and leaving blank space); only keep small atomic cards intact. */
+  .sec, .play, .cols, .col, .sec-b, .play-b{ break-inside:auto !important; }
+  .head, .statrow, .stat, .abil, .turn1, .sig, .tm-group, .gw .box, .atk, .spell, .feat, .skill{ break-inside:avoid !important; }
+
+  /* reflow for density: stack the two big columns, split skills into 2 newspaper columns,
+     keep the stat row + turn menu multi-column even on the narrow print width */
+  .cols{ display:block !important; }
+  .skills{ columns:2; column-gap:1.1rem; }
+  .statrow{ grid-template-columns:repeat(5,1fr) !important; gap:.4rem !important; }
+  .turnmenu .tm-grid{ grid-template-columns:repeat(3,1fr) !important; gap:.45rem !important; margin:.1rem 0 .45rem !important; }
+
+  /* tighten spacing everywhere */
+  .sec, .play, .head, .statrow{ margin-bottom:.5rem !important; }
+  .sec > .sec-b{ padding:.45rem .6rem .5rem !important; }
+  .sec > .sec-h, .play .play-h{ padding:.3rem .6rem !important; font-size:1rem !important; }
+  .play .play-h h2{ font-size:1.05rem !important; }
+  .play .play-b{ padding:.5rem .6rem !important; }
+  .lead{ margin:0 0 .35rem !important; }
+  .stat{ padding:.4rem .35rem !important; }  .stat .v{ font-size:1.5rem !important; margin:.1rem 0 !important; }
+  .turn1{ padding:.4rem .6rem !important; margin-bottom:.45rem !important; }
+  .gw{ gap:.5rem !important; margin-bottom:.45rem !important; }
+  .howto{ margin-bottom:.4rem !important; }
+  .abil-grid{ gap:.4rem !important; }  .abil .a-mod{ font-size:1.35rem !important; }
+  .spell{ padding:.38rem .55rem !important; margin-bottom:.3rem !important; }
+  .spell .tags{ margin:.25rem 0 .28rem !important; }  .spell .when{ padding:.28rem .45rem !important; margin-top:.28rem !important; }
+  .feat-grid{ gap:.45rem !important; }  .feat{ padding:.38rem .55rem !important; }
+  .atk{ padding:.38rem .55rem !important; margin-bottom:.3rem !important; }
+  .gear{ column-gap:1.1rem !important; }  .gear li{ padding:.16rem 0 .16rem 1.2rem !important; }
+  .persona{ padding-top:.45rem !important; }  .persona .pgrid{ gap:.45rem !important; }
+  .primer li{ padding:.22rem 0 .22rem .3rem !important; }
+  .portrait, .portrait-col{ width:150px !important; }  .portrait{ height:182px !important; }
+  .identity .cname{ font-size:1.5rem !important; }  .identity .blurb{ margin-bottom:.4rem !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">
+    <svg class="mk" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 C9 7 6 8 4 8 c0 8 4 12 8 14 c4 -2 8 -6 8 -14 c-2 0 -5 -1 -8 -6z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 6 L12 19" stroke="currentColor" stroke-width="1"/></svg>
+    <span class="t">The Weeping Grove<span class="s">Character Reference</span></span>
+  </div>
+  <div class="spacer"></div>
+  <button class="tbtn" id="printBtn" title="Print or save as PDF">🖨️ Print / PDF</button>
+  <button class="tbtn" id="themeBtn" title="Toggle light / dark">☀️ Daylight</button>
+</header>
+
+<main class="sheet">
+  <section class="head" id="head" data-screen-label="Header"></section>
+  <section class="statrow" id="stats"></section>
+  <section class="sec primer" id="primer" data-screen-label="Beginner primer"></section>
+  <section class="play" id="play" data-screen-label="How to Play"></section>
+  <section class="sec turnmenu" id="turnmenu" data-screen-label="On Your Turn"></section>
+  <div class="cols">
+    <div class="col" id="colL"></div>
+    <div class="col" id="colR"></div>
+  </div>
+  <section class="sec" id="features" data-screen-label="Features &amp; Personality"></section>
+  <section class="sec" id="equipment" data-screen-label="Equipment"></section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+/* ════════════════════════════════════════════════════════════════════════
+   ███  EDIT ME  ███  THE ONLY THING YOU CHANGE PER PLAYER IS THIS OBJECT.
+   ────────────────────────────────────────────────────────────────────────
+   You provide the raw, post-race ability SCORES and the proficiency LISTS.
+   The sheet auto-computes every modifier, save, skill bonus, initiative,
+   passive Perception, and the proficiency bonus (from level) for you.
+   Set  caster:false  to remove the whole Spellcasting section.
+   Per-field notes are inline below. Ship this file to your player as-is.
+   ════════════════════════════════════════════════════════════════════════ */
+const CHARACTER = {
+  /* — Identity — */
+  name:"Tuf",
+  player:"Bee",                               // player's real name (optional)
+  blurb:"the pint-sized, triple-thick gnome leg-breaker who trusts exactly two things in this ugly world — cold hard cash and a rock named Rocko",
+  race:"Rock Gnome",
+  cls:"Barbarian (Path of the Berserker)",
+  background:"Criminal",
+  alignment:"True Neutral",
+  level:3,
+  motif:"barbarian",                          // emblem key (see MOTIF list) or "" for a leaf
+  portrait:"portrait.png",                    // sits beside this file in the tuf/ folder
+
+  /* — Core numbers (you provide these; everything else is derived) —
+     AC 14 = Unarmored Defense (10 + Dex +2 + Con +2). No armor — Rage's resistance is the real protection.
+     HP 42 = max Hit Die every level (12+12+12 = 36) + Con +2 ×3 (6) — the party's max-HP house rule; the d12 makes him the tank. */
+  ac:14, hpMax:42, hitDice:"3d12", speed:25,
+
+  /* — Final, post-race ability scores (27-point buy 15/15/14/8/10/8 + Rock Gnome +2 INT / +1 CON) — */
+  scores:{ STR:15, DEX:15, CON:15, INT:10, WIS:10, CHA:8 },
+
+  /* — Proficiencies (just list the names; bonuses are computed) — */
+  saveProf:["STR","CON"],
+  skillProf:["Deception","Stealth","Athletics","Intimidation"],
+  skillExpertise:[],                          // skills with DOUBLE proficiency (e.g. Rogue)
+
+  /* For each proficient/expertise skill, one concrete in-game example of WHEN to use it.
+     Deception & Stealth come from Criminal; Athletics + Intimidation are the player-chosen Barbarian
+     skills (swap freely). Intimidation rides Charisma, his dump stat — flavor over function. */
+  skillUse:{
+    Deception:"Bluff a guard, lie about whose loot it really is, or talk your way out of a job gone wrong — even with a mug like that.",
+    Stealth:"Slip into the vault, case the mark, or vanish down an alley before anyone counts the coins.",
+    Athletics:"Grapple, shove, climb, or smash a door off its hinges — what a triple-thick gnome lacks in reach he makes up in muscle.",
+    Intimidation:"Lean on someone with a snarl and a spit. The number's weak (Cha −1), but TUF talks big regardless.",
+  },
+
+  /* — What you're trained with — */
+  armorProf:"Light & medium armor, shields",
+  weaponProf:"Simple & martial weapons",
+  toolProf:"Tinker's tools (Rock Gnome), thieves' tools, a set of dice (his gaming set — swap freely)",
+  languages:"Common, Gnomish",
+
+  /* — Attacks — list each the way you'd USE it on your turn.
+     use   = the action it costs ("Action" / "Bonus action" / "Action + bonus action")
+     range = "Melee (5 ft)" if you must be next to the target, or a ranged/thrown distance
+     bonus = your to-hit · dmg = damage dice + type.
+     To-hit & damage are author-provided (they already bake in fighting styles, etc.). */
+  attacks:[
+    { name:"Battleaxe (two-handed)", use:"Action", range:"Melee (5 ft)", bonus:"+4", dmg:"1d10+2 slashing",
+      note:"Your main weapon — the big rune-etched axe, gripped in both hands for 1d10. While RAGING add +2 (so 1d10+4). Reckless Attack gives you advantage on the swing; Frenzy lets you swing a second time as a bonus action. It's a battleaxe, NOT a greataxe, on purpose — Heavy weapons give Small creatures disadvantage." },
+    { name:"Handaxe (thrown)", use:"Action", range:"Melee (5 ft) · Thrown 20/60", bonus:"+4", dmg:"1d6+2 slashing",
+      note:"For anything out of reach — you carry two handaxes plus four javelins. A THROWN attack is ranged, so Rage's +2 melee bonus does NOT apply (it stays 1d6+2). Close the distance and lead with the battleaxe whenever you can." },
+  ],
+
+  /* — Spellcasting — Tuf is a Barbarian: no spells (and Rage even shuts off casting).
+     caster:false removes the whole Spellcasting section from the sheet. */
+  caster:false,
+
+  /* — Features, grouped by source. Each: n=name, t=what it does, when=when it matters.
+     use = how it costs you on your turn — one of "Action", "Bonus action", "Reaction", or
+     "Passive" (always-on / automatic). It drives the badge AND the "On Your Turn" menu up top.
+     Add a frequency after a · if limited, e.g. "Action · 1/short rest". Omit = treated as Passive. */
+  features:{
+    race:[
+      { n:"Gnome Cunning", use:"Passive", t:"Advantage on ALL Intelligence, Wisdom, and Charisma saving throws against magic.",
+        when:"Any time a spell tries to charm, frighten, confuse, banish, or mind-control you — for a meat-and-axe build, you're shockingly hard to lock down." },
+      { n:"Small", use:"Passive", t:"You're Small (about 3½ ft — but three times as thick). You can move through the space of any creature bigger than you, but you have disadvantage on attacks with Heavy weapons (which is why you swing a battleaxe, not a greataxe).",
+        when:"Squeeze past a brute or duck under a swing — and never, EVER let anyone call you 'little'." },
+      { n:"Darkvision", use:"Passive", t:"See in dim light within 60 ft as if it were bright, and in darkness as if it were dim (shades of grey).",
+        when:"A sewer, a back alley at night, a lightless vault — you can still see well enough to crack it." },
+      { n:"Tinker", use:"Passive · build: 1 hr + 10 gp", t:"Proficient with tinker's tools. Spend 1 hour and 10 gp to build a Tiny clockwork device (AC 5, 1 HP): a wind-up toy, a fire starter, or a music box. Up to three at once; each runs 24 hours.",
+        when:"A gnome's party trick — a distraction, a quick light, or a little gift. (Rocko remains stubbornly non-clockwork.)" },
+      { n:"Artificer's Lore", use:"Passive", t:"On Intelligence (History) checks about magic items, alchemical objects, or technological devices, add DOUBLE your proficiency bonus.",
+        when:"Sizing up a strange gadget or magical contraption — mostly so you know what it'll fetch." },
+    ],
+    class:[
+      { n:"Rage", use:"Bonus action · 3/long rest", t:"Fly into a fury (no heavy armor): +2 damage on Strength melee hits, advantage on Strength checks & saves, and — the big one — RESISTANCE to bludgeoning, piercing & slashing (most physical damage is halved). Lasts 1 min; ends early if you don't attack or take damage each round. You can't cast or concentrate on spells while raging.",
+        when:"Turn 1 of nearly every real fight. With 42 HP and half damage from weapons you're brutally hard to drop. Only 3 per long rest — skip the trash fights." },
+      { n:"Reckless Attack", use:"Passive · declare on your first attack", t:"Gain advantage on your Strength melee attack rolls this turn — but attack rolls against you also have advantage until your next turn.",
+        when:"Almost always, while raging: you hit and crit far more, and you're resistant + the tankiest in the party, so let them swing back." },
+      { n:"Frenzy (Path of the Berserker)", use:"Bonus action · while raging", t:"While raging you can frenzy: make one extra melee weapon attack as a bonus action on each of your turns. When the rage ends you take one level of exhaustion (disadvantage on ability checks).",
+        when:"When a fight has to end NOW — a second 1d10+4 swing every round is huge. But the exhaustion is real; don't frenzy every scrap." },
+      { n:"Danger Sense", use:"Passive", t:"Advantage on Dexterity saving throws against effects you can SEE (traps, dragon breath, fireball) — unless you're blinded, deafened, or incapacitated.",
+        when:"When the floor clicks or the wizard points your way — you dive aside better than most." },
+      { n:"Unarmored Defense", use:"Passive", t:"With no armor, your AC = 10 + Dex + Con (= 14). You can still use a shield if you ever want one.",
+        when:"Always on — you don't wear armor; your hide and Rage's resistance ARE your armor." },
+    ],
+    background:[
+      { n:"Criminal Contact", use:"Passive", t:"You have a reliable contact who links you to a wider criminal network — fences, smugglers, leg-breakers — and you know the messengers, corrupt caravan masters, and shady sailors who can carry word for you across great distances.",
+        when:"Need to move stolen goods, find a buyer, get a message to the underworld, or learn who's hiring — your old network still answers." },
+    ],
+  },
+
+  /* — Equipment — */
+  equipment:[
+    "Battleaxe — a big rune-etched axe, swung in both hands (1d10 slashing)",
+    "Two handaxes (Light, thrown 20/60 ft)",
+    "Four javelins (thrown 30/120 ft)",
+    "No armor — your AC is all Dex + Con (and Rage's resistance)",
+    "Explorer's pack (bedroll, mess kit, tinderbox, 10 torches, 10 days rations, waterskin, 50 ft rope)",
+    "Tinker's tools, thieves' tools & a set of dice (his gaming set)",
+    "A crowbar & a set of dark common clothes, with a hood",
+    "ROCKO — a beautiful piece of obsidian. Roommate, best friend, confidant, and (on cold, lonely nights) more. Knows every one of his secrets.",
+    "A belt pouch · 15 gp (and growing, he hopes)",
+  ],
+
+  /* — Personality (roleplay + Inspiration) — */
+  trait:"I spit on the ground after I say something particularly tough.",
+  ideal:"Money, baby. The only sure thing in this ugly world *spits*",
+  bond:"Rocko. He's more than just a rock, he's the only friend I got.",
+  flaw:"If I get called little, I flash into a blind rage. This \"little\" guy can be a HUGE pain in your ass *spits again* Also..... I'm EXTREMELY ticklish.",
+
+  /* — How to Play coaching (the centerpiece) —
+     role = the one-line archetype · turn1 = the highlighted opener
+     combat[] = a few lines on how this hero actually FIGHTS, round to round
+     roleplay[] = a few lines on how to PLAY them at the table (their vibe + when to step up)
+     greatAt[] / watch[] = the two strength/caution columns · signature = their flashiest combo.
+     Keep every line plain-text and short-and-sweet. */
+  play:{
+    role:"Front-line berserker (raging melee wrecking ball)",
+    turn1:"Bonus action: RAGE. Then Reckless Attack with the battleaxe — advantage, 1d10+4 while raging. From next turn on, Frenzy adds a second 1d10+4 swing every round.",
+    combat:[
+      "You're the wrecking ball AND the wall. Rage (bonus action, 3/long rest) gives +2 damage, advantage on Strength stuff, and — the big one — RESISTANCE to bludgeoning, piercing & slashing, so most weapon hits do HALF. With 42 HP that makes you absurdly hard to drop.",
+      "Reckless Attack: declare it on your first swing for advantage on all your Strength attacks this turn. Enemies get advantage to hit you back — but you're resistant and have the most HP in the party, so let 'em.",
+      "Frenzy (Berserker): while raging, take a SECOND battleaxe swing as a bonus action every turn (another 1d10+4). The catch — one level of exhaustion when the rage ends (disadvantage on ability checks). Save Frenzy for the fight that has to die fast.",
+      "Turn order: Turn 1 is Rage (bonus action) + your attack. Turn 2 onward, add the Frenzy bonus swing. Throw a handaxe or javelin at anything you can't reach yet (thrown = no rage bonus, just 1d6+2).",
+      "Danger Sense (advantage on Dex saves vs things you can see) and Gnome Cunning (advantage on INT/WIS/CHA saves vs magic) make you weirdly hard to control for a meat-and-axe build.",
+      "Mind the rage clock: it lasts a minute but drops if you go a round without attacking or taking damage, and you only get 3 per long rest. Don't burn one on a couple of goblins.",
+    ],
+    greatAt:[ "Taking and dealing huge melee damage (Rage resistance + 42 HP)", "Hitting & critting hard (Reckless Attack advantage, Frenzy's extra swing)", "Shrugging off magic and traps (Gnome Cunning, Danger Sense)", "Lying low & working the underworld out of combat (Stealth +4, Criminal Contact)" ],
+    watch:[ "AC 14 is low — you survive on HP + Rage resistance, not by dodging; so rage early", "Reckless Attack hands enemies advantage too — great while raging, dangerous when not", "Frenzy's exhaustion stacks fast — only frenzy when you need the kill", "Charisma −1 and a big mouth: let someone else talk (the DM agrees Tuf should NOT do the talking)" ],
+    roleplay:[
+      "You're TUF — a pint-sized, triple-thick gnome brawler with a chip on your shoulder the size of a boulder. Loud, crude, greedy, and weirdly principled: you'll kill for coin, but never kids, never animals, never the innocent.",
+      "Lean into the bit: spit after every tough line, insist on doing the talking (and be terrible at it), and try to charge money for everything. Coin is the only thing you trust in this ugly world.",
+      "Rocko is your heart — your obsidian best friend and roommate (and, on cold lonely nights, more). Talk to him, defend him, ask his advice. Nobody knows you like Rocko does, and he keeps every secret (rocks can't tickle).",
+      "Two big red buttons, both gold at the table: call you 'little' (or pipsqueak, or shrimp) and you fly into a blind rage — and, keep it quiet, you are EXTREMELY ticklish.",
+      "True Neutral survivor: loyal to whoever's paying, until the job's done or a better offer comes along. You're not a villain — just a simple gnome with simple pleasures: bloody knuckles and cold hard cash.",
+    ],
+    signature:"Rage for resistance and +2 damage, Reckless Attack for advantage, and swing the battleaxe TWICE (Frenzy) — two 1d10+4 hits with a fat crit chance, while enemy blades only do half to your 42 HP.",
+  },
+};
+
+/* ════════════════════════════════════════════════════════════════════════
+   Below here is the engine. You shouldn't need to touch any of it.
+   ════════════════════════════════════════════════════════════════════════ */
+
+const ABIL_ORDER = ["STR","DEX","CON","INT","WIS","CHA"];
+const ABIL_NAME = { STR:"Strength", DEX:"Dexterity", CON:"Constitution", INT:"Intelligence", WIS:"Wisdom", CHA:"Charisma" };
+const SKILLS = [
+  ["Acrobatics","DEX"],["Animal Handling","WIS"],["Arcana","INT"],["Athletics","STR"],
+  ["Deception","CHA"],["History","INT"],["Insight","WIS"],["Intimidation","CHA"],
+  ["Investigation","INT"],["Medicine","WIS"],["Nature","INT"],["Perception","WIS"],
+  ["Performance","CHA"],["Persuasion","CHA"],["Religion","INT"],["Sleight of Hand","DEX"],
+  ["Stealth","DEX"],["Survival","WIS"],
+];
+
+const C = CHARACTER;
+const mod = (s) => Math.floor((s - 10) / 2);
+const sign = (n) => (n >= 0 ? "+" : "") + n;
+const slug = (s) => (s || "hero").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (m) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[m]));
+
+/* derived numbers */
+const profBonus = 2 + Math.floor((C.level - 1) / 4);
+const mods = {}; ABIL_ORDER.forEach((a) => mods[a] = mod(C.scores[a]));
+const saveBonus = (a) => mods[a] + (C.saveProf.includes(a) ? profBonus : 0);
+function skillBonus(name, abil){
+  let b = mods[abil];
+  if (C.skillExpertise && C.skillExpertise.includes(name)) b += profBonus * 2;
+  else if (C.skillProf.includes(name)) b += profBonus;
+  return b;
+}
+const perceptionBonus = skillBonus("Perception", "WIS");
+const passivePerception = 10 + perceptionBonus;
+const initiative = mods.DEX;
+
+/* ───────────── emblem art (gold-leaf medallion, original inline SVG) ───────────── */
+const MOTIF = {
+  human:`<path d="M50 27 L54 46 L73 50 L54 54 L50 73 L46 54 L27 50 L46 46 Z" class="m-fill m-edge" stroke-width="1.3"/>`,
+  elf:`<path d="M50 29 C39 43 39 60 50 71 C61 60 61 43 50 29 Z"/><path d="M50 33 L50 69" stroke-width="1.1"/><path d="M50 44 L42 40 M50 52 L41 47 M50 44 L58 40 M50 52 L59 47" stroke-width="1"/>`,
+  dwarf:`<path d="M27 64 L42 43 L50 54 L58 39 L73 64"/><path d="M50 53 l5 6 -5 6 -5 -6 z" class="m-fill" stroke="none"/><path d="M30 64 h40"/>`,
+  halfling:`<path d="M50 70 L50 53" stroke-width="2"/><circle cx="42" cy="47" r="7.5" class="m-fill" stroke="none" opacity=".9"/><circle cx="58" cy="47" r="7.5" class="m-fill" stroke="none" opacity=".9"/><circle cx="50" cy="38" r="7.5" class="m-fill" stroke="none" opacity=".9"/>`,
+  dragonborn:`<path d="M29 50 q21 -15 42 0 q-21 15 -42 0 Z"/><path d="M50 42 L50 58" stroke-width="2.6"/>`,
+  gnome:`<circle cx="50" cy="50" r="12"/><circle cx="50" cy="50" r="4.5" class="m-fill" stroke="none"/><path d="M50 32 v6 M50 62 v6 M32 50 h6 M62 50 h6 M37 37 l4 4 M59 59 l4 4 M63 37 l-4 4 M37 63 l4 -4" stroke-width="1.6"/>`,
+  halfelf:`<path d="M45 33 C37 45 37 60 45 70 C53 60 53 45 45 33 Z"/><path d="M64 37 l1.6 4.2 4.2 1.6 -4.2 1.6 -1.6 4.2 -1.6 -4.2 -4.2 -1.6 4.2 -1.6 z" class="m-fill" stroke="none"/>`,
+  halforc:`<path d="M41 67 q-7 -17 2 -27 q3 6 1.5 13"/><path d="M59 67 q7 -17 -2 -27 q-3 6 -1.5 13"/>`,
+  tiefling:`<path d="M39 39 q-7 -9 -2 -19 q5 6 7 15"/><path d="M61 39 q7 -9 2 -19 q-5 6 -7 15"/><path d="M50 46 q-5 7 0 13 q5 -6 0 -13 z" class="m-fill" stroke="none"/>`,
+  barbarian:`<path d="M50 26 L50 78" stroke-width="2.8"/><path d="M50 33 L73 38 Q68 46 73 54 L50 49 Z" class="m-fill" stroke="none"/><path d="M50 33 L27 38 Q32 46 27 54 L50 49 Z" class="m-fill" stroke="none"/>`,
+  bard:`<path d="M40 63 q-9 -16 -2 -31"/><path d="M60 63 q9 -16 2 -31"/><path d="M37 33 L63 33" stroke-width="1.8"/><path d="M45 37 L45 60 M50 36 L50 62 M55 37 L55 60" stroke-width="1"/><path d="M40 63 q10 6 20 0" stroke-width="1.8"/>`,
+  cleric:`<circle cx="50" cy="50" r="8.5" class="m-fill" stroke="none"/><path d="M50 27 v8 M50 65 v8 M27 50 h8 M65 50 h8 M35 35 l5.5 5.5 M59.5 59.5 l5.5 5.5 M65 35 l-5.5 5.5 M35 65 l5.5 -5.5"/>`,
+  druid:`<path d="M50 73 L50 33" stroke-width="2"/><path d="M50 43 q-11 -2 -13 -13 q11 1 13 9 M50 51 q11 -2 13 -13 q-11 1 -13 9 M50 59 q-11 -2 -13 -13 q11 1 13 9"/>`,
+  fighter:`<path d="M33 70 L65 34 M67 70 L35 34" stroke-width="2.2"/><path d="M40 41 L48 49 M60 41 L52 49" stroke-width="1.6"/><circle cx="65" cy="32" r="2.4" class="m-fill" stroke="none"/><circle cx="35" cy="32" r="2.4" class="m-fill" stroke="none"/>`,
+  monk:`<path d="M64 37 a18 18 0 1 0 5 15" stroke-width="2.4"/><circle cx="50" cy="50" r="3.6" class="m-fill" stroke="none"/>`,
+  paladin:`<path d="M50 27 L67 33 Q67 58 50 73 Q33 58 33 33 Z"/><circle cx="50" cy="46" r="5" class="m-fill" stroke="none"/><path d="M50 35 v4 M50 53 v4 M39 46 h4 M57 46 h4" stroke-width="1.3"/>`,
+  ranger:`<path d="M40 29 q17 21 0 42" stroke-width="2.2"/><path d="M40 29 L40 71" stroke-width="1"/><path d="M33 50 L67 50" stroke-width="1.8"/><path d="M67 50 l-7 -4 M67 50 l-7 4" stroke-width="1.6"/>`,
+  rogue:`<path d="M50 28 L50 64" stroke-width="2.4"/><path d="M50 64 l5 -8 M50 64 l-5 -8" stroke-width="1.8"/><path d="M41 37 L59 37" stroke-width="1.8"/><circle cx="50" cy="32" r="2.4" class="m-fill" stroke="none"/>`,
+  sorcerer:`<circle cx="50" cy="50" r="6" class="m-fill" stroke="none"/><path d="M50 25 L50 38 M50 62 L50 75 M25 50 L38 50 M62 50 L75 50 M33 33 L42 42 M58 58 L67 67 M67 33 L58 42 M42 58 L33 67"/>`,
+  warlock:`<path d="M29 50 q21 -14 42 0 q-21 14 -42 0 Z"/><circle cx="50" cy="50" r="5.5" class="m-fill" stroke="none"/>`,
+  wizard:`<path d="M50 28 L62 50 L38 50 Z"/><path d="M50 72 L38 50 L62 50 Z"/><circle cx="32" cy="36" r="1.8" class="m-fill" stroke="none"/><circle cx="70" cy="64" r="1.8" class="m-fill" stroke="none"/>`,
+};
+const MOTIF_FALLBACK = `<path d="M50 30 C40 44 40 60 50 70 C60 60 60 44 50 30 Z"/><path d="M50 34 L50 68" stroke-width="1.1"/>`;
+function medallion(key){
+  const motif = MOTIF[key] || MOTIF_FALLBACK;
+  return `<svg class="em" viewBox="0 0 100 100" aria-hidden="true">
+    <circle cx="50" cy="50" r="46" class="m-base"/>
+    <circle cx="50" cy="50" r="40.5" class="m-ring" opacity=".6"/>
+    <g class="m-flour" opacity=".5">
+      <path d="M50 5 q4 6 0 11 q-4 -5 0 -11"/><path d="M50 95 q4 -6 0 -11 q-4 5 0 11"/>
+      <path d="M5 50 q6 4 11 0 q-5 -4 -11 0"/><path d="M95 50 q-6 4 -11 0 q5 -4 11 0"/>
+    </g>
+    <g class="m-ink">${motif}</g>
+  </svg>`;
+}
+
+/* ───────────── render: header ───────────── */
+function renderHead(){
+  const chips = [];
+  chips.push(`<span class="chip"><b>Race</b>${esc(C.race)}</span>`);
+  chips.push(`<span class="chip"><b>Class</b>${esc(C.cls)}</span>`);
+  chips.push(`<span class="chip"><b>Background</b>${esc(C.background)}</span>`);
+  if (C.alignment) chips.push(`<span class="chip"><b>Alignment</b>${esc(C.alignment)}</span>`);
+  if (C.player) chips.push(`<span class="chip"><b>Played by</b>${esc(C.player)}</span>`);
+  chips.push(`<span class="chip lvl"><b>Level</b>${C.level} · Prof ${sign(profBonus)}</span>`);
+
+  return `
+    <div class="watermk">${medallion(C.motif)}</div>
+    <div class="portrait-col">
+      <div class="portrait" id="portrait"></div>
+    </div>
+    <div class="identity">
+      <span class="eyebrow">Your character</span>
+      <h1 class="cname">${esc(C.name)}</h1>
+      <p class="blurb">A level-${C.level} ${esc(C.race)} ${esc(C.cls)} — ${esc(C.blurb)}.</p>
+      <div class="chips">${chips.join("")}</div>
+    </div>`;
+}
+function renderPortrait(){
+  const box = document.getElementById("portrait");
+  const stored = localStorage.getItem(PORTRAIT_KEY);
+  const src = stored || C.portrait;
+  if (src){
+    box.innerHTML = `<img src="${src}" alt="Portrait of ${esc(C.name)}">
+      <button class="remove" id="removeBtn" title="Remove portrait" aria-label="Remove portrait">✕</button>`;
+  } else {
+    box.innerHTML = `<div class="ph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="9" r="3.4"/><path d="M5 20 c0 -4 3.4 -6 7 -6 s7 2 7 6"/></svg>
+        <div class="t">Portrait of<br><b>${esc(C.name)}</b></div>
+        <div class="m">click or drop an image</div>
+      </div>`;
+  }
+  wirePortrait();
+}
+
+/* ───────────── render: core stats ───────────── */
+function renderStats(){
+  const tiles = [
+    ["Armor Class", C.ac, "how hard you are to hit"],
+    ["Hit Points", C.hpMax, "your health — at 0 you fall"],
+    ["Speed", `${C.speed}<small> ft</small>`, "how far you move each turn"],
+    ["Initiative", sign(initiative), "added to your roll for turn order"],
+    ["Passive Perception", passivePerception, "what you notice without looking"],
+  ];
+  document.getElementById("stats").innerHTML = tiles.map(([k, v, s]) =>
+    `<div class="stat"><div class="k">${k}</div><div class="v">${v}</div><div class="sub">${s}</div></div>`).join("");
+}
+
+/* ───────────── render: how to play (centerpiece) ───────────── */
+function renderPlay(){
+  const p = C.play;
+  const howto = (label, items) => (items && items.length)
+    ? `<div class="howto"><span class="lbl">${label}</span><ul>${items.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`
+    : "";
+  document.getElementById("play").innerHTML = `
+    <div class="play-h">
+      <span class="ic">🧭</span>
+      <h2>How to Play ${esc(C.name.split(" ")[0])}</h2>
+      ${p.role ? `<span class="role">${esc(p.role)}</span>` : ""}
+    </div>
+    <div class="play-b">
+      ${p.turn1 ? `<div class="turn1"><span class="lbl">A great turn 1</span>${esc(p.turn1)}</div>` : ""}
+      ${howto("⚔ In a fight", p.combat)}
+      <div class="gw">
+        <div class="box good"><h4>✦ You're great at</h4><ul>${(p.greatAt||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+        <div class="box warn"><h4>⚠ Watch out for</h4><ul>${(p.watch||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+      </div>
+      ${howto("🎭 At the table", p.roleplay)}
+      ${p.signature ? `<div class="sig"><span class="lbl">★ Signature move</span><div class="txt">${esc(p.signature)}</div></div>` : ""}
+    </div>`;
+}
+
+/* ───────────── render: abilities ───────────── */
+function abilitiesSec(){
+  const cells = ABIL_ORDER.map((a) => {
+    const isProf = C.saveProf.includes(a);
+    return `<div class="abil${isProf ? " save-prof" : ""}">
+      <div class="a-name">${ABIL_NAME[a]}</div>
+      <div class="a-mod">${sign(mods[a])}</div>
+      <div class="a-score">score ${C.scores[a]}</div>
+      <div class="a-save">Save <b>${sign(saveBonus(a))}</b></div>
+    </div>`;
+  }).join("");
+  return sec("⚔", "Ability Scores", `
+    <p class="lead">The big number is your <b>modifier</b> — add it to rolls of that type. The <b>save</b> is what you roll to resist effects (poison, fear, a spell). Gold-edged abilities are your trained saves.</p>
+    <div class="abil-grid">${cells}</div>`);
+}
+
+/* ───────────── render: skills ───────────── */
+function skillsSec(){
+  const rows = SKILLS.map(([name, abil]) => {
+    const isExp = C.skillExpertise && C.skillExpertise.includes(name);
+    const isProf = C.skillProf.includes(name);
+    const cls = isExp ? "skill exp prof" : isProf ? "skill prof" : "skill";
+    const tag = isExp ? `<span class="pf">Expertise</span>` : isProf ? `<span class="pf">Trained</span>` : "";
+    return `<div class="${cls}"><span class="b">${sign(skillBonus(name, abil))}</span>
+      <span class="nm">${name} <span class="ab">(${abil})</span></span>${tag}</div>`;
+  }).join("");
+
+  const strongList = [];
+  [...(C.skillExpertise||[]), ...C.skillProf].forEach((name) => {
+    if (strongList.find((x) => x.name === name)) return;
+    const use = C.skillUse && C.skillUse[name];
+    if (use) strongList.push({ name, use });
+  });
+  const strong = strongList.length ? `
+    <div class="strong">
+      <h4>Your strongest skills — and when to lean on them</h4>
+      ${strongList.map((s) => `<div class="s"><b>${s.name}.</b> ${esc(s.use)}</div>`).join("")}
+    </div>` : "";
+
+  return sec("🎯", "Skills", `
+    <p class="lead">Roll these when the DM asks, based on what you're trying to do — e.g. a <b>History</b> check to recall lore about an old book.</p>
+    <div class="skills">${rows}</div>${strong}`);
+}
+
+/* ───────────── render: proficiencies ───────────── */
+function profSec(){
+  return sec("📜", "Proficiencies & Languages", `
+    <dl class="prof-list">
+      <dt>Armor</dt><dd>${esc(C.armorProf)}</dd>
+      <dt>Weapons</dt><dd>${esc(C.weaponProf)}</dd>
+      <dt>Tools</dt><dd>${esc(C.toolProf)}</dd>
+      <dt>Languages</dt><dd>${esc(C.languages)}</dd>
+    </dl>`);
+}
+
+/* ───────────── render: attacks ───────────── */
+function attacksSec(){
+  const cards = C.attacks.map((a) => `
+    <div class="atk">
+      <div class="atk-top"><span class="anm">${esc(a.name)}</span>${a.use ? `<span class="use">${esc(a.use)}</span>` : ""}</div>
+      <div class="atk-stats">
+        <span class="stat"><b>${esc(a.bonus)}</b> to hit</span>
+        <span class="stat">Damage <b>${esc(a.dmg)}</b></span>
+        ${a.range ? `<span class="stat">${esc(a.range)}</span>` : ""}
+      </div>
+      ${a.note ? `<div class="atk-note">${esc(a.note)}</div>` : ""}
+    </div>`).join("");
+  return sec("🏹", "Attacks", cards +
+    `<div class="howbox"><b>How to attack on your turn:</b> your <b>Attack</b> action makes <b>one</b> attack (some features grant more). Pick a target, roll <b>d20 + the “to&nbsp;hit” number</b>; match or beat its <b>Armor Class</b> and you hit — then roll the <b>damage</b>. <b>Melee</b> means you're right next to it; a <b>ranged</b> attack needs a clear shot within the listed distance.</div>`);
+}
+
+/* ───────────── render: spellcasting ───────────── */
+function spellCard(s){
+  const lvl = (s.lvl === "cantrip" || s.lvl === 0) ? "Cantrip" : `Level ${s.lvl}`;
+  const isCantrip = s.lvl === "cantrip" || s.lvl === 0;
+  const tags = [
+    `<span class="tag"><b>To cast</b> ${esc(s.castTime)}</span>`,
+    `<span class="tag"><b>Range</b> ${esc(s.range)}</span>`,
+    `<span class="tag${s.concentration ? " conc" : ""}"><b>Lasts</b> ${esc(s.duration)}</span>`,
+    `<span class="tag"><b>How it lands</b> ${esc(s.roll)}</span>`,
+  ].join("");
+  return `<div class="spell ${isCantrip ? "cantrip" : "leveled"}">
+    <div class="top"><span class="sname">${esc(s.name)}</span><span class="lvl">${lvl}</span></div>
+    <div class="tags">${tags}</div>
+    <div class="eff">${esc(s.effect)}</div>
+    <div class="when"><b>When to cast it:</b> ${esc(s.when)}</div>
+  </div>`;
+}
+function spellSec(){
+  if (!C.caster) return "";
+  const sp = C.spell;
+  const meta = `<div class="spell-meta">
+      <div><div class="k">Casting ability</div><div class="v" style="font-size:.95rem">${esc(sp.ability)}</div></div>
+      <div><div class="k">Spell save DC</div><div class="v">${sp.dc}</div></div>
+      <div><div class="k">Spell attack</div><div class="v">${esc(sp.atk)}</div></div>
+    </div>`;
+  const slots = Object.keys(sp.slots || {}).length
+    ? `<div class="slots">${Object.entries(sp.slots).map(([lv, n]) => `<span class="slot">Level ${lv} — <b>${n}</b> slot${n > 1 ? "s" : ""}</span>`).join("")}</div>`
+    : "";
+  const primer = `<div class="cast-primer">
+      <b>How casting works:</b> On your turn, casting a spell is usually your <b>action</b> — a few are a quick <b>bonus action</b> (each card's “To cast” says which). A leveled spell spends a <b>spell slot</b> of that level; you get every slot back on a <b>long rest</b>. <b>Cantrips are free and unlimited.</b> To land, a spell either makes the target <b>roll a saving throw</b> to resist it (against your <b>Spell save DC ${sp.dc}</b>) or makes <b>you roll a Spell&nbsp;attack</b> (<b>${esc(sp.atk)}</b>) to hit — the “How it lands” tag tells you which. You can <b>concentrate</b> on only one spell at a time, and taking damage can break it.</div>`;
+  const cantrips = (sp.cantrips || []);
+  const leveled = (sp.known || []);
+  const cantripBlock = cantrips.length
+    ? `<div class="spell-group-h">Cantrips · always free</div>${cantrips.map(spellCard).join("")}` : "";
+  // group the leveled spells by their level (low → high); each header shows that level's slot count
+  const byLevel = {};
+  leveled.forEach((s) => { const k = Number(s.lvl) || 0; (byLevel[k] = byLevel[k] || []).push(s); });
+  const leveledBlock = Object.keys(byLevel).map(Number).sort((a, b) => a - b).map((lv) => {
+    const n = sp.slots && sp.slots[lv];
+    const slotLabel = n ? ` · ${n} slot${n > 1 ? "s" : ""}` : "";
+    return `<div class="spell-group-h">Level ${lv}${slotLabel}</div>${byLevel[lv].map(spellCard).join("")}`;
+  }).join("");
+  return sec("🔮", "Spellcasting", meta + slots + primer + cantripBlock + leveledBlock);
+}
+
+/* ───────────── shared: action-cost classification ───────────── */
+function useClass(use){
+  const u = (use || "passive").toLowerCase();
+  if (u.includes("reaction")) return "reaction";
+  if (u.includes("bonus")) return "bonus";
+  if (u.includes("action")) return "action";
+  return "passive";
+}
+function useBadge(use){ return `<span class="ucost ${useClass(use)}">${esc(use || "Passive")}</span>`; }
+
+/* ───────────── render: "on your turn" menu (derived from attacks + spells + features) ───────────── */
+function renderTurnMenu(){
+  const action = [], bonus = [], reaction = [], passive = [];
+
+  // attacks — a weapon may grant an Action attack AND (two-weapon fighting) a Bonus-action attack
+  (C.attacks || []).forEach((a) => {
+    const u = (a.use || "Action").toLowerCase();
+    const item = `<b>${esc(a.name)}</b> <span class="mi-meta">${esc(a.bonus)} to hit · ${esc(a.dmg)}</span>`;
+    if (u.includes("reaction")) { reaction.push(item); return; }
+    if (!u.startsWith("bonus")) action.push(item);
+    if (u.includes("bonus")) bonus.push(`<b>${esc(a.name)}</b> <span class="mi-meta">off-hand swing</span>`);
+  });
+
+  // spells & cantrips — only those cast as a single-turn action/bonus/reaction (rituals etc. are skipped)
+  if (C.caster && C.spell){
+    [ ...(C.spell.cantrips || []), ...(C.spell.known || []) ].forEach((s) => {
+      const ct = (s.castTime || "").toLowerCase();
+      const isCantrip = s.lvl === "cantrip" || s.lvl === 0;
+      const item = `<b>${esc(s.name)}</b> <span class="mi-tag">${isCantrip ? "cantrip" : "spell"}</span>`;
+      if (ct.includes("reaction")) reaction.push(item);
+      else if (ct.includes("bonus")) bonus.push(item);
+      else if (ct.includes("action")) action.push(item);
+    });
+  }
+
+  // features — sorted by their `use`; passive ones become the "always on" line
+  ["race", "class", "background"].forEach((k) => {
+    ((C.features && C.features[k]) || []).forEach((f) => {
+      const c = useClass(f.use);
+      if (c === "passive") passive.push(`<b>${esc(f.n)}</b>`);
+      else ({ action, bonus, reaction })[c].push(`<b>${esc(f.n)}</b>`);
+    });
+  });
+
+  // universal reaction every hero has
+  reaction.push(`<b>Opportunity attack</b> <span class="mi-meta">when a foe leaves your reach</span>`);
+
+  const group = (title, cls, items) => items.length
+    ? `<div class="tm-group ${cls}"><div class="tm-h">${title}</div><ul class="tm-list">${items.map(i => `<li>${i}</li>`).join("")}</ul></div>`
+    : "";
+  const passiveBlock = passive.length
+    ? `<div class="tm-group passive"><div class="tm-h">Always on (passive)</div><div class="tm-passive">${passive.join(" · ")}</div></div>`
+    : "";
+
+  const body = `
+    <p class="lead">Everything you can do, sorted by what it costs. Each turn you get <b>one action</b> and your movement, often <b>one bonus action</b>, and <b>one reaction</b> between turns. Full details are in the cards below.</p>
+    <div class="tm-grid">
+      ${group("Action · pick one", "action", action)}
+      ${group("Bonus action", "bonus", bonus)}
+      ${group("Reaction", "reaction", reaction)}
+    </div>
+    ${passiveBlock}
+    <p class="tm-foot">Plus the moves <b>any</b> hero can make as their action — <b>Dash, Disengage, Dodge, Help, Hide, Ready, Search</b> (see “New to D&amp;D? How to play” above).</p>`;
+
+  document.getElementById("turnmenu").innerHTML =
+    `<div class="sec-h"><span class="ic">⚡</span> On Your Turn — your options at a glance</div>
+     <div class="sec-b">${body}</div>`;
+}
+
+/* ───────────── render: features + personality ───────────── */
+function renderFeatures(){
+  const groups = [["race", "From your Race"], ["class", "From your Class"], ["background", "From your Background"]];
+  const featHtml = groups.map(([key, label]) => {
+    const list = (C.features && C.features[key]) || [];
+    if (!list.length) return "";
+    return `<div class="fgroup"><div class="gh">${label}</div>
+      <div class="feat-grid">${list.map((f) => `
+        <div class="feat"><div class="feat-top"><span class="fn">${esc(f.n)}</span>${useBadge(f.use)}</div><div class="ft">${esc(f.t)}</div>
+        ${f.when ? `<div class="fw"><b>When:</b> ${esc(f.when)}</div>` : ""}</div>`).join("")}</div></div>`;
+  }).join("");
+
+  const personality = `
+    <div class="persona">
+      <div class="gh" style="font-family:var(--sans);font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;font-weight:800;color:var(--gold);margin-bottom:.5rem;">Who you are</div>
+      <div class="pgrid">
+        <div class="p"><div class="pk">Trait</div><div class="pv">"${esc(C.trait)}"</div></div>
+        <div class="p"><div class="pk">Ideal</div><div class="pv">"${esc(C.ideal)}"</div></div>
+        <div class="p"><div class="pk">Bond</div><div class="pv">"${esc(C.bond)}"</div></div>
+        <div class="p"><div class="pk">Flaw</div><div class="pv">"${esc(C.flaw)}"</div></div>
+      </div>
+      <div class="insp">These four lines are for <b>roleplaying</b> — leaning into them earns <b>Inspiration</b> from your DM. Inspiration is a token you can spend to <b>reroll any d20</b>, granted when you play your character true to who they are.</div>
+    </div>`;
+
+  document.getElementById("features").innerHTML =
+    `<div class="sec-h"><span class="ic">🌟</span> Features, Traits &amp; Personality</div>
+     <div class="sec-b">${featHtml}${personality}</div>`;
+}
+
+/* ───────────── render: equipment ───────────── */
+function renderEquipment(){
+  document.getElementById("equipment").innerHTML =
+    `<div class="sec-h"><span class="ic">🎒</span> Equipment</div>
+     <div class="sec-b"><p class="lead">What you'd reach for, and when. Your bow is your answer to most problems; the rest keeps you alive on the long, sad road through the wood.</p>
+     <ul class="gear">${C.equipment.map((g) => `<li>${esc(g)}</li>`).join("")}</ul></div>`;
+}
+
+/* ───────────── render: beginner primer ───────────── */
+function renderPrimer(){
+  const lines = [
+    "<b>Your turn in a fight:</b> move up to your Speed <em>and</em> take <b>one action</b>. Many turns also have a quick <b>bonus action</b> (a spell or feature will say so), and you always get <b>one reaction</b> to spend when it <em>isn't</em> your turn — like swinging at an enemy who runs past you.",
+    "<b>Your action — pick one:</b> <b>Attack</b> (roll d20 + your to-hit vs the foe's Armor Class; on a hit, roll the weapon's damage) · <b>Cast a spell</b> (do what its card says) · <b>Dash</b> (move twice as far) · <b>Disengage</b> (step away without being hit for leaving) · <b>Dodge</b> (attacks against you have disadvantage) · <b>Help</b> (give an ally advantage) · <b>Hide</b> (roll Stealth to slip out of sight).",
+    "<b>Any uncertain roll:</b> roll a <b>d20</b>, add the matching modifier, and meet or beat the number the DM sets. <b>Advantage</b> = roll two d20s and keep the higher; <b>disadvantage</b> = keep the lower.",
+    "<b>Out of combat, just play your character:</b> say what you do or speak in their voice — talk your way past a guard, search a room, sneak, climb, persuade, study a clue. The DM tells you which roll it needs, if any. This is most of the game.",
+    "<b>If you drop to 0 HP:</b> you fall and start rolling <b>death saves</b> (a d20: 10 or higher succeeds) — three successes and you stabilise, three failures and you don't. An ally's healing brings you straight back up.",
+  ];
+  document.getElementById("primer").innerHTML =
+    `<div class="sec-h"><span class="ic">📖</span> New to D&amp;D? How to play</div>
+     <div class="sec-b"><ol>${lines.map((l) => `<li>${l}</li>`).join("")}</ol>
+     <p class="close">You don't need to memorise any of this. Make choices that sound right, ask questions freely, and let the story carry you. There are no wrong moves — only the next one.</p></div>`;
+}
+
+/* small helper to wrap a section */
+function sec(icon, title, body){
+  return `<section class="sec"><div class="sec-h"><span class="ic">${icon}</span> ${title}</div><div class="sec-b">${body}</div></section>`;
+}
+
+/* ───────────── portrait upload / AI prompt ───────────── */
+const PORTRAIT_KEY = "wg-sheet-portrait-" + slug(C.name);
+function aiPrompt(){
+  return [
+    `Character portrait of ${C.name}, a ${C.race} ${C.cls}${C.background ? ` with an ${C.background} past` : ""}.`,
+    `${C.blurb.charAt(0).toUpperCase() + C.blurb.slice(1)}.`,
+    C.trait ? `Personality: ${C.trait}` : "",
+    "Head-and-shoulders, calm and characterful.",
+    "Storybook / illuminated-manuscript style; misty fairytale forest mood; aged-parchment and deep-forest-green palette with amber lantern glow and soft gold-leaf accents; painterly but clean; gentle fog; even lighting; simple background; no text, no watermark, no logos. Square 1:1.",
+  ].filter(Boolean).join(" ");
+}
+function downscaleToDataURL(file, cb){
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 600;
+      let { width: w, height: h } = img;
+      if (w > max || h > max){ const r = Math.min(max / w, max / h); w = Math.round(w * r); h = Math.round(h * r); }
+      const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+      cv.getContext("2d").drawImage(img, 0, 0, w, h);
+      cb(cv.toDataURL("image/jpeg", 0.85));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+let fileInput;
+function pickFile(){
+  if (!fileInput){
+    fileInput = document.createElement("input");
+    fileInput.type = "file"; fileInput.accept = "image/*"; fileInput.style.display = "none";
+    document.body.appendChild(fileInput);
+    fileInput.addEventListener("change", () => {
+      const f = fileInput.files && fileInput.files[0];
+      if (f) downscaleToDataURL(f, (data) => { localStorage.setItem(PORTRAIT_KEY, data); renderPortrait(); toast("Portrait saved"); });
+      fileInput.value = "";
+    });
+  }
+  fileInput.click();
+}
+function wirePortrait(){
+  const box = document.getElementById("portrait");
+  if (!box) return;
+  box.onclick = (e) => { if (e.target.closest("#removeBtn")) return; pickFile(); };
+  const rm = document.getElementById("removeBtn");
+  if (rm) rm.onclick = (e) => { e.stopPropagation(); localStorage.removeItem(PORTRAIT_KEY); renderPortrait(); toast("Portrait removed"); };
+  box.ondragover = (e) => { e.preventDefault(); box.style.outline = "2px dashed var(--gold)"; };
+  box.ondragleave = () => { box.style.outline = ""; };
+  box.ondrop = (e) => { e.preventDefault(); box.style.outline = "";
+    const f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f && f.type.startsWith("image/")) downscaleToDataURL(f, (data) => { localStorage.setItem(PORTRAIT_KEY, data); renderPortrait(); toast("Portrait saved"); });
+  };
+}
+function copy(text, msg){
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(() => toast(msg)).catch(() => fallbackCopy(text, msg));
+  } else fallbackCopy(text, msg);
+}
+function fallbackCopy(text, msg){
+  const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); toast(msg); } catch (e) { toast("Copy failed — long-press to copy"); }
+  document.body.removeChild(ta);
+}
+
+/* ───────────── theme + toast ───────────── */
+const THEME_KEY = "wg-sheet-theme";
+function applyTheme(t){
+  document.documentElement.setAttribute("data-theme", t);
+  const btn = document.getElementById("themeBtn");
+  btn.textContent = t === "dark" ? "☀️ Daylight" : "🌙 Nightfall";
+}
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById("toast"); el.textContent = msg; el.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("show"), 1900);
+}
+
+/* ───────────── boot ───────────── */
+function boot(){
+  document.title = `${C.name} — The Weeping Grove`;
+  applyTheme(localStorage.getItem(THEME_KEY) || "dark");
+
+  document.getElementById("head").innerHTML = renderHead();
+  renderPortrait();
+  renderStats();
+  renderPlay();
+
+  renderTurnMenu();
+  document.getElementById("colL").innerHTML = abilitiesSec() + skillsSec();
+  document.getElementById("colR").innerHTML = attacksSec() + spellSec();
+
+  renderFeatures();
+  renderEquipment();
+  renderPrimer();
+
+  document.getElementById("themeBtn").onclick = () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    localStorage.setItem(THEME_KEY, next); applyTheme(next);
+  };
+  document.getElementById("printBtn").onclick = () => window.print();
+}
+boot();
+</script>
+</body>
+</html>

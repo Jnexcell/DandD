@@ -114,7 +114,10 @@ const PARTY = [
   { name:"I'Drenk Bier", player:"Ethan", meta:"Half-Orc Paladin · Oath of Vengeance",
     blurb:"A gentle-hearted half-orc who swore vengeance over his murdered father — but keeps drowning the vow in one more pint and 'accidentally' becoming a shield for every underdog he meets.",
     sheet:"idrenk-bier/idrenk-bier.html", portrait:"idrenk-bier/portrait.png" },
-  null, null,   // two open seats — swap each for a hero object as sheets come in
+  { name:"Tuf", player:"Bee", meta:"Rock Gnome Barbarian · Path of the Berserker",
+    blurb:"A pint-sized, triple-thick gnome leg-breaker who flies into a blind rage at the word 'little,' trusts exactly two things — cold hard cash and a rock named Rocko — and absolutely should not be allowed to do the talking.",
+    sheet:"tuf/tuf.html", portrait:"tuf/portrait.png" },
+  null,   // one open seat — swap for a hero object as sheets come in
 ];
 
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (m) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[m]));

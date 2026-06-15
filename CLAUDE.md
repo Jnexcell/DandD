@@ -127,9 +127,10 @@ citations back to the PDFs (the PDFs remain the source of truth).
 - `sessions/` — **live session-state files** (kept by the DM Assistant while you play; pause/resume) + `_TEMPLATE.md` + `README.md`
 - `PROGRESS.md` — build tracker / resume guide (see "Build status" below)
 - `.build/` — regenerable page-tagged text dumps of each PDF (for live lookups) — **gitignored** (copyrighted text)
-- **Web / hosting:** `index.html` (the players' **character builder** — a byte-identical copy of
-  `modules/the-weeping-grove/site/character-builder.html`) + `modules/the-weeping-grove/site/index.html`
-  (the **DM screen**), published via **GitHub Pages** — see the next section.
+- **Web / hosting:** `index.html` (repo root) is a **redirect to the Party page** `characters/index.html`
+  (the public **home** — a roster linking each hero's finished sheet, e.g. `characters/alary-fern/`). The
+  **character builder** now lives at `modules/the-weeping-grove/site/character-builder.html`; the **DM screen**
+  at `modules/the-weeping-grove/site/index.html`. Published via **GitHub Pages** — see the next section.
 
 ## Player-facing web pages, hosting & source control
 
@@ -149,17 +150,19 @@ link, and so the work is backed up.
 
 ### GitHub Pages (the live site)
 - **Settings → Pages → Deploy from a branch → `main` / `/ (root)`.**
-- **Player link (share this one): https://jnexcell.github.io/DandD/** → opens **straight into the character
-  builder** (its own Welcome step carries the quest hook — there is **no separate landing page** anymore).
-- The same builder is also served at `…/DandD/modules/the-weeping-grove/site/character-builder.html` (an
-  identical copy, so any older links still resolve).
+- **Player link (share this one): https://jnexcell.github.io/DandD/** → redirects to the **Party page**
+  (`…/DandD/characters/`), the public home. From there a big **"Build your character"** button opens the
+  **builder** (`…/DandD/modules/the-weeping-grove/site/character-builder.html`), which carries the quest hook in
+  its Welcome step and has a **"← The Party"** back button. Each hero card links to that player's sheet
+  (`characters/<name>/<name>.html`).
 
 ### The HTML pages
-- **`index.html`** (repo root) **and** **`modules/the-weeping-grove/site/character-builder.html`** are **the same
-  file**, kept byte-identical — the **interactive player character builder**, *"The Weeping Grove — Build Your
-  Hero"* (the click-through equivalent of `characters/_CHOOSER.md`). Root is the public entry point; the second
-  path is a copy kept so older links resolve. **To edit: change one file, then copy it over the other so they stay
-  in sync** (e.g. `cp modules/the-weeping-grove/site/character-builder.html index.html`).
+- **`index.html`** (repo root) is now a **tiny redirect** to `characters/` (the Party home) — it is **no longer**
+  the builder, and the old byte-identical pairing is retired. The **interactive player character builder**,
+  *"The Weeping Grove — Build Your Hero"* (the click-through equivalent of `characters/_CHOOSER.md`), lives at
+  **`modules/the-weeping-grove/site/character-builder.html`**. **`characters/index.html`** is the Party roster
+  (home); per-player finished sheets are generated at `characters/<name>/<name>.html` from the self-contained
+  `characters/character-sheet-template.html` (edit its one `CHARACTER` object; the engine derives every number).
   - **Flavor-first & beginner-friendly.** 7-step flow (Welcome → Race → Class → Background → Ability Scores →
     Personality → Finish). Race / Class / Background cards show **personality & feel** ("what kind of character
     you're making"), **not** stats. The rules data (ability bonuses, speed, Hit Die, skills, features) still lives

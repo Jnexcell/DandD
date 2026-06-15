@@ -108,7 +108,10 @@ const PARTY = [
   { name:"Alary Fern", player:"Mackenzie", meta:"Half-Elf Druid · Circle of the Land",
     blurb:"The curious naturalist who reads the wild like a storybook and believes every living thing has a tale worth hearing.",
     sheet:"alary-fern/alary-fern.html", portrait:"alary-fern/portrait.png" },
-  null, null, null, null,   // four open seats — swap each for a hero object as sheets come in
+  { name:"Douglas Dimmadome", player:"Richard", meta:"Variant Human Warlock · The Great Old One",
+    blurb:"A streetwise survivor who bargained with a thing beyond the stars on a midnight beach — and now spends its eldritch gifts on the hungry and the hopeless.",
+    sheet:"douglas-dimmadome/douglas-dimmadome.html", portrait:"douglas-dimmadome/portrait.png" },
+  null, null, null,   // three open seats — swap each for a hero object as sheets come in
 ];
 
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (m) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[m]));

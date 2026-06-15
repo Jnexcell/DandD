@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Character Sheet — The Weeping Grove</title>
+<title>Douglas Dimmadome — The Weeping Grove</title>
 <style>
 /* ============================================================
    THE WEEPING GROVE — player's at-the-table reference sheet
@@ -84,6 +84,8 @@ html[data-theme="light"] .sec > .sec-h{ color:#f5efdc; }
   border:1px solid var(--line); background:var(--panel2); cursor:pointer; transition:border-color .15s ease, box-shadow .15s ease; }
 .portrait:hover{ border-color:var(--gold); box-shadow:0 0 0 1px rgba(203,170,92,.35); }
 .portrait img{ width:100%; height:100%; object-fit:cover; display:block; }
+/* Douglas's portrait is landscape with the figure right-of-centre — shift the crop right so he's centred in the frame */
+#portrait img{ object-position:68% center; }
 .portrait .remove{ position:absolute; top:.45rem; right:.45rem; width:26px; height:26px; border-radius:50%; cursor:pointer;
   border:1px solid rgba(203,170,92,.5); background:rgba(16,21,14,.72); color:var(--gold-2); font-size:.85rem; line-height:1;
   display:none; align-items:center; justify-content:center; backdrop-filter:blur(3px); }
@@ -415,75 +417,107 @@ html[data-theme="light"] .play .play-h{ color:#f5efdc; }
    ════════════════════════════════════════════════════════════════════════ */
 const CHARACTER = {
   /* — Identity — */
-  name:"Lyra Shadowleaf",
-  player:"",                                  // player's real name (optional)
-  blurb:"the outlander who reads the forest like an open book",
-  race:"Wood Elf",
-  cls:"Ranger (Hunter)",
-  background:"Outlander",
-  alignment:"Neutral Good",
+  name:"Douglas Dimmadome",
+  player:"Richard",                           // player's real name (optional)
+  blurb:"the streetwise survivor who bargained with a thing beyond the stars — and now spends its gifts on the hungry and the hopeless",
+  race:"Variant Human",
+  cls:"Warlock (The Great Old One)",
+  background:"Urchin",
+  alignment:"Chaotic Good",
   level:3,
-  motif:"ranger",                             // emblem key (see MOTIF list) or "" for a leaf
-  portrait:"",                                // image URL or data-URI; "" lets the player upload one
+  motif:"warlock",                            // emblem key (see MOTIF list) or "" for a leaf
+  portrait:"portrait.png",                    // sits beside this file in the douglas-dimmadome/ folder
 
-  /* — Core numbers (you provide these; everything else is derived) — */
-  ac:15, hpMax:28, hitDice:"3d10", speed:35,
+  /* — Core numbers (you provide these; everything else is derived) —
+     AC 12 = leather armor (11) + Dex (+1). (Take the Armor of Shadows invocation later for Mage Armor → AC 14.)
+     HP 30 = max Hit Die every level (8+8+8 = 24) + Con +2 ×3 (6) — the party's max-HP house rule for a punchier one-shot. */
+  ac:12, hpMax:30, hitDice:"3d8", speed:30,
 
-  /* — Final, post-race ability scores — */
-  scores:{ STR:12, DEX:16, CON:14, INT:10, WIS:14, CHA:8 },
+  /* — Final, post-race ability scores (standard array 15/14/13/12/10/8 + Variant Human +1 CHA / +1 CON) — */
+  scores:{ STR:13, DEX:12, CON:15, INT:10, WIS:8, CHA:16 },
 
   /* — Proficiencies (just list the names; bonuses are computed) — */
-  saveProf:["STR","DEX"],
-  skillProf:["Perception","Survival","Stealth","Athletics","Nature","Insight"],
+  saveProf:["WIS","CHA"],
+  skillProf:["Sleight of Hand","Stealth","Arcana","Deception","Persuasion"],
   skillExpertise:[],                          // skills with DOUBLE proficiency (e.g. Rogue)
 
   /* For each proficient/expertise skill, one concrete in-game example of WHEN to use it */
   skillUse:{
-    Perception:"Spot the ambush, the hidden snare, or the weeping wolf in the brush before it lunges.",
-    Survival:"Track the missing villagers, read the overturned cart, forage, and navigate the Mournwood.",
-    Stealth:"Slip through the mist unseen — with Mask of the Wild you can even hide in the open.",
-    Athletics:"Climb a tree for a firing angle, haul a wounded ally, or shove through tangled briar.",
-    Nature:"Read the thorns grown through the wolves' hides — is this beast natural, or made to suffer?",
-    Insight:"Sense whether a grieving villager — or a smiling stranger — is telling you the truth.",
+    "Sleight of Hand":"Lift a key, palm a coin, plant something on a mark — the old gutter tricks still pay.",
+    Stealth:"Slip down a back alley, melt into a crowd, or vanish before someone decides you're worth robbing.",
+    Arcana:"Make sense of a rune, a ritual, or some cosmic horror — your patron has shown you worse.",
+    Deception:"Spin a story, run a con, or talk your way past a guard with a perfectly straight face.",
+    Persuasion:"Win someone over, talk a scared person down, or rally the desperate to your side.",
   },
 
   /* — What you're trained with — */
-  armorProf:"Light & medium armor, shields",
-  weaponProf:"Simple & martial weapons",
-  toolProf:"—",
-  languages:"Common, Elvish, + one of your choice",
+  armorProf:"Light armor",
+  weaponProf:"Simple weapons",
+  toolProf:"Disguise kit, thieves' tools",
+  languages:"Common, Deep Speech (the gabbling tongue of aberrations & the Far Realm)",
 
   /* — Attacks — list each the way you'd USE it on your turn.
      use   = the action it costs ("Action" / "Bonus action" / "Action + bonus action")
      range = "Melee (5 ft)" if you must be next to the target, or a ranged/thrown distance
      bonus = your to-hit · dmg = damage dice + type.
-     To-hit & damage are author-provided (they already bake in fighting styles, etc.). */
+     To-hit & damage are author-provided (they already bake in invocations, etc.). */
   attacks:[
-    { name:"Longbow", use:"Action", range:"Ranged 150/600 ft", bonus:"+7", dmg:"1d8+3 piercing",
-      note:"Archery style (+2) is already baked into the +7 · +1d8 more against an already-hurt foe (Colossus Slayer)." },
-    { name:"Shortsword (×2)", use:"Action + bonus action", range:"Melee (5 ft)", bonus:"+5", dmg:"1d6+3 piercing",
-      note:"Finesse & light — your backup if something gets in close. The second swing is the bonus-action attack (two-weapon fighting)." },
+    { name:"Eldritch Blast", use:"Action", range:"Ranged 240 ft", bonus:"+5", dmg:"1d10+3 force",
+      note:"Your all-day main weapon — a cantrip, so it never costs a slot. Agonizing Blast adds your Charisma (+3); Repelling Blast shoves the target 10 ft back on a hit; Spell Sniper doubles its range to 240 ft and ignores half/three-quarters cover. Against a Hexed foe, add +1d6 necrotic." },
+    { name:"Dagger", use:"Action", range:"Melee (5 ft) · Thrown 20/60", bonus:"+3", dmg:"1d4+1 piercing",
+      note:"Finesse backup if something gets close (or to throw). Eldritch Blast almost always hits harder — lead with the blast." },
   ],
 
-  /* — Spellcasting — (ignored entirely if caster:false) — */
+  /* — Spellcasting — (ignored entirely if caster:false) —
+     Warlock PACT MAGIC: 2 slots, BOTH 2nd level, recharging on a SHORT or long rest. Spell save DC 13, attack +5.
+     Every 1st-level spell he casts is automatically upcast to 2nd level (it uses a 2nd-level slot). */
   caster:true,
   spell:{
-    ability:"Wisdom", dc:13, atk:"+4",
-    slots:{ 1:3 },                            // { level: count } — shown as static info
-    cantrips:[],                              // Rangers have none; Wizards/Clerics etc. fill this
+    ability:"Charisma", dc:13, atk:"+5",
+    slots:{ 2:2 },                            // { level: count } — two 2nd-level Pact Magic slots (short-rest recharge)
+    cantrips:[
+      { name:"Eldritch Blast", lvl:"cantrip", castTime:"1 action", range:"240 ft (Spell Sniper)",
+        duration:"Instantaneous", concentration:false, roll:"Spell attack +5",
+        effect:"A beam of crackling eldritch energy: ranged spell attack for 1d10 force. With Agonizing Blast it's 1d10+3; Repelling Blast pushes the target 10 ft on a hit; Spell Sniper doubles the range to 240 ft and ignores half & three-quarters cover.",
+        when:"Your go-to every round — no slot, all day. The knockback peels enemies off you and your allies (or off a ledge)." },
+      { name:"Chill Touch", lvl:"cantrip", castTime:"1 action", range:"240 ft (Spell Sniper)",
+        duration:"1 round", concentration:false, roll:"Spell attack +5",
+        effect:"A ghostly skeletal hand assails the target: ranged spell attack for 1d8 necrotic, and it can't regain hit points until the start of your next turn. An undead target also has disadvantage on attacks against you until your next turn ends.",
+        when:"Your Spell Sniper bonus cantrip — shut off an enemy's healing or regeneration, or keep the undead of the Mournwood at bay. (Eldritch Blast still hits harder; reach for this when you need the rider.)" },
+      { name:"Vicious Mockery", lvl:"cantrip", castTime:"1 action", range:"60 ft",
+        duration:"Instantaneous", concentration:false, roll:"WIS save (DC 13)",
+        effect:"Insults laced with enchantment: if the target can hear you it makes a Wisdom save or takes 1d4 psychic AND has disadvantage on its next attack roll.",
+        when:"A free debuff that costs no slot — sting a big hitter so its next swing likely misses. (From your Book of Shadows · Pact of the Tome.)" },
+      { name:"Minor Illusion", lvl:"cantrip", castTime:"1 action", range:"30 ft",
+        duration:"1 minute", concentration:false, roll:"No roll",
+        effect:"Create a sound (whisper to scream) OR a 5-ft image of an object — not both. A creature can use an action to Investigate (INT check vs DC 13) to see through it.",
+        when:"Misdirection: a phantom noise to draw a guard off, or an eerie vision to unsettle and split up a foe." },
+      { name:"Mage Hand", lvl:"cantrip", castTime:"1 action", range:"30 ft",
+        duration:"1 minute", concentration:false, roll:"No roll",
+        effect:"A spectral floating hand (carries up to 10 lbs) you direct as an action: fetch or stow an item, open an unlocked door, pull a lever, pour a vial — from up to 30 ft away.",
+        when:"Spring a trap from cover, grab something out of reach, or set up a distraction. (From your Book of Shadows · Pact of the Tome.)" },
+      { name:"Guidance", lvl:"cantrip", castTime:"1 action", range:"Touch",
+        duration:"Concentration, up to 1 min", concentration:true, roll:"No roll",
+        effect:"Touch a willing ally; once before it ends they add 1d4 to one ability check of their choice.",
+        when:"Right before any tricky check — a lock, a leap, recalling lore. Free help for the team. (From your Book of Shadows · Pact of the Tome.)" },
+    ],
     known:[
-      { name:"Hunter's Mark", lvl:1, castTime:"1 bonus action", range:"90 ft",
-        duration:"Concentration, up to 1 hr", concentration:true, roll:"No roll",
-        effect:"Mark one creature. Each time you hit it with a weapon attack, deal an extra 1d6 damage. Move the mark to a new target as a bonus action if it drops.",
-        when:"Your opener — slap it on the scariest enemy before your first shot, then keep firing." },
-      { name:"Cure Wounds", lvl:1, castTime:"1 action", range:"Touch",
+      { name:"Hex", lvl:1, castTime:"1 bonus action", range:"90 ft",
+        duration:"Concentration, up to 1 hr (8 hr in your 2nd-level slot)", concentration:true, roll:"No roll",
+        effect:"Curse a creature: while it holds, you deal an extra 1d6 necrotic every time you hit that target, and it has disadvantage on ability checks made with one ability you choose. If it drops to 0 HP, move the hex to a new target as a bonus action.",
+        when:"Your damage multiplier — cast it (bonus action) on turn 1, then Eldritch Blast the hexed foe every round for 1d10+3 plus 1d6." },
+      { name:"Dissonant Whispers", lvl:1, castTime:"1 action", range:"60 ft",
+        duration:"Instantaneous", concentration:false, roll:"WIS save (DC 13)",
+        effect:"Whisper a maddening melody only one creature hears: WIS save or take 3d6 psychic — 4d6 cast from your 2nd-level slot — and immediately use its reaction to flee from you. On a success, half damage and it stays put. A deafened creature auto-succeeds.",
+        when:"No-concentration burst that also scatters a threat — the forced flight provokes opportunity attacks from your allies." },
+      { name:"Shatter", lvl:2, castTime:"1 action", range:"60 ft",
+        duration:"Instantaneous", concentration:false, roll:"CON save (DC 13)",
+        effect:"A painfully loud ringing erupts at a point you choose: every creature in a 10-ft-radius sphere takes 3d8 thunder (CON save halves). Creatures made of stone, crystal or metal have disadvantage on the save.",
+        when:"Your crowd-clearer — drop it on a cluster of enemies for big area damage. No concentration, so it stacks happily with a Hex running on your main target." },
+      { name:"Misty Step", lvl:2, castTime:"1 bonus action", range:"Self",
         duration:"Instantaneous", concentration:false, roll:"No roll",
-        effect:"Touch a creature to restore 1d8 + your Wisdom modifier (1d8+2) hit points. No effect on undead or constructs.",
-        when:"When an ally drops or is bleeding out. In this grieving wood, mercy is the whole point." },
-      { name:"Goodberry", lvl:1, castTime:"1 action", range:"Touch",
-        duration:"Instantaneous (berries last 24 hrs)", concentration:false, roll:"No roll",
-        effect:"Conjure 10 berries. Eating one restores 1 hit point and feeds a creature for a day.",
-        when:"Cast after a fight or before a long trek — pocket healing and rations from the forest itself." },
+        effect:"Wreathed in silvery mist, teleport up to 30 ft to an unoccupied space you can see.",
+        when:"Your escape hatch — pop out of melee, over a wall or chasm, or back to safety, and still take your action the same turn. At AC 12 you'll want this." },
     ],
   },
 
@@ -493,48 +527,49 @@ const CHARACTER = {
      Add a frequency after a · if limited, e.g. "Action · 1/short rest". Omit = treated as Passive. */
   features:{
     race:[
-      { n:"Mask of the Wild", use:"Passive", t:"You can hide even when only lightly obscured by foliage, mist, heavy rain, or falling snow.",
-        when:"Whenever you want to vanish outdoors — and the whole Mournwood is fog and leaves." },
-      { n:"Darkvision", use:"Passive", t:"See in dim light within 60 ft as if it were bright, and in darkness as if it were dim (in shades of grey).",
-        when:"Dusk under the canopy, a cave, a moonless night — you're never fully blind." },
-      { n:"Fey Ancestry", use:"Passive", t:"Advantage on saving throws against being charmed, and magic can't put you to sleep.",
-        when:"Any time something tries to enchant, beguile, or lull you." },
-      { n:"Trance", use:"Passive", t:"You don't sleep — you meditate 4 hours for a full long rest, half-aware the whole time.",
-        when:"On a long rest; you're harder to surprise in camp." },
+      { n:"Versatile (Variant Human)", use:"Passive", t:"Your knack for survival: +1 Charisma and +1 Constitution, plus proficiency in one extra skill (Persuasion) — all already baked into your scores and skills.",
+        when:"Baked in — it's why your Charisma is a 16, you're tougher than most, and you can talk to anyone." },
+      { n:"Feat: Spell Sniper", use:"Passive", t:"Your spell attacks reach twice as far (Eldritch Blast & Chill Touch are now 240 ft), they ignore half and three-quarters cover, and you learn one extra attack cantrip (Chill Touch).",
+        when:"Blast from extreme range and snipe foes hiding behind cover — your beams just keep landing. (DM-assigned feat; you left it open, so swap it freely.)" },
     ],
     class:[
-      { n:"Favored Enemy (Beasts)", use:"Passive", t:"You've studied a kind of foe. Advantage on Survival to track them and on Intelligence checks to recall lore about them.",
-        when:"Tracking, or trying to remember what you know about the thing in the woods." },
-      { n:"Natural Explorer (Forest)", use:"Passive", t:"A master of woodland travel: difficult terrain doesn't slow your group, you can't get lost by non-magical means, you stay alert, and you forage food for the party.",
-        when:"Any time you travel, track, or forage in the forest — this is your home turf." },
-      { n:"Fighting Style: Archery", use:"Passive", t:"+2 to attack rolls with ranged weapons (already baked into your Longbow's +7).",
-        when:"Every single time you fire your bow." },
-      { n:"Colossus Slayer (Hunter's Prey)", use:"Passive", t:"Once per turn, when you hit a creature that's below its hit point maximum, deal an extra 1d8 damage.",
-        when:"Any hit on an already-wounded foe — it stacks with Hunter's Mark for a brutal arrow." },
+      { n:"Otherworldly Patron: The Great Old One", use:"Passive", t:"Your pact is with an unfathomable entity from beyond the stars. It expands your spell list (dissonant whispers, Tasha's hideous laughter, detect thoughts, phantasmal force…) and grants Awakened Mind.",
+        when:"It's the source of everything you do — and a constant, alien presence at the back of your mind." },
+      { n:"Awakened Mind", use:"Passive", t:"You can speak telepathically (one-way) to any creature within 30 ft that understands at least one language — even if you share no common tongue.",
+        when:"Parley with something that doesn't speak Common, pass a silent message across a room, or put a voice inside a foe's skull." },
+      { n:"Pact Magic", use:"Passive", t:"Your Charisma-based occult casting: 2 spell slots, BOTH 2nd level, that recharge on a SHORT or long rest — so you refuel after every breather. Spell save DC 13, spell attack +5.",
+        when:"Spend slots boldly — a short rest gets them all back. Every 1st-level spell you cast is automatically upcast to 2nd level." },
+      { n:"Eldritch Invocations (Agonizing Blast · Repelling Blast)", use:"Passive", t:"Fragments of forbidden knowledge — you know two. Agonizing Blast adds your Charisma (+3) to each Eldritch Blast beam's damage; Repelling Blast pushes a creature you hit with Eldritch Blast 10 ft away.",
+        when:"Both upgrade Eldritch Blast — that's why it hits for 1d10+3 and can shove enemies around the battlefield." },
+      { n:"Pact Boon: Pact of the Tome", use:"Passive", t:"Your patron gave you the Book of Shadows. From it you cast three extra cantrips at will — Guidance, Vicious Mockery, and Mage Hand — and they don't count against your cantrips known.",
+        when:"Those three are always available (see your cantrip list); the book is the well you draw the party's little helps from." },
     ],
     background:[
-      { n:"Wanderer", use:"Passive", t:"You have an excellent memory for maps and geography, and can find fresh food and water for yourself and up to five others each day in the wild.",
-        when:"When the party needs to navigate, retrace a route, or survive off the land." },
+      { n:"City Secrets", use:"Passive", t:"You know the hidden patterns of a city. When you're not in combat, you (and companions you lead) can travel between any two places in the city twice as fast as normal, via back alleys and shortcuts.",
+        when:"Crossing town quickly, taking a secret route, or shaking a tail — your old street routes still serve you." },
     ],
   },
 
   /* — Equipment — */
   equipment:[
-    "Longbow & a quiver of 20 arrows",
-    "Two shortswords",
-    "Studded leather armor",
-    "Explorer's pack (bedroll, rope, rations, torches, tinderbox)",
-    "A hunting trap",
-    "A trophy taken from a slain beast — a single curved thorn",
-    "Traveler's clothes & a wooden staff",
-    "Belt pouch · 15 gp",
+    "Leather armor (AC 11 + Dex)",
+    "Two daggers (melee, or thrown 20/60 ft)",
+    "Light crossbow & 20 bolts (mundane backup — Eldritch Blast usually hits harder)",
+    "Arcane focus — a cracked spiral seashell from the beach where the pact was struck (channels his magic)",
+    "The Book of Shadows — his patron's grimoire (Pact of the Tome)",
+    "Disguise kit & thieves' tools",
+    "Dungeoneer's pack (backpack, crowbar, hammer, 10 pitons, 10 torches, tinderbox, 10 days rations, waterskin, 50 ft rope)",
+    "A small knife, a map of the city he grew up in, and a pet mouse",
+    "A token to remember the one who believed in him",
+    "A pouch of snacks — always (keeps the old cravings quiet)",
+    "Common clothes & a belt pouch · 10 gp",
   ],
 
   /* — Personality (roleplay + Inspiration) — */
-  trait:"I keep one eye on the tree line, even indoors.",
-  ideal:"Respect. The wild was here long before us, and will be here long after.",
-  bond:"This forest raised me — I won't let anyone defile it.",
-  flaw:"I trust animals far more easily than I trust people.",
+  trait:"I am always eating snacks, to help curb the opium cravings.",
+  ideal:"Greater Good. My newfound talents are meant to serve others.",
+  bond:"I carry a token from someone who believed in me.",
+  flaw:"I trust too easily, and it's burned me before.",
 
   /* — How to Play coaching (the centerpiece) —
      role = the one-line archetype · turn1 = the highlighted opener
@@ -543,22 +578,25 @@ const CHARACTER = {
      greatAt[] / watch[] = the two strength/caution columns · signature = their flashiest combo.
      Keep every line plain-text and short-and-sweet. */
   play:{
-    role:"Ranged striker & scout",
-    turn1:"Bonus action: cast Hunter's Mark on the scariest enemy. Then fire your Longbow at it.",
+    role:"Backline blaster & controller (occult support)",
+    turn1:"Bonus action: cast Hex on the deadliest enemy. Then Eldritch Blast it — 1d10+3 force, +1d6 necrotic from the Hex, shoved 10 ft back by Repelling Blast.",
     combat:[
-      "Stay back. You hit hard at range but you're fragile — keep 60+ ft of distance and something solid between you and the enemy.",
-      "Round 1: Hunter's Mark (bonus action) on the deadliest foe, then loose an arrow at it — that's +7 to hit for 1d8+3, plus 1d6 from the Mark on every hit.",
-      "Every round after: keep firing at that same target. If it's already wounded, Colossus Slayer adds another 1d8 — so finish what you start.",
-      "If something closes on you: take a Shortsword swing (+5), or Disengage and reposition so you can shoot freely again next turn.",
+      "You're a backline caster — AC 12 and 30 HP means you do NOT want to be in melee. Stay 60–120 ft back and let the front line screen you.",
+      "Round 1: Hex (bonus action) on the scariest foe, then Eldritch Blast it. The knockback is great for peeling a bruiser off an ally — or shoving one off a ledge.",
+      "Eldritch Blast is your all-day weapon and costs no slot — fire it every round you don't have something better to do. Against the hexed target it's 1d10+3 plus 1d6.",
+      "Spend your 2 slots on your big spells: Dissonant Whispers (cast from a 2nd-level slot = 4d6 psychic) nukes and scatters a single foe, or Shatter (3d8 thunder) clears a whole cluster of them. Both recharge on a SHORT rest, so don't hoard them.",
+      "If something reaches you, Misty Step away (bonus action) and keep blasting from range — with Spell Sniper you can fire from up to 240 ft and right through cover, so distance is never a problem.",
     ],
-    greatAt:[ "Picking off enemies from a safe distance", "Tracking, scouting & moving unseen", "Spotting ambushes before they spring" ],
-    watch:[ "Fragile up close — keep your distance and reposition", "Hunter's Mark needs concentration; a big hit can break it" ],
+    greatAt:[ "Reliable all-day damage that never runs dry (Eldritch Blast)", "Burst & crowd damage on demand (Dissonant Whispers on one target, Shatter on a group)", "Being the party's charming, streetwise face — and talking to things that don't speak Common" ],
+    watch:[ "Squishy — AC 12, 30 HP. Stay at range and Misty Step out of trouble", "Only 2 spell slots at a time (both 2nd level) — they return on a short rest, so plan around breathers", "Hex needs concentration; a big hit can break it, so don't stand somewhere you'll get smacked while it's running" ],
     roleplay:[
-      "You're the quiet tracker who trusts the wild more than people — let louder folk do the talking until the forest itself is threatened.",
-      "Take point whenever the party travels, scouts, or has to read the land, the weather, or an animal — that's your moment to lead.",
-      "Lean on your bond: anything harming this wood gets your cold, immediate attention. It's your way into almost any scene.",
+      "You're the unlikely redeemed soul — a former street kid who bargained with a cosmic horror on a midnight beach and decided to spend the gift on others instead of himself. Play the warmth and the dark comedy of that.",
+      "Lean on your ideal — the Greater Good. You're the one who stops for the hungry, the desperate, the overlooked; that's your way into almost any scene.",
+      "Your patron whispers incomprehensible truths (headaches, the odd nosebleed, 'encouragement' that may actually be a prophecy of the universe's end). Let it color your reactions — you're never quite alone in your own head.",
+      "Mind your flaw: you trust too easily, and it's burned you before. A kind word or a sob story can lead you somewhere you shouldn't go.",
+      "And yes — you're always eating. The snacks keep the old cravings quiet.",
     ],
-    signature:"Hunter's Mark + a hit on a wounded foe + Colossus Slayer = 1d8+3 plus 1d6 plus 1d8 piercing, all in a single arrow.",
+    signature:"Hex the toughest enemy, then Eldritch Blast it every round (1d10+3 plus 1d6, knocked back 10 ft each hit) — and when the enemies bunch up, drop Shatter for 3d8 thunder across the whole cluster.",
   },
 };
 

@@ -111,7 +111,10 @@ const PARTY = [
   { name:"Douglas Dimmadome", player:"Richard", meta:"Variant Human Warlock · The Great Old One",
     blurb:"A streetwise survivor who bargained with a thing beyond the stars on a midnight beach — and now spends its eldritch gifts on the hungry and the hopeless.",
     sheet:"douglas-dimmadome/douglas-dimmadome.html", portrait:"douglas-dimmadome/portrait.png" },
-  null, null, null,   // three open seats — swap each for a hero object as sheets come in
+  { name:"I'Drenk Bier", player:"Ethan", meta:"Half-Orc Paladin · Oath of Vengeance",
+    blurb:"A gentle-hearted half-orc who swore vengeance over his murdered father — but keeps drowning the vow in one more pint and 'accidentally' becoming a shield for every underdog he meets.",
+    sheet:"idrenk-bier/idrenk-bier.html", portrait:"idrenk-bier/portrait.png" },
+  null, null,   // two open seats — swap each for a hero object as sheets come in
 ];
 
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (m) => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[m]));

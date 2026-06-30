@@ -82,6 +82,72 @@ function spendOf(ability) {
   return null;
 }
 const speedOf = (c) => { const raw = c.side === "pc" ? (PARTY_BY_SLUG[c.slug] || {}).speed : (SB[c.mkey] || {}).speed; return E.toNum(raw, 0) || 30; };
+/* Multiattack: how many weapon attacks a monster's "Multiattack" action grants (1 = no multiattack).
+   Read from the stat block (single source of truth) — "two/three…" word or a digit; bare "Multiattack" → 2. */
+const NUMWORD = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
+function maCountOf(c) {
+  if (!c || c.side !== "mon") return 1;
+  const sb = SB[c.mkey]; if (!sb || !sb.actions) return 1;
+  const ma = sb.actions.find((a) => /multiattack/i.test(a.n || ""));
+  if (!ma) return 1;
+  const t = String(ma.t || "").replace(/<[^>]+>/g, " ");
+  const w = t.match(/\b(one|two|three|four|five|six)\b/i);
+  if (w) return NUMWORD[w[1].toLowerCase()] || 2;
+  const d = t.match(/\b(\d+)\b/);
+  return d ? Math.max(1, +d[1]) : 2;
+}
+
+/* ---- area-of-effect templates (cone / line / cube / sphere). Board scale: CELL_PX px = 5 ft.
+   Parsed from the ability's own text (PC spell range/effect, monster action text) so it's data-driven;
+   a small name→template map covers name-only monster/innate spells so enemy AoE previews too. ---- */
+const PX_PER_FT = CELL_PX / 5;
+const SPELL_AOE = {
+  "burning hands": { shape: "cone", ft: 15 }, "cone of cold": { shape: "cone", ft: 60 }, "color spray": { shape: "cone", ft: 15 },
+  "thunderwave": { shape: "cube", ft: 15 }, "shatter": { shape: "sphere", ft: 10 }, "fireball": { shape: "sphere", ft: 20 },
+  "lightning bolt": { shape: "line", ft: 100 }, "fear": { shape: "cone", ft: 30 },
+};
+function aoeOf(ability) {
+  if (!ability) return null;
+  const s = ability.src || {};
+  const txt = [ability.name, ability.note, s.range, s.effect, s.t].filter(Boolean).join(" ").toLowerCase();
+  const grab = (word) => { const m = txt.match(new RegExp("(\\d+)\\s*-?\\s*(?:ft|foot|feet)\\s*-?\\s*" + word)); return m ? +m[1] : null; };
+  let shape = null, ft = null;
+  if (/\bcone\b/.test(txt)) { shape = "cone"; ft = grab("cone"); }
+  else if (/\bline\b/.test(txt)) { shape = "line"; ft = grab("line"); }
+  else if (/\bcube\b/.test(txt)) { shape = "cube"; ft = grab("cube"); }
+  else if (/\bradius\b|\bsphere\b/.test(txt)) { shape = "sphere"; ft = grab("radius"); }
+  if (shape && ft) return { shape, ft, self: /\bself\b/.test(String(s.range || "").toLowerCase()) };
+  const known = SPELL_AOE[String(ability.name || "").toLowerCase().trim()];
+  return known ? { ...known, self: known.shape === "cone" || known.shape === "cube" } : null;
+}
+/* build SVG render geometry (in .ck-world layout px) from the caster (origin) toward the cursor (aim). */
+function aoeGeometry(aoe, origin, aim) {
+  const ftpx = aoe.ft * PX_PER_FT;
+  if (aoe.shape === "sphere") return { kind: "circle", cx: aim.x, cy: aim.y, r: ftpx };
+  if (aoe.shape === "cube") {
+    const half = ftpx / 2; let cx = aim.x, cy = aim.y;
+    if (aoe.self) { const dx = aim.x - origin.x, dy = aim.y - origin.y, L = Math.hypot(dx, dy) || 1; cx = origin.x + dx / L * half; cy = origin.y + dy / L * half; }
+    return { kind: "rect", x: cx - half, y: cy - half, w: ftpx, h: ftpx, cx, cy, half };
+  }
+  const dx = aim.x - origin.x, dy = aim.y - origin.y, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L;
+  if (aoe.shape === "line") {
+    const w = 2.5 * PX_PER_FT, px = -uy * w, py = ux * w, ex = origin.x + ux * ftpx, ey = origin.y + uy * ftpx;
+    return { kind: "poly", pts: [[origin.x + px, origin.y + py], [ex + px, ey + py], [ex - px, ey - py], [origin.x - px, origin.y - py]], ox: origin.x, oy: origin.y, ux, uy, L: ftpx, w, line: true };
+  }
+  const ha = Math.atan(0.5); // a 5e cone is as wide as it is long
+  const rot = (a) => ({ x: ux * Math.cos(a) - uy * Math.sin(a), y: ux * Math.sin(a) + uy * Math.cos(a) });
+  const e1 = rot(ha), e2 = rot(-ha);
+  return { kind: "poly", pts: [[origin.x, origin.y], [origin.x + e1.x * ftpx, origin.y + e1.y * ftpx], [origin.x + e2.x * ftpx, origin.y + e2.y * ftpx]], ox: origin.x, oy: origin.y, ux, uy, L: ftpx, ha, cone: true };
+}
+function aoeHitsToken(geom, T) {
+  const tol = PX_PER_FT * 1.4; // a token's body counts if its centre is within ~1.4 cells of the template
+  if (geom.kind === "circle") return Math.hypot(T.x - geom.cx, T.y - geom.cy) <= geom.r + tol;
+  if (geom.kind === "rect") return Math.abs(T.x - geom.cx) <= geom.half + tol && Math.abs(T.y - geom.cy) <= geom.half + tol;
+  const vx = T.x - geom.ox, vy = T.y - geom.oy, proj = vx * geom.ux + vy * geom.uy;
+  if (geom.cone) { const d = Math.hypot(vx, vy); if (d > geom.L + tol || proj <= 0) return false; return Math.acos(clamp(proj / (d || 1), -1, 1)) <= geom.ha + 0.2; }
+  if (proj < -tol || proj > geom.L + tol) return false;
+  return Math.abs(-geom.uy * vx + geom.ux * vy) <= geom.w + tol;
+}
 /* Chebyshev distance in feet between two board points (untransformed world px) */
 function ftBetween(x1, y1, x2, y2) { return Math.round(Math.max(Math.abs(x2 - x1), Math.abs(y2 - y1)) / CELL_PX) * 5; }
 const CLUE_NAMES = ["Victims came to TAKE", "It's the wood, not a beast", "The cult drives it", "Mother Sere's rite", "The Guardian grieves"];
@@ -103,6 +169,7 @@ const DEFAULT = {
   fightSig: null,        // "<beat>:<ver>" of the scene whose enemies are currently set up (auto-load guard)
   sceneImg: {},          // { [sceneId]: localPath } — DM-supplied atmosphere image per scene (offline)
   lootGiven: {},         // { [itemId]: true } — scene-reward items the DM has handed to the party
+  collapsed: { init: false, hud: false, dice: false },  // which rails/tray are tucked away so the board can grow
 };
 function load() {
   try {
@@ -307,7 +374,7 @@ function Cockpit() {
   const heal = (id, amt) => patchC(id, (c) => ({ hp: clamp(c.hp + amt, -999, c.maxhp), deaths: c.hp + amt > 0 ? { s: 0, f: 0 } : c.deaths }));
 
   /* ---- turn flow ---- (econ resets at the start of whoever's turn it becomes) */
-  const resetEconFor = (list, id) => list.map((c) => (c.id === id ? { ...c, econ: emptyEcon() } : c));
+  const resetEconFor = (list, id) => list.map((c) => (c.id === id ? { ...c, econ: emptyEcon(), maLeft: maCountOf(c) } : c));
   const setTurn = (id) => up((s) => ({ turnId: id, combatants: resetEconFor(s.combatants, id) })); // manual: pick the active turn, keep the round
   const startFight = () => {
     const so = sortInit(st.combatants);
@@ -385,6 +452,8 @@ function Cockpit() {
   };
   const openParty = () => { try { window.open("../../../characters/index.html#cockpit", "_blank"); } catch (e) {} };
   const toggleLoot = (id) => up((s) => ({ lootGiven: { ...(s.lootGiven || {}), [id]: !(s.lootGiven && s.lootGiven[id]) } }));
+  const cc = st.collapsed || {};   // which rails/tray are collapsed (board reflows into the freed space)
+  const toggleCollapse = (k) => up((s) => ({ collapsed: { ...(s.collapsed || {}), [k]: !(s.collapsed && s.collapsed[k]) } }));
 
   /* ---- each scene sets up its own fight: derive enemies from the scene body, keep the
      party (hp/conditions/death saves/positions), replace the previous scene's monsters.
@@ -414,12 +483,15 @@ function Cockpit() {
       <Header round={st.round} fighting={fighting} active={active}
         onStart={startFight} onNext={nextTurn} onEnd={endFight} onReset={resetAll}
         onParty={openParty} onLoot={() => setLootOpen(true)} onShortRest={shortRest} onLongRest={longRest} />
-      <div className="ck-main">
+      <div className={"ck-main" + (cc.init ? " l-collapsed" : "") + (cc.hud ? " r-collapsed" : "")}>
         <Initiative sorted={sorted} activeId={activeId} fighting={fighting} rollMode={st.roll}
-          onDamage={damage} onHeal={heal} onRemove={removeC} onPatch={patchC} onSetTurn={setTurn} onReorder={reorder} />
+          onDamage={damage} onHeal={heal} onRemove={removeC} onPatch={patchC} onSetTurn={setTurn} onReorder={reorder}
+          collapsed={!!cc.init} onToggleCollapse={() => toggleCollapse("init")} />
         <CenterColumn active={active} st={st} up={up} onDamage={damage} onHeal={heal} onPatch={patchC}
-          onRemove={removeC} sorted={sorted} version={effVersion} onVersion={setVersion} log={log} onLog={pushLog} onSetTurn={setTurn} />
-        <HUD st={st} up={up} onAddMonster={addMonster} onAddPC={addPC} onAddParty={addParty} />
+          onRemove={removeC} sorted={sorted} version={effVersion} onVersion={setVersion} log={log} onLog={pushLog} onSetTurn={setTurn}
+          diceCollapsed={!!cc.dice} onToggleDice={() => toggleCollapse("dice")} />
+        <HUD st={st} up={up} onAddMonster={addMonster} onAddPC={addPC} onAddParty={addParty}
+          collapsed={!!cc.hud} onToggleCollapse={() => toggleCollapse("hud")} />
       </div>
       {lootOpen && <LootPanel beat={st.beat} lootGiven={st.lootGiven || {}} onToggle={toggleLoot} onClose={() => setLootOpen(false)} />}
     </div>
@@ -455,10 +527,16 @@ function Header({ round, fighting, active, onStart, onNext, onEnd, onReset, onPa
 }
 
 /* ============================ INITIATIVE ============================ */
-function Initiative({ sorted, activeId, fighting, rollMode, onDamage, onHeal, onRemove, onPatch, onSetTurn, onReorder }) {
+function Initiative({ sorted, activeId, fighting, rollMode, onDamage, onHeal, onRemove, onPatch, onSetTurn, onReorder, collapsed, onToggleCollapse }) {
+  if (collapsed) return (
+    <section className="ck-panel ck-init ck-rail-collapsed">
+      <button className="ck-railtab" title="Show initiative" onClick={onToggleCollapse}>› Initiative</button>
+    </section>
+  );
   return (
     <section className="ck-panel ck-init">
-      <h2>Initiative {sorted.length > 0 && <span className="ck-count">{sorted.length}</span>}</h2>
+      <h2>Initiative {sorted.length > 0 && <span className="ck-count">{sorted.length}</span>}
+        <button className="ck-collapse" title="Collapse initiative" onClick={onToggleCollapse}>‹</button></h2>
       <div className="ck-initlist">
         {sorted.length === 0 && <p className="ck-empty">Add fighters from the roster on the right, then hit <b>Roll for initiative</b>.</p>}
         {sorted.map((c, i) => (
@@ -604,7 +682,7 @@ function applyVer(root, version) {
   root.querySelectorAll(".ver-block[data-verblock]").forEach((el) => el.classList.toggle("show", el.dataset.verblock === version));
 }
 
-function CenterColumn({ active, st, up, onDamage, onHeal, onPatch, onRemove, sorted, version, onVersion, log, onLog, onSetTurn }) {
+function CenterColumn({ active, st, up, onDamage, onHeal, onPatch, onRemove, sorted, version, onVersion, log, onLog, onSetTurn, diceCollapsed, onToggleDice }) {
   const [flip, setFlip] = useState(false);
   const view = st.view || "read";
   const b = BEATS[st.beat];
@@ -640,7 +718,8 @@ function CenterColumn({ active, st, up, onDamage, onHeal, onPatch, onRemove, sor
               img={b ? ((st.sceneImg && (b.id in st.sceneImg)) ? st.sceneImg[b.id] : ("img/scenes/" + b.id + ".png")) : ""}
               onImg={(p) => b && up((s) => ({ sceneImg: { ...s.sceneImg, [b.id]: p } }))} />}
       </div>
-      <DiceTray active={active} sorted={sorted} onDamage={onDamage} rollMode={st.roll} setRollMode={(m) => up({ roll: m })} log={log} onLog={onLog} />
+      <DiceTray active={active} sorted={sorted} onDamage={onDamage} rollMode={st.roll} setRollMode={(m) => up({ roll: m })} log={log} onLog={onLog}
+        collapsed={diceCollapsed} onToggle={onToggleDice} />
     </section>
   );
 }
@@ -689,7 +768,7 @@ function ReadAloud({ beat, flip, version, img, onImg }) {
   );
 }
 
-function DiceTray({ active, sorted, onDamage, rollMode, setRollMode, log, onLog }) {
+function DiceTray({ active, sorted, onDamage, rollMode, setRollMode, log, onLog, collapsed, onToggle }) {
   const [mod, setMod] = useState(0);
   const [mode, setMode] = useState("normal");
   const [target, setTarget] = useState("");
@@ -744,7 +823,12 @@ function DiceTray({ active, sorted, onDamage, rollMode, setRollMode, log, onLog 
   const activeMon = active && active.side === "mon" && active.mkey ? MON[active.mkey] : null;
 
   return (
-    <div className="ck-dice">
+    <div className={"ck-dice" + (collapsed ? " collapsed" : "")}>
+      <div className="ck-dice-head">
+        <span className="ck-dice-lbl">🎲 Dice tray</span>
+        <button className="ck-collapse" title={collapsed ? "Show dice tray" : "Collapse dice tray"} onClick={onToggle}>{collapsed ? "▴" : "▾"}</button>
+      </div>
+      <div className="ck-dice-body">
       <div className="ck-dice-row">
         <span className="ck-dice-lbl">Check / attack</span>
         <div className="ck-seg ck-rollmode">
@@ -816,6 +900,7 @@ function DiceTray({ active, sorted, onDamage, rollMode, setRollMode, log, onLog 
       <div className="ck-log">
         {log.length === 0 && <span className="ck-log-empty">Rolls appear here.</span>}
         {log.map((e) => <div key={e.id} className={"ck-logitem " + e.kind} dangerouslySetInnerHTML={{ __html: e.html }} />)}
+      </div>
       </div>
     </div>
   );
@@ -1002,9 +1087,17 @@ function AbilityTip({ ability, posStyle, onClose }) {
 
 /* Popover shown when an ability chip is dropped on a target. Honors the roll mode
    (app = auto-roll via TWGE; me = the DM types the numbers). Applies via damage/heal + logs. */
-function ResolvePopover({ ability, target, source, rollMode, onDamage, onHeal, onPatch, onLog, onClose, posStyle }) {
+function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamage, onHeal, onPatch, onLog, onClose, posStyle }) {
   const manual = rollMode === "me";
+  const isAoe = !!(aoeTargets && aoeTargets.length && (ability.kind === "save" || ability.kind === "attack"));
   const adv = advInfo(ability, target, source);
+  /* Multiattack progress (monster weapon attacks): which attack of the chain is this, and does it spend the Action? */
+  const maN = source ? maCountOf(source) : 1;
+  const maChain = !!source && maN > 1 && ability.kind === "attack" && ability.level == null && !spendOf(ability);
+  const maMade = maChain ? ((source.econ && source.econ.action) ? maN : ((typeof source.maLeft === "number" && source.maLeft > 0 && source.maLeft < maN) ? maN - source.maLeft : 0)) : 0;
+  const maThis = Math.min(maMade + 1, maN);
+  const [aoeDone, setAoeDone] = useState({});   // AoE: per-target outcome already applied
+  const aoeSpent = useRef(false);                // spend the caster's Action/slot exactly once
   const [d20v, setD20v] = useState("");
   const [dmgv, setDmgv] = useState("");
   const [res, setRes] = useState(null);
@@ -1035,12 +1128,24 @@ function ResolvePopover({ ability, target, source, rollMode, onDamage, onHeal, o
 
   /* resolving an ability spends the source's economy: mark its Action used, and decrement the
      matching spell slot / innate use for a leveled spell (cantrips/at-will/weapons cost no slot).
-     A slot is spent whether the attack hits or the save succeeds. DM can re-toggle in the panel. */
+     A slot is spent whether the attack hits or the save succeeds. DM can re-toggle in the panel.
+     MULTIATTACK: a monster whose stat block grants N>1 weapon attacks chains them — the Action is
+     held open (its A pip stays unlit) until the LAST attack of the chain resolves. */
   const spend = () => {
     if (!source || !onPatch) return;
     const sp = spendOf(ability);
+    const maN = maCountOf(source);
+    const chain = maN > 1 && ability.kind === "attack" && ability.level == null && !sp; // a weapon attack inside a Multiattack
     onPatch(source.id, (cc) => {
-      const patch = { econ: { action: true, bonus: !!(cc.econ && cc.econ.bonus), reaction: !!(cc.econ && cc.econ.reaction) } };
+      const econ0 = cc.econ || emptyEcon();
+      let actionUsed = true, maLeft;
+      if (chain && !econ0.action) {
+        const left = ((typeof cc.maLeft === "number" && cc.maLeft > 0 && cc.maLeft <= maN) ? cc.maLeft : maN) - 1;
+        if (left > 0) { actionUsed = false; maLeft = left; }   // attacks remain → keep the Action open
+        else { actionUsed = true; maLeft = maN; }              // last attack → spend it, reseed for next turn
+      }
+      const patch = { econ: { ...econ0, action: actionUsed } };
+      if (chain) patch.maLeft = maLeft;
       if (sp && sp.kind === "slot") { const cur = (cc.slots && cc.slots[sp.lvl]) || 0; patch.slots = { ...(cc.slots || {}), [sp.lvl]: Math.max(0, cur - 1) }; }
       else if (sp && sp.kind === "innate") { const cur = (cc.innate && cc.innate[sp.key]) || 0; patch.innate = { ...(cc.innate || {}), [sp.key]: Math.max(0, cur - 1) }; }
       return patch;
@@ -1065,6 +1170,17 @@ function ResolvePopover({ ability, target, source, rollMode, onDamage, onHeal, o
   };
   const applyHeal = () => { const amt = healVal(); if (amt) onHeal(target.id, amt); onLog({ kind: "roll", html: `${ability.name} → <b>${target.name}</b>: healed <b>${amt}</b>` }); spend(); onClose(); };
   const applyUtil = () => { onLog({ kind: "roll", html: `${ability.name} → <b>${target.name}</b>` }); spend(); onClose(); };
+  /* AoE: apply the single shared damage roll to one caught token; spend the caster's economy/slot only once. */
+  const aoeApply = (t, outcome) => {
+    const dmg = dmgVal(), applied = outcome === "full" ? dmg : outcome === "half" ? Math.floor(dmg / 2) : 0;
+    if (applied) onDamage(t.id, applied);
+    if (outcome === "full" && ability.cond && onPatch) onPatch(t.id, (cc) => ({ conds: cc.conds.includes(ability.cond) ? cc.conds : [...cc.conds, ability.cond] }));
+    const verb = ability.kind === "save" ? (outcome === "full" ? "FAILED" : outcome === "half" ? "saved ½" : "saved") : (outcome === "full" ? "HIT" : "miss");
+    onLog({ kind: applied ? "hit" : "roll", html: `${ability.name} → <b>${t.name}</b>: ${verb}${applied ? ` · <b>${applied}</b> ${ability.dmgType || ""}` : ""}${outcome === "full" ? condNote : ""}` });
+    if (!aoeSpent.current) { spend(); aoeSpent.current = true; }
+    setAoeDone((d) => ({ ...d, [t.id]: outcome }));
+  };
+  const aoeInfo = isAoe ? aoeOf(ability) : null;
 
   const head = (
     <div className="ck-pop-head">
@@ -1073,9 +1189,42 @@ function ResolvePopover({ ability, target, source, rollMode, onDamage, onHeal, o
     </div>
   );
   let body;
-  if (ability.kind === "attack") {
+  if (isAoe) {
+    const headLine = (aoeInfo ? aoeInfo.ft + "-ft " + aoeInfo.shape : "Area") + " · catches " + aoeTargets.length
+      + (ability.kind === "save" ? " · DC " + (ability.save ? ability.save.dc : "?") + " " + (ability.save ? ability.save.ability : "") + " save" : " · +" + (ability.tohit || 0) + " to hit");
     body = (
       <div className="ck-pop-body">
+        <div className="ck-pop-aoe-head">{headLine}</div>
+        <div className="ck-pop-row">
+          <label>dmg</label>
+          {manual
+            ? <input className="ck-d20in" inputMode="numeric" autoFocus placeholder={ability.dmgExpr || "#"} value={dmgv} onChange={(e) => setDmgv(e.target.value.replace(/[^0-9]/g, ""))} />
+            : <span className="ck-pop-dmg">{(res && res.dmg != null ? res.dmg : "—") + " " + (ability.dmgType || "") + (ability.dmgExpr ? " (" + ability.dmgExpr + ")" : "")}</span>}
+          {!manual && ability.dmgExpr && <button className="ck-pop-btn ghost" onClick={roll}>🎲</button>}
+        </div>
+        {ability.cond && <div className="ck-pop-why cond">{condIcon(ability.cond) + " applies " + ability.cond + " on " + (ability.kind === "save" ? "a failed save" : "hit")}</div>}
+        <div className="ck-pop-aoe-list">
+          {aoeTargets.map((t) => {
+            const o = aoeDone[t.id];
+            return (
+              <div key={t.id} className={"ck-pop-aoe-row" + (o ? " done" : "")}>
+                <span className="ck-pop-aoe-name">{t.name}{ability.kind === "attack" ? " · AC " + t.ac : ""}</span>
+                {o
+                  ? <span className="ck-pop-aoe-res">{o === "full" ? (ability.kind === "save" ? "failed" : "hit") : o === "half" ? "½" : (ability.kind === "save" ? "saved" : "miss")}</span>
+                  : ability.kind === "save"
+                    ? <span className="ck-pop-aoe-btns"><button className="fail" onClick={() => aoeApply(t, "full")}>✗ fail</button><button onClick={() => aoeApply(t, "half")}>½</button><button className="ghost" onClick={() => aoeApply(t, "none")}>✓ save</button></span>
+                    : <span className="ck-pop-aoe-btns"><button className="fail" onClick={() => aoeApply(t, "full")}>⚔ hit</button><button className="ghost" onClick={() => aoeApply(t, "none")}>miss</button></span>}
+              </div>
+            );
+          })}
+        </div>
+        <button className="ck-pop-btn apply" onClick={onClose}>Done</button>
+      </div>
+    );
+  } else if (ability.kind === "attack") {
+    body = (
+      <div className="ck-pop-body">
+        {maChain && <div className="ck-pop-ma">{"⚔ Multiattack — attack " + maThis + " of " + maN + (maThis < maN ? " · Action stays open" : " · this one spends the Action")}</div>}
         <div className="ck-pop-adv">
           <div className="ck-seg ck-pop-mode">
             {["dis", "normal", "adv"].map((mo) => (
@@ -1261,7 +1410,22 @@ function BoardView({ sorted, active, st, up, onDamage, onHeal, onPatch, onRemove
     const cr = chipRef.current; if (!cr) return;
     if (!cr.moved && Math.hypot(e.clientX - cr.sx, e.clientY - cr.sy) < 5) return;   // same <5px threshold as token drag
     cr.moved = true;
-    setChip({ ability: cr.ability, x: e.clientX, y: e.clientY, overId: tokenAt(e.clientX, e.clientY) });
+    const next = { ability: cr.ability, x: e.clientX, y: e.clientY, overId: tokenAt(e.clientX, e.clientY) };
+    /* area abilities (cone/line/cube/sphere): draw the template from the caster toward the cursor and
+       light up every token caught — for PC spells and monster actions alike. */
+    const aoe = aoeOf(cr.ability);
+    if (aoe && worldRef.current) {
+      const rect = worldRef.current.getBoundingClientRect();
+      const lw = rect.width / vp.zoom, lh = rect.height / vp.zoom;
+      const aim = worldPt(e.clientX, e.clientY);
+      const src = sorted.find((c) => c.id === st.selId);
+      const origin = src ? { x: src.x * lw, y: src.y * lh } : aim;
+      const geom = aoeGeometry(aoe, origin, aim);
+      const hitIds = sorted.filter((c) => aoeHitsToken(geom, { x: c.x * lw, y: c.y * lh })).map((c) => c.id);
+      next.aoe = { shape: aoe.shape, ft: aoe.ft, geom, hitIds };
+      cr.aoeRes = next.aoe;
+    } else cr.aoeRes = null;
+    setChip(next);
   };
   const endChip = (e) => {
     const cr = chipRef.current; chipRef.current = null;
@@ -1275,8 +1439,13 @@ function BoardView({ sorted, active, st, up, onDamage, onHeal, onPatch, onRemove
     }
     const targetId = tokenAt(e.clientX, e.clientY);
     setChip(null);
-    if (!targetId) return;
     const ability = cr.ability;
+    /* AoE drop: resolve against every caught token (works even when dropped on empty ground) */
+    if (cr.aoeRes && cr.aoeRes.hitIds && cr.aoeRes.hitIds.length && (ability.kind === "save" || ability.kind === "attack")) {
+      setResolve({ ability, targetId: targetId || cr.aoeRes.hitIds[0], sourceId: st.selId, aoeIds: cr.aoeRes.hitIds });
+      return;
+    }
+    if (!targetId) return;
     if (ability.kind === "condition") {
       onPatch(targetId, (cc) => ({ conds: cc.conds.includes(ability.cond) ? cc.conds : [...cc.conds, ability.cond] }));
       const tg = sorted.find((c) => c.id === targetId);
@@ -1295,6 +1464,13 @@ function BoardView({ sorted, active, st, up, onDamage, onHeal, onPatch, onRemove
   let tipStyle = null;
   if (abilTip) { const vw = window.innerWidth, vh = window.innerHeight; tipStyle = { left: clamp(abilTip.x, 150, vw - 150) + "px", top: clamp(abilTip.y + 14, 60, vh - 220) + "px" }; }
   const worldStyle = { transform: `translate(${vp.x}px,${vp.y}px) scale(${vp.zoom})`, transformOrigin: "0 0" };
+  const aoeTargets = (resolve && resolve.aoeIds) ? resolve.aoeIds.map((id) => sorted.find((c) => c.id === id)).filter(Boolean) : null;
+  const aoeShapeEl = (g) => {
+    if (!g) return null;
+    if (g.kind === "circle") return <circle cx={g.cx} cy={g.cy} r={g.r} />;
+    if (g.kind === "rect") return <rect x={g.x} y={g.y} width={g.w} height={g.h} />;
+    return <polygon points={g.pts.map((p) => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ")} />;
+  };
 
   return (
     <div className={"ck-board" + (sel ? " has-detail" : "")}>
@@ -1310,6 +1486,7 @@ function BoardView({ sorted, active, st, up, onDamage, onHeal, onPatch, onRemove
         {sorted.length === 0 && <p className="ck-board-empty">Add fighters from the roster, then drag them into position.</p>}
         <div className="ck-world" ref={worldRef} style={worldStyle}>
           {ruler && <svg className="ck-ruler-svg"><line x1={ruler.x1} y1={ruler.y1} x2={ruler.x2} y2={ruler.y2} /></svg>}
+          {chip && chip.aoe && <svg className="ck-aoe-svg">{aoeShapeEl(chip.aoe.geom)}</svg>}
           {sorted.map((c) => {
             const dragging = drag && drag.id === c.id;
             const x = dragging ? drag.x : c.x, y = dragging ? drag.y : c.y;
@@ -1322,7 +1499,8 @@ function BoardView({ sorted, active, st, up, onDamage, onHeal, onPatch, onRemove
             const acts = c.actions ? Object.keys(c.actions).filter((k) => c.actions[k]) : [];
             const ringSel = !down && ((c.id === st.selId) || (active && c.id === active.id));
             const reachD = (speedOf(c) / 5) * CELL_PX * 2;
-            const cls = "ck-tok " + c.side + (c.id === st.selId ? " sel" : "") + (active && c.id === active.id ? " active" : "") + (chip && chip.overId === c.id ? " over" : "") + (bloodied ? " bloodied" : "") + (down ? " down" : "") + (dragging ? " dragging" : "");
+            const inAoe = chip && chip.aoe && chip.aoe.hitIds.includes(c.id);
+            const cls = "ck-tok " + c.side + (c.id === st.selId ? " sel" : "") + (active && c.id === active.id ? " active" : "") + (chip && chip.overId === c.id ? " over" : "") + (inAoe ? " aoe-hit" : "") + (bloodied ? " bloodied" : "") + (down ? " down" : "") + (dragging ? " dragging" : "");
             return (
               <div key={c.id} data-tokenid={c.id} className={cls} title={c.name} style={{ left: x * 100 + "%", top: y * 100 + "%" }}
                 onPointerDown={(e) => startToken(e, c)} onPointerMove={moveToken} onPointerUp={(e) => endToken(e, c)}>
@@ -1346,9 +1524,9 @@ function BoardView({ sorted, active, st, up, onDamage, onHeal, onPatch, onRemove
           })}
         </div>
         {ruler && <div className="ck-ruler-lbl" style={{ left: vp.x + ruler.x2 * vp.zoom + 8, top: vp.y + ruler.y2 * vp.zoom + 8 }}>{ruler.ft} ft</div>}
-        {chip && <div className="ck-chip-ghost" style={{ left: chip.x + "px", top: chip.y + "px" }}>{chip.ability.name}</div>}
+        {chip && <div className="ck-chip-ghost" style={{ left: chip.x + "px", top: chip.y + "px" }}>{chip.ability.name}{chip.aoe ? ` · ${chip.aoe.ft}-ft ${chip.aoe.shape} → hits ${chip.aoe.hitIds.length}` : ""}</div>}
         {resTarget && (
-          <ResolvePopover key={resTarget.id + resolve.ability.name} ability={resolve.ability} target={resTarget}
+          <ResolvePopover key={resTarget.id + resolve.ability.name} ability={resolve.ability} target={resTarget} aoeTargets={aoeTargets}
             source={sorted.find((c) => c.id === resolve.sourceId) || null} rollMode={st.roll}
             onDamage={onDamage} onHeal={onHeal} onPatch={onPatch} onLog={onLog} onClose={() => setResolve(null)} posStyle={posStyle} />
         )}
@@ -1465,12 +1643,18 @@ function BoardDetail({ sel, onClose, onPatch, onDamage, onHeal, onRemove, startC
 }
 
 /* ============================ HUD: CLOCK + CLUES + ROSTER ============================ */
-function HUD({ st, up, onAddMonster, onAddPC, onAddParty }) {
+function HUD({ st, up, onAddMonster, onAddPC, onAddParty, collapsed, onToggleCollapse }) {
   const lit = st.clues.filter(Boolean).length;
   const hasKey = lit >= 3;
   const toggleClue = (i) => up((s) => ({ clues: s.clues.map((v, j) => (j === i ? !v : v)) }));
+  if (collapsed) return (
+    <aside className="ck-hud ck-rail-collapsed">
+      <button className="ck-railtab" title="Show panels" onClick={onToggleCollapse}>‹ Panels</button>
+    </aside>
+  );
   return (
     <aside className="ck-hud">
+      <div className="ck-hud-bar"><button className="ck-collapse" title="Collapse panels" onClick={onToggleCollapse}>›</button></div>
       <div className="ck-tile">
         <h3>🔎 Clues → the Key</h3>
         <div className="ck-clues">

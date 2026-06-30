@@ -201,6 +201,13 @@ link, and so the work is backed up.
     **action economy** (Action/Bonus/Reaction, reset each turn) and **spell slots** seeded from the data (PC
     `spell.slots`; monster Spellcasting trait — `(M slots)` / `At will` / `N/day`) that auto-decrement when a leveled
     spell resolves, with a manual rest. **Click an ability chip** (vs drag) for a full-detail tooltip.
+  - **Party link + rests + loot (v2.3):** a **🎭 The Party →** header button opens the player roster
+    (`characters/index.html`) in a new tab (the roster shows a **← Combat Cockpit** return link *only* when
+    arrived from the cockpit, via a `#cockpit` hash — players never see it); **🛌 Short / 🌙 Long** party-wide
+    rests (Long = full HP + all slots + cleared economy/death saves; Short = clear economy + restore Warlock
+    pact slots + a DM-entered heal); and a **🎁 Loot** overlay — a per-scene give/given checklist of thematic
+    level-3 rewards driven by `loot:[…]` arrays on the scene objects in the data file (the give state persists
+    in the save as `lootGiven`).
   - The engine `window.TWGE` (READS `MODULE` only) and the app live in the one `.html`; its readable JSX mirror is
     `site/combat-cockpit.src.jsx` — **edit both** the inline `React.createElement` app and the `.src.jsx` mirror (no
     build step; CSS lives only in the `.html`).

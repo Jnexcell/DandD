@@ -54,12 +54,39 @@ the whole tool). Works fully offline (`file://`); React + ReactDOM are vendored 
 - **Read-aloud front face** — roomier/larger type, plus a **per-scene atmosphere image**: point it at a
   local file (e.g. `img/scenes/scene1.jpg`); the path persists per scene (offline). The image now
   **fits whole** (`object-fit:contain`, ~38vh, centered) — the ~16:9 scene art no longer crops (v2.2).
+- **🎭 Jump to the Party (v2.3).** A header **`🎭 The Party →`** button opens the player-facing roster
+  (`characters/index.html`) in a new tab. The roster shows a **`← Combat Cockpit`** return link **only
+  when arrived from the cockpit** (the link is hidden by default and a tiny inline script reveals it
+  when `location.hash` contains `cockpit`) — ordinary players who land on the roster never see the DM
+  tool.
+- **🛌 Short / 🌙 Long rest (v2.3, party-wide).** Two header buttons run a 5e-style rest over the **PCs
+  only**. **Long** (confirm first) = full HP + all spell slots + cleared action economy & death saves.
+  **Short** = clear action economy + **restore Warlock pact slots** (detected via `/warlock/i` on the
+  PC's class — Douglas Dimmadome III) + apply a **DM-entered heal** (a `prompt`; blank = none) to each
+  conscious PC, clamped to max HP; non-Warlocks keep their slots. Both log a line to the combat log.
+  *(Slots are re-seeded from the data via the existing `slotsFor` helper — single source of truth.)*
+- **🎁 Loot overlay (v2.3).** A header **`🎁 Loot`** button opens a per-scene **give/given checklist** of
+  thematic level-3 rewards. The items are **data-driven** — each scene object in the data file carries a
+  `loot:[{id,name,rarity,qty,note}]` array (scenes 1/3/4/showdown; the roleplay Scene 2 has none),
+  surfaced through `TWGE.beats()`. The panel groups items by scene (highlighting the current beat); each
+  **give/given toggle** writes `st.lootGiven[id]` into the save (modal open/close itself isn't
+  persisted).
+- **Collapsible rails + dice tray (board grows to fill).** Three region toggles let the DM tuck panels
+  away so the **center board reflows into the freed space**: the **left initiative rail** (`‹` in its
+  header), the **right rail** (Clues → the Key *and* Add-to-fight, one whole-rail `›` toggle), and the
+  **dice tray** (a `🎲 Dice tray` header with a chevron). Each collapses to a slim **re-open strip**; the
+  grid's side tracks shrink to 40px via CSS vars (`--col-l`/`--col-r` on `.ck-main` + `.l-collapsed`/
+  `.r-collapsed`), and the board (`.ck-ra`, `flex:1`) widens / grows taller automatically. The dice
+  tray's contents stay mounted while hidden, so in-progress rolls survive a collapse. State persists in
+  `st.collapsed` (`{init,hud,dice}`).
 
 **Persisted state** (`localStorage["twg-cockpit-v2"]`, old saves migrate via `{...DEFAULT, ...saved}` +
 `withPositions`, which now also back-fills the v2.2 economy without clobbering a running fight):
 round/turn, combatants (`x,y`, `conds`, `actions`, deaths, **`econ`, `slots`, `innate`, optional manual
-`seq`**…), `clues`, `beat`, `view`, `selId`, `version`/`versionTouched`, `fightSig`, `sceneImg`. The
-combat **log is in-memory only**.
+`seq`**…), `clues`, `beat`, `view`, `selId`, `version`/`versionTouched`, `fightSig`, `sceneImg`,
+**`lootGiven`** (v2.3 — `{[itemId]:true}`), and **`collapsed`** (`{init,hud,dice}` — which rails/tray
+are tucked away) — all back-filled by the `{...DEFAULT, ...saved}` spread. The combat **log is
+in-memory only**.
 
 Locally (WSL): `file://wsl.localhost/Ubuntu/home/joshexcell/git/dnd/modules/the-weeping-grove/site/index.html`
 Published: `https://jnexcell.github.io/DandD/modules/the-weeping-grove/site/` — **DM-only, don't share with players.**

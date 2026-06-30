@@ -171,3 +171,48 @@ Run Node syntax parse + jsdom smoke after each phase. Commit only when asked.
     parses as valid JSX (`@babel/parser`). jsdom harness (scratchpad `run.cjs`) = **63 assertions
     green** across helpers, render smoke (incl. prior board/HP/silhouette, monster spell chips, overlay
     detail, scene auto-load non-regression) and click-driven #1–#3/#2-reset. Not committed.
+
+## v2.3 — party roster jump, party-wide rests, scene loot
+- **2026-06-30 — v2.3 (all 3 DM requests) DONE & VERIFIED.**
+  1. **🎭 Jump to the Party + return.** Header `🎭 The Party →` button → `openParty()` =
+     `window.open("../../../characters/index.html#cockpit", "_blank")`. Leak-conscious return: in
+     `characters/index.html` a `#cockpitBack` `← Combat Cockpit` link is `display:none` by default and a
+     one-line inline script reveals it only when `location.hash` contains `cockpit` — players landing on
+     the roster normally never see the DM tool.
+  2. **🛌 Short / 🌙 Long rest (party-wide, PCs only).** `longRest()` (confirm) → per PC `hp=maxhp`,
+     `slots/innate=slotsFor(c)`, `econ=emptyEcon()`, `deaths={s:0,f:0}`. `shortRest()` → `prompt` for an
+     optional heal; per PC `econ=emptyEcon()`, Warlocks (`/warlock/i` on `PARTY_BY_SLUG[slug].cls`) also
+     get `slots=slotsFor(c).slots` (Pact Magic recovers on a short rest), conscious PCs (`hp>0`) heal by
+     the amount (`clamp` to `maxhp`); non-Warlocks keep their slots. Both `pushLog` a line. Reuses
+     `slotsFor`/`emptyEcon`/`clamp` — conditions left for the DM (non-destructive).
+  3. **🎁 Loot — data-driven give/given checklist.** New `loot:[{id,name,rarity,qty,note}]` arrays on
+     `scene1/scene3/scene4/showdown` in the data file (Scene 2 = roleplay, none); engine `beats()` passes
+     `loot: s.loot || []` through. New `LootPanel` overlay (`.ck-loot*` CSS) toggled by a header `🎁 Loot`
+     button via Cockpit-local `useState` (open/close not persisted). Each item has a give/given toggle →
+     `toggleLoot(id)` writes `st.lootGiven[id]`. `DEFAULT.lootGiven={}`; old saves back-fill via the
+     existing `{...DEFAULT, ...s}` spread (no `withPositions` change — no new per-combatant field).
+  - **Verify:** `node vm.Script` on all 4 inline `<script>`s + both data files = 0 errors; `.src.jsx`
+    parses as valid JSX (`@babel/parser`). jsdom harness (scratchpad `run.cjs`) = **43 assertions green**
+    — syntax/sync, render smoke (header has Party/Loot/Short/Long; initiative + token-name non-regression),
+    `beats().loot` passthrough (4 scenes / 13 items / Scene 2 empty / expected ids), Loot panel opens +
+    lists 13 + toggle writes `lootGiven`, Short (Warlock slots restored, non-Warlock untouched, econ
+    cleared, +5 heal) and Long (full HP + all slots + death saves cleared) — plus a `roster.cjs` check of
+    the hash-gated return link (hidden without `#cockpit`, shown with it). Committed in `d513c3f`.
+
+## v2.3.1 — collapsible rails + dice tray (board grows to fill)
+- **2026-06-30 — DONE & VERIFIED.** DM wanted the central board to grow on demand. Three region
+  toggles, each collapsing to a slim re-open strip; the board reflows into the freed space.
+  - **Grid:** `.ck-main` side tracks moved to CSS vars (`grid-template-columns: var(--col-l,354px)
+    minmax(0,1fr) var(--col-r,286px)`); `.l-collapsed`/`.r-collapsed` set the var to `40px`. The
+    `@media` blocks still override `grid-template-columns` outright, so collapse only affects the
+    desktop 3-col layout. Center `.ck-ra` (`flex:1`) absorbs the slack automatically.
+  - **Left rail** (`Initiative`) and **right rail** (`HUD`, whole-rail per the user's choice) take
+    `collapsed`/`onToggleCollapse`; collapsed → return a `.ck-rail-collapsed` section with a single
+    vertical `.ck-railtab` re-open button. **Dice tray** (`DiceTray` via `CenterColumn`) gets a
+    `.ck-dice-head` (label + chevron) and a `.ck-dice-body` wrapper that `.ck-dice.collapsed` hides via
+    CSS (body stays mounted, so in-progress rolls survive).
+  - **State:** `DEFAULT.collapsed = {init,hud,dice}`; `cc = st.collapsed||{}` + `toggleCollapse(k)` in
+    `Cockpit` (same defensive-read pattern as `lootGiven`); back-filled by `{...DEFAULT, ...s}`.
+  - **Verify:** scratchpad `run.cjs` = **60 assertions green** (the v2.3 suite + 6 new sync markers +
+    11 collapse-behavior checks: collapse/re-open each rail toggles `.l-/.r-collapsed` and persists
+    `collapsed.*`, rail tabs appear, dice tray gains `.collapsed`). Mirrored in `.src.jsx`. Not committed.

@@ -82,6 +82,9 @@ a.card:hover{ border-color:var(--gold); transform:translateY(-2px); box-shadow:0
     <span class="t">The Weeping Grove<span class="s">The Party</span></span>
   </div>
   <div class="spacer"></div>
+  <!-- DM-only: shown only when arrived from the Combat Cockpit (URL #cockpit); ordinary players never see it -->
+  <a class="tbtn" id="cockpitBack" href="../modules/the-weeping-grove/site/combat-cockpit.html" title="Return to the DM Combat Cockpit" style="display:none">← Combat Cockpit</a>
+  <script>if(location.hash.indexOf("cockpit")>=0){var _cb=document.getElementById("cockpitBack");if(_cb)_cb.style.display="";}</script>
   <a class="tbtn" href="../modules/the-weeping-grove/site/character-builder.html" title="Open the character builder">✛ Build a hero</a>
   <button class="tbtn" id="themeBtn" title="Toggle light / dark">☀️ Daylight</button>
 </header>

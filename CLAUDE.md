@@ -122,15 +122,17 @@ citations back to the PDFs (the PDFs remain the source of truth).
 - `monster-manual/` — MM **indexes** (alphabetical, by CR, by type) + `README.md` primer + **`stat-blocks/`** (full mechanical stat blocks in our own format; **CR 0–2 exhaustive, CR 3–5 common monsters**). CR 6+ → look the page up in the MM PDF (offset +1)
 - `quick-reference/` — cross-book cheat sheets for the most-asked rules + **`dm-toolkit/`** (6 generation scaffolds to improvise NPCs / encounters / traps & puzzles / room descriptions / scenes & avenues / dialog live)
 - `tools/` — **PHASE 2 tools** built on top of the KB. `session-creator.md` = the Session/Module Creator (say *"build me a one-shot"*); `character-creator.md` = the Character Creation Helper (say *"help me make a character"*); `dm-assistant.md` = the **live DM Assistant** that runs a session (say *"run the session"*)
-- `modules/` — **generated one-shot modules** (ready-to-run sessions from the Session Creator) + `_TEMPLATE.md` + `README.md`
+- `modules/` — **generated one-shot modules** (ready-to-run sessions from the Session Creator) + `_TEMPLATE.md` + `README.md`. *(The Session Creator outputs prose `modules/<slug>.md`. **The Weeping Grove is special:** its content lives in `modules/the-weeping-grove/the-weeping-grove.data.js` — a structured `MODULE` object that is the **single source of truth** the DM screen renders from and the DM Assistant reads. The old prose `the-weeping-grove.md` is a retired stub.)*
 - `characters/` — **generated level-1 character packets** (from the Character Creation Helper) + `_CHOOSER.md` (the print-once "circle your character" worksheet) + `_TEMPLATE.md` + `README.md`
 - `sessions/` — **live session-state files** (kept by the DM Assistant while you play; pause/resume) + `_TEMPLATE.md` + `README.md`
 - `PROGRESS.md` — build tracker / resume guide (see "Build status" below)
 - `.build/` — regenerable page-tagged text dumps of each PDF (for live lookups) — **gitignored** (copyrighted text)
 - **Web / hosting:** `index.html` (repo root) is a **redirect to the Party page** `characters/index.html`
   (the public **home** — a roster linking each hero's finished sheet, e.g. `characters/alary-fern/`). The
-  **character builder** now lives at `modules/the-weeping-grove/site/character-builder.html`; the **DM screen**
-  at `modules/the-weeping-grove/site/index.html`. Published via **GitHub Pages** — see the next section.
+  **character builder** now lives at `modules/the-weeping-grove/site/character-builder.html`; the **DM tool** is the
+  **Combat Cockpit** — now the single, self-sufficient DM screen — at `modules/the-weeping-grove/site/combat-cockpit.html`
+  (`site/index.html` just redirects to it). The old vanilla-JS DM screen (`site/dm-screen.html`) is **retired** (no
+  longer linked). Published via **GitHub Pages** — see the next section.
 
 ## Player-facing web pages, hosting & source control
 
@@ -179,11 +181,33 @@ link, and so the work is backed up.
   - Its Markdown output is the **intake** for `tools/character-creator.md` — it deliberately stops at
     level-1-style picks + raw scores; **the DM runs the Character Creator to do the full math and level the hero
     to 3.**
-- **`modules/the-weeping-grove/site/index.html`** — the offline **DM screen** (full spoilers: every scene, the
-  Key, stat blocks, trackers). ⚠️ **It is reachable on the public Pages site** at
-  `…/DandD/modules/the-weeping-grove/site/index.html` (not linked from the builder, but not truly hidden) — do
-  **not** share that URL with players. (If true privacy is wanted later: move it off the published path or to a
-  separate private deploy.)
+- **`modules/the-weeping-grove/site/combat-cockpit.html`** — the offline **DM tool** (DM-only, full spoilers): the
+  **Combat Cockpit**, now the single, self-sufficient DM screen (React + ReactDOM vendored inline; works on
+  `file://`). `site/index.html` just redirects to it. It **renders from `../the-weeping-grove.data.js`** (the single
+  source of truth — to change the adventure, **edit the data file, not the HTML**; add new per-creature data, e.g. the
+  silhouette `sil` type, as a statblock field):
+  - Initiative, HP/damage, death saves, conditions; a dice tray that rolls monster attacks from stat blocks; the
+    candle-clock + clue→Key HUD. Loads `site/party.data.js` (the 5 PCs); each PC's attacks/spells/features show as
+    reference (players roll their own).
+  - **Each scene sets up its own fight**: navigating to a scene auto-loads its enemies (`TWGE.sceneEnemies`, A/B
+    aware), keeps the party (HP/conds/positions), replaces the prior scene's monsters. (Replaces the old DM-screen
+    `twg-combat-load` hand-off — the cockpit derives it itself.)
+  - A **tactical token board** (compact tokens with a **name label above each**, creature silhouettes, legible HP,
+    movement reach/Dash rings, a 5-ft distance ruler, a per-token actions bar), **drag-an-ability-onto-a-target** with
+    auto-applied conditions and auto adv/disadvantage (with a visible reason), a flip **DM-notes** face = the full
+    scene reference, and a roomier read-aloud face with a per-scene local image (fits whole, no crop).
+  - **DM turn control + economy (v2.2):** click a combatant's initiative row or token to make it the current turn
+    (round unchanged); **↑/↓ reorder** the initiative via a manual `seq` that `nextTurn` follows; per-combatant
+    **action economy** (Action/Bonus/Reaction, reset each turn) and **spell slots** seeded from the data (PC
+    `spell.slots`; monster Spellcasting trait — `(M slots)` / `At will` / `N/day`) that auto-decrement when a leveled
+    spell resolves, with a manual rest. **Click an ability chip** (vs drag) for a full-detail tooltip.
+  - The engine `window.TWGE` (READS `MODULE` only) and the app live in the one `.html`; its readable JSX mirror is
+    `site/combat-cockpit.src.jsx` — **edit both** the inline `React.createElement` app and the `.src.jsx` mirror (no
+    build step; CSS lives only in the `.html`).
+  The old vanilla-JS **DM screen** (`site/dm-screen.html`) is **retired** — no longer linked (kept as a dead file,
+  safe to delete). **Single canonical copy** — the old duplicate top-level `the-weeping-grove/` tree was removed.
+  ⚠️ **Reachable on the public Pages site** at `…/DandD/modules/the-weeping-grove/site/` — do **not** share that URL
+  with players. (For true privacy later: move it off the published path or to a separate private deploy.)
 
 ## Build status (what's done vs. not)
 

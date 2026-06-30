@@ -7,7 +7,7 @@
 
 # Session: <Module Title> — <YYYY-MM-DD>
 
-- **Module:** [`../modules/<slug>.md`](../modules/<slug>.md)  ·  **Status:** <in progress / paused / complete>
+- **Module:** `../modules/<slug>/<slug>.data.js` (or prose `../modules/<slug>.md`)  ·  **Status:** <in progress / paused / complete>
 - **Quest (as players heard it):** <…>
 
 ---
@@ -25,10 +25,18 @@
 
 | PC | Player | AC | HP (cur/max) | Pass.Perc | Init | Key resources (used/total) | Conditions |
 |---|---|:--:|:--:|:--:|:--:|---|---|
-| <Name> | <player> | <n> | <c>/<m> | <n> | <±> | <e.g. L1 slots 1/2 · Second Wind 0/1> | <none> |
+| <Name> | <player> | <n> | <c>/<m> | <n> | <±> | <e.g. L1 slots 1/2 · Rage 0/3> | <none> |
 | <Name> | <player> | <n> | <c>/<m> | <n> | <±> | <…> | <…> |
 
-*Saves/skills live in each PC's packet `../characters/<name>.md` — pull as needed.*
+*Full saves/skills/spells live in each PC's sheet `../characters/<name>/<name>.html` (the `CHARACTER` object) — pull as needed.*
+
+---
+
+## 🃏 Party combat card *(built at SETUP from each `CHARACTER` — what each hero does on their turn)*
+
+| PC | Init | AC | Save mods | Attacks (to-hit · dmg · cost) | Spell DC / slots | Signature / key resource |
+|---|:--:|:--:|---|---|---|---|
+| <Name> | <±> | <n> | <STR ±·DEX ±·CON ±·INT ±·WIS ±·CHA ±> | <Weapon +x, NdM · Action> | <DC n · L1 _/_ , L2 _/_> | <e.g. Rage 0/3 · Reckless Attack> |
 
 ---
 
@@ -67,12 +75,14 @@
 - **Fight:** <which encounter>  ·  **Round:** <n>  ·  **Stage:** <terrain / cover / light / who had surprise>
 - **Initiative order:**
 
-| Init | Combatant | Side | HP (cur/max) | Conditions / concentration |
+| Init | Combatant | Side | HP (cur/max) | Conditions / concentration (+ until when) |
 |:--:|---|---|:--:|---|
-| <n> | <Name> | PC | <c>/<m> | <none> |
-| <n> | <Monster #1> | enemy | <c>/<m> | <none> |
+| <n> | <Name> | PC | <c>/<m> | <none — e.g. "raging (2 rds left)" · "concentrating: Faerie Fire"> |
+| <n> | <Monster #1> | enemy | <c>/<m> | <e.g. "paralyzed by hold person — re-save Wis DC 11 end of turn"> |
 | <n> | <Monster #2> | enemy | <c>/<m> | <none> |
 
+- **Concentration watch:** <who holds what spell — drop it on a failed Con save (DC 10 / half damage) when hit>.
+- **Reactions used this round:** <PC/monster — one each per round>.
 - **Morale watch:** <trigger not yet hit / triggered → result>.
 
 ---

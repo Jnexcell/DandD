@@ -8,6 +8,10 @@ resolves the party (built by the Character Creator, 2b) against the rules, **con
 **How to invoke (Josh):** say *"run the session,"* *"let's play `<module>`,"* *"start the game,"* or *"be my
 DM screen."* Claude then **reads this file and runs the live loop**.
 
+**To rehearse instead of playing for real:** say *"mock play,"* *"rehearse the session,"* or *"show me what
+can happen"* → see **[Mock / Rehearsal Mode](#-mock--rehearsal-mode--practice-without-touching-a-real-session)**
+below. Mock mode lets Josh practice (and see every branch) **without** advancing a real session.
+
 > **For Claude — this is an executable RUNTIME playbook (not a prep pipeline).** Run **SETUP** once, then
 > the **SCENE LOOP** + **DISPATCH** for the rest of the session, dropping into the **COMBAT CONDUCTOR** for
 > fights. Persist everything to `../sessions/<slug>.md` so the game survives a pause.
@@ -29,18 +33,37 @@ DM screen."* Claude then **reads this file and runs the live loop**.
 
 ## SETUP — start of session (do once)
 
-1. **Load the module.** Read the prepped one-shot — either `../modules/<slug>.md` **or a module in its own
-   folder** `../modules/<slug>/<slug>.md` (e.g. `../modules/the-weeping-grove/the-weeping-grove.md`; check
-   the folder's `README.md` for which file to run). If the DM didn't name one, list what's in `../modules/`
-   (files and folders) and ask which. Note the **quest, the Two Paths, the Key, the scene list +
-   tags/cut-list, the party XP budget, the Showdown, and both Endings**.
-2. **Load the party.** Read the relevant `../characters/*.md` packets — record each PC's **name, AC, HP,
-   passive Perception, initiative (Dex) mod, save mods, and key resources** (spell slots, Second Wind, Lay
-   on Hands, Rage, Channel Divinity, etc.). No packets yet? Ask for a one-line party list (name · AC · HP ·
-   passive Perception · class) — or offer to build them first with `character-creator.md`.
+1. **Load the module.** Read the prepped one-shot. A module is **one of two formats** — check the folder's
+   `README.md`:
+   - **Structured data** `../modules/<slug>/<slug>.data.js` — a single `MODULE` object (this is **The Weeping
+     Grove**: `../modules/the-weeping-grove/the-weeping-grove.data.js`). Read it directly: `meta` (quest, the
+     Key logic, the clock, the Endings condition), `statblocks{}` (every monster, clean stats), `clues[]`,
+     `crown[]`, and `scenes[]` (each with `readAloud[]`, semantic-HTML `body`, tag, type, time). The scene
+     `body` holds the read-aloud, DM-only notes, checks+DCs, NPCs, avenues, bypass, and exit — read it straight.
+   - **Prose** `../modules/<slug>.md` (the Session Creator's default output).
+   If the DM didn't name one, list what's in `../modules/` (files and folders) and ask which. Note the
+   **quest, the Two Paths, the Key, the scene list + tags/cut-list, the party XP budget, the Showdown, and
+   both Endings**.
+2. **Load the party → build the Party Combat Card.** Read each hero's sheet
+   `../characters/<name>/<name>.html` — the data is the **`const CHARACTER = {…}`** object near the top (the
+   five heroes: `alary-fern`, `douglas-dimmadome`, `idrenk-bier`, `jarlaxle-smith`, `tuf`). From each
+   `CHARACTER`, distil a **combat card** the table will lean on every fight:
+   - **`ac`, `hpMax`**, **initiative = the DEX modifier** (`mod(DEX) = ⌊(DEX−10)/2⌋`), **passive Perception =
+     10 + Perception bonus**, and **save mods** (`mod + prof(2 at L3)` for each `saveProf`).
+   - **Attacks** — straight from `CHARACTER.attacks[]`: each `name · use (action cost) · range · bonus (to-hit)
+     · dmg`. (e.g. Alary: *Produce Flame +5, 1d8 fire, Action, 30 ft*.)
+   - **Spellcasting** (if `caster:true`): `spell.dc` (save DC), `spell.atk`, and **`spell.slots`** by level,
+     plus the cantrips/known list — so you can tell a caster what they can still afford.
+   - **Key resources** to track as used/total: Rage (Tuf), Pact-magic slots & short-rest recharge (Douglas),
+     Lay on Hands pool + Channel Divinity (I'Drenk), Wild Shape, the Ranger's companion **Ol' Moe** (Jarlaxle),
+     etc. — read these out of `CHARACTER.features` / `play`.
+   Mirror the sheet's own math (`mod`, `profBonus = 2 + ⌊(level−1)/4⌋`, `saveBonus`, `skillBonus`) — **don't
+   invent numbers**. No sheets yet? Ask for a one-line party list (name · AC · HP · passive Perception · class)
+   — or offer to build them with `character-creator.md`.
 3. **Open the state file.** Create `../sessions/<slug>-<YYYY-MM-DD>.md` from `../sessions/_TEMPLATE.md`,
-   pre-filled with: the party table, the module's scene list (all ○ upcoming), the four **party XP budgets**,
-   **Key = not found**, trending Ending = (undecided), and **current scene = Cold Open**.
+   pre-filled with: the **Party table + the 🃏 Party Combat Card** (from step 2), the module's scene list (all
+   ○ upcoming), the four **party XP budgets**, **Key = not found**, trending Ending = (undecided), and
+   **current scene = Cold Open**.
 4. **Ready briefing (3 lines):** the one-line pitch, the **quest as the players hear it**, and *"say 'begin'
    to run the cold open."* Then wait.
 
@@ -127,7 +150,7 @@ You **run the fight**; the DM (and players) report dice. Drive it from the inlin
 
 > **▸ First-fight coaching mode (Josh is a new DM — turn the table's first combat into a lesson).** The
 > first fight of a session is a *teaching* fight. In **The Weeping Grove** that's **Scene 1, the Bramble-Pack**
-> (6 reflavored **Wolves**, stat block inlined in the scene). When you reach it, **don't just resolve it —
+> (8 reflavored **Wolves**, `statblocks.wolf` in the data file). When you reach it, **don't just resolve it —
 > walk Josh through how a round actually flows, using the real party** (`../characters/`):
 > 1. **Before initiative:** give a 30-second *"how a turn works"* primer — on your turn you get a **move** +
 >    one **action** (Attack / Cast a Spell / Dash / Dodge / Disengage / Help / Hide / Ready…) + maybe a **bonus
@@ -144,9 +167,10 @@ You **run the fight**; the DM (and players) report dice. Drive it from the inlin
 >    note so the lesson lands without a slog.
 
 1. **Surprise?** If a side earned it (Stealth vs the others' passive Perception), they get a free round.
-2. **Roll initiative.** Ask each player for their d20 (add their init mod from the packet); roll each
-   monster group once using the stat block's **Dex** mod (say what you rolled). Build the **initiative order**
-   in the state file's **Combat tracker**.
+2. **Roll initiative.** Ask each player for their d20 (add their init mod **from the combat card** = their DEX
+   mod); roll each monster group once using the stat block's **Dex** mod (say what you rolled). Build the
+   **initiative order** in the state file's **Combat tracker**, highest → lowest, and announce it with each
+   PC's name + mod so the table knows the turn order.
 3. **Set the stage (one line):** terrain, cover, elevation, light — "cover and elevation do more than +2 HP."
 4. **Log HP.** Record every combatant's **current HP** (PCs from packets; each monster from its block) in the
    tracker. You'll decrement these as damage is reported — keep them current.
@@ -155,12 +179,27 @@ You **run the fight**; the DM (and players) report dice. Drive it from the inlin
      skirmisher flanks the backline, leader buffs/debuffs, beasts hit the nearest; smart foes focus-fire the
      healer, take cover, retreat). State it plainly: *"The skeleton shoots the wizard — **+4 to hit** vs AC,
      on a hit **1d6+2 = 5 piercing**."* Apply the result to tracked HP; note any condition.
-   - **PC's turn:** announce whose turn, prompt the DM/player for the action, then resolve: an **attack** vs
-     the monster's AC (ask for the d20 + their bonus), a **save** the monster makes vs the PC's **spell save
-     DC**, etc. Subtract damage from the tracked monster HP; call it when one drops to 0.
-6. **Conditions & concentration:** track them in state (prone, grappled, frightened, poisoned, stunned →
-   `../quick-reference/conditions.md`; remind the caster to make a **Con save** when a concentrating PC takes
-   damage — DC 10 or half the damage, whichever is higher).
+   - **PC's turn → present *what this character can do* (from their combat card).** Announce whose turn it is,
+     then lay out **their** menu in plain language so a new player isn't stuck — pulled straight from the sheet,
+     not generic advice:
+     - **Action:** their listed **attacks** (`name · +to-hit · dmg`) and, for casters, the **spells they can
+       still afford** given remaining `slots` (name → what it does, save *vs their DC* or spell attack
+       *+atk*), plus standard actions (Dash / Dodge / Disengage / Help / Hide / Ready / Shove / Grapple).
+     - **Bonus action:** what *they* have (Healing Word, Rage, a second weapon, Cunning Action, Spiritual
+       Weapon move…) — only list what's on their sheet.
+     - **Reaction:** Opportunity Attack, and any class reaction (Hellish Rebuke, a shield, etc.).
+     - Flag a **signature move** (`CHARACTER.play.signature`) the first time. Then resolve: an **attack** vs the
+       monster's AC (ask for d20 + their bonus), or a **save the monster makes vs the PC's spell save DC**, etc.
+       Subtract damage from tracked monster HP; **decrement the resource** they spent (a slot, a Rage, a Lay-on-
+       Hands pool) on the combat card; call it when a monster drops to 0.
+6. **Conditions, durations & concentration — track every one on the tracker.** For each combatant note the
+   condition, **who/what caused it, and when it ends** (e.g. *paralyzed by hold person — re-save Wis DC 11 at
+   end of its turns*; *raging — 3 more rounds*; *restrained by Entangle — STR DC 13 to break*;
+   *engulfed — Con DC 14 each turn, escape DC 14*). Surface a combatant's **active conditions at the top of
+   its turn** so nobody forgets them. Mechanics → `../quick-reference/conditions.md`. **Concentration:** record
+   *who is concentrating on what* (one spell each); whenever that caster takes damage, call a **Con save (DC 10
+   or half the damage, whichever is higher)** — on a fail the spell **drops** and its effect ends (un-paralyze,
+   un-restrain, etc.). This is how the party breaks the Overseer's *hold person* — make it feel earned.
 7. **Death saves:** if a PC hits 0 HP, run **death saving throws** (`../quick-reference/death-and-dying.md`)
    and surface stabilize/heal options. Don't kill quietly — flag it so the table can react.
 8. **Morale (optional):** at a trigger — first time at **half HP**, **leader downed**, or **group cut to
@@ -180,11 +219,53 @@ if you paused mid-fight). At session end, the **Session log** doubles as a recap
 
 ---
 
+## 🎭 MOCK / REHEARSAL MODE — practice without touching a real session
+
+**Purpose:** let Josh **gain experience of everything that *can* happen across every scene** — practice DMing,
+run combat, and explore the branch-space — **before** game night, with zero risk to a real game.
+
+**Ground rules for every mock mode:**
+- **Same data layer as a live game:** the module `MODULE` (`…/the-weeping-grove.data.js`) + the 5 hero sheets
+  (`…/characters/<name>/<name>.html`). Build the **Party Combat Card** (SETUP step 2) just like a real session.
+- **Write ONLY to a mock state file** `../sessions/mock-<slug>-<YYYY-MM-DD>.md`, headed **"MOCK — practice
+  only, not a real session."** **Never** create or advance a real `sessions/<slug>.md` in mock mode.
+- On entry, if Josh didn't say which, **offer the three modes** below and ask which (or "a bit of each").
+
+### 1. Run-the-party *(Josh DMs; Claude plays all 5 heroes)*
+Josh sits in the DM seat; **Claude controls the whole party** from their sheets — rolling their dice, picking
+sensible tactics, and reacting/speaking **in character** (use each `CHARACTER.play` voice + trait/ideal/bond/
+flaw). Present each scene panel as normal, let Josh narrate and adjudicate, and respond *as the party would*.
+After every decision, check, or fight, **flag the road not taken**: *"they talked Fenn around — they could
+instead have searched for the journal (Investigation DC 15), threatened her (Intimidation DC 20 → she flees),
+or lied (Deception DC 15 → the wood knows). Here's how each would've gone."* So Josh feels the branches live.
+Run combat through the **COMBAT CONDUCTOR** (Claude rolls the PCs too here).
+
+### 2. Auto-demo playthrough *(Claude runs both sides, narrating + teaching)*
+Claude plays **both the party and the world**, running a **full sample session start → finish** down a path
+Josh picks (*the road* / *the drag-marks* / *"surprise me"*). Narrate it like an actual-play: read-aloud, the
+party's choices and rolls, **combat round-by-round**, the Key beat, the Showdown **version that results**, and
+the ending. **Pause to teach** whenever a rule surfaces — a save, **concentration**, a **death save**, the
+**rite clock**, advantage, a tricky ruling — explain it + *why*, then continue. Close with a "what happened &
+why" recap so Josh sees a complete arc. Great for *"just show me a whole game once."*
+
+### 3. Branch-explorer *(a tour of one scene's full possibility space — no dice)*
+Josh names a scene (or *"all of them"*). From the structured scene data, lay out **everything that can happen
+there**: every **avenue**, every **check** (skill · DC · on-hit / on-miss outcome), the **clue(s)** it can set,
+the **bypass**, and the **exit/leads** — plus how to adjudicate each and the common **off-script** moves to
+expect. For combats: the roster + each monster's tactics, the **morale** trigger, the **TPK valves**, and every
+way the fight can end (win / flee / talk-down / the Showdown **flip**). A static reference tour — *"here's the
+whole map of this scene, and what you'd do for each."*
+
+*When Josh is ready to play for real, say "run the session" — that starts a real `sessions/<slug>.md` from
+scratch (mock files are ignored).*
+
+---
+
 ## Data layer this workflow stands on (pull from, don't re-derive)
 | Need | File |
 |---|---|
-| The prepped one-shot (scenes, NPCs, inlined stat blocks, Endings) | `../modules/<slug>.md` |
-| The party (AC/HP/passive Perception/saves/resources) | `../characters/*.md` |
+| The prepped one-shot (scenes, NPCs, stat blocks, clues, crown, Endings) | structured `../modules/<slug>/<slug>.data.js` (the `MODULE` object — **The Weeping Grove**) **or** prose `../modules/<slug>.md` |
+| The party — combat card (AC/HP/init/saves/attacks/spell DC & slots/resources) | each hero's `../characters/<name>/<name>.html` → the `const CHARACTER = {…}` object |
 | Run a scene · avenues · leads · complications · pacing | `../quick-reference/dm-toolkit/scenes-goals-and-avenues.md` |
 | Pick/run a fight · monster roles · tactics · morale | `../quick-reference/dm-toolkit/encounters-and-monsters.md` |
 | NPC dialog & voices on demand · reaction DCs | `../quick-reference/dm-toolkit/social-and-dialog.md` |
@@ -198,7 +279,8 @@ if you paused mid-fight). At session end, the **Session log** doubles as a recap
 | Any other rules question | `../CLAUDE.md` (topic index) |
 | Live state structure | `../sessions/_TEMPLATE.md` |
 
-*Scope note: runs a **2a one-shot** (monsters CR 0–5) with a **2b level-1 party**. **Multi-session campaign
+*Scope note: runs a **2a one-shot** (monsters CR 0–5) with a **2b party** (The Weeping Grove's is **5 × level
+3**). **Multi-session campaign
 continuity** (recurring NPCs across sessions, faction clocks, level progression) is the planned **backlog
 item 2d**; the session-state file here is a stepping stone toward it. CR 6+ monsters and spells L6–9 → look
 up in the PDF.*

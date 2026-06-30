@@ -46,16 +46,20 @@ exercise** pass on the player- and DM-facing artifacts, then the first real live
      badges** added to every Feature card. (Decision via AskUserQuestion: "Both".)
    - Validated JS after every change; removed a stray empty CSS rule. Sample (Lyra, Wood Elf Ranger L3)
      left in place — flagged that a full-caster sample would best stress-test the menu/grouping later.
-3. **[ ] DM screen — work on it more.** The offline DM screen `modules/the-weeping-grove/site/index.html`
-   (full spoilers: scenes, the Key, stat blocks, trackers). Improvements TBD with Josh. *(Reachable on the
-   public Pages site but unlinked — keep not sharing that URL with players; CLAUDE.md flags this.)*
+3. **[~] DM screen — de-duplicated (2026-06-17).** The adventure content was duplicated (prose
+   `the-weeping-grove.md` **and** inline in the DM screen). Extracted into a single source of truth
+   `modules/the-weeping-grove/the-weeping-grove.data.js` (`MODULE` object); the DM screen
+   `site/index.html` now renders from it via `<script src>` (+ a `{{SB:id}}` stat-block expander), and the
+   prose `.md` is a retired stub. Verified: node syntax + shape checks, and headless-Chrome screenshots of
+   the Overview and Scene 1 (stat blocks expand correctly). *(Reachable on public Pages but unlinked — keep
+   not sharing that URL with players.)*
 4. **[ ] Repo cleanup.** Housekeeping: reconcile the HTML artifacts (builder `index.html` ↔
    `character-builder.html` byte-identical pair, the new `character-sheet-template.html`, the DM screen) and
    **document the new sheet template in `CLAUDE.md` + `characters/README.md`**; prune/organize stray files;
    confirm `.gitignore` still excludes PDFs + `.build/`; tidy folder/file naming. *(Note: `dnd/` IS a git repo;
    `characters/character-sheet-template.html` currently shows untracked — decide what to commit.)*
 5. **[ ] First live MOCK TEST with the DM Assistant.** The agreed fuller end-to-end test: take the built
-   module `modules/the-weeping-grove/the-weeping-grove.md` + a real party (build via 2b
+   module `modules/the-weeping-grove/the-weeping-grove.data.js` + a real party (build via 2b
    `tools/character-creator.md`, or use the sheet above) and **run a live session** through
    `tools/dm-assistant.md` — exercise SETUP → Scene Control loop → the Combat Conductor → state file in
    `sessions/`. Capture any gaps found into the follow-up backlog.

@@ -10,7 +10,7 @@
     --ink:#e9e7da; --muted:#8d96a5; --faint:#5a6473;
     --gold:#d8a24a; --gold-d:#b07f2e;
     --good:#6fae5f; --good-d:#3f6b3f; --bad:#d8745e; --warn:#e0c45e;
-    --pc:#5f8d6a; --mon:#a86a5a;
+    --pc:#5f8d6a; --mon:#a86a5a; --ally:#4f9dae;
     --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
     --sans:-apple-system,system-ui,"Segoe UI",Roboto,Helvetica,sans-serif;
     --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
@@ -116,6 +116,7 @@
 
   .ck-row{ background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--mon); border-radius:11px; padding:9px 11px; transition:border-color .15s, box-shadow .15s, background .15s; }
   .ck-row.pc{ border-left-color:var(--pc); }
+  .ck-row.ally{ border-left-color:var(--ally); }
   .ck-row.active{ border-color:var(--gold); border-left-color:var(--gold); background:linear-gradient(90deg,rgba(216,162,74,.12),var(--panel) 60%); box-shadow:0 0 0 1px rgba(216,162,74,.35),0 6px 22px rgba(216,162,74,.14); }
   .ck-row.down{ opacity:.78; }
   .ck-rmain{ display:flex; align-items:center; gap:9px; }
@@ -257,6 +258,12 @@
   .ck-pcbtn{ background:var(--pc); color:#0d1a10; border:none; border-radius:7px; padding:0 12px; font-weight:700; font-size:13px; white-space:nowrap; }
   .ck-addparty{ background:var(--pc); color:#0d1a10; border:none; border-radius:8px; padding:9px 10px; font-weight:700; font-size:13px; margin-bottom:8px; width:100%; }
   .ck-addparty:hover{ background:#6fa07b; }
+  /* Reinforcements — background reserves to dial a fight up; visually recessed vs. the scene roster. */
+  .ck-reserve{ margin-top:9px; padding-top:9px; border-top:1px dashed var(--line); }
+  .ck-reserve-hd{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:6px; font-family:var(--mono); font-size:10px; letter-spacing:1.2px; text-transform:uppercase; color:var(--muted); font-weight:600; }
+  .ck-reserve-hd small{ font-family:inherit; letter-spacing:.4px; text-transform:none; color:var(--faint); font-weight:400; }
+  .ck-reserve .ck-reservebtn{ opacity:.82; border-style:dashed; }
+  .ck-reserve .ck-reservebtn:hover{ opacity:1; }
 
   /* ---------- editable initiative + PC abilities ---------- */
   .ck-initin{ width:34px; font-family:var(--mono); font-weight:700; font-size:15px; background:var(--bg2);
@@ -277,6 +284,22 @@
   .ck-atk-note,.ck-sp-eff,.ck-feat-t{ font-size:12px; color:var(--ink); opacity:.92; margin-top:3px; line-height:1.45; }
   .ck-sp-when,.ck-feat-use{ font-size:11.5px; color:var(--pc); margin-top:3px; }
   .ck-feat-use{ font-family:var(--mono); }
+
+  /* ---------- Wild Shape (DM ref: Alary's beast forms & their stats) ---------- */
+  .ck-ws-sum{ font-size:12px; color:var(--ink); opacity:.95; line-height:1.5; margin-bottom:6px; }
+  .ck-ws-rules{ margin:0 0 9px; padding:0; list-style:none; display:flex; flex-direction:column; gap:4px; }
+  .ck-ws-rules li{ font-size:11.5px; color:var(--ink); opacity:.85; line-height:1.45; padding-left:12px; position:relative; }
+  .ck-ws-rules li::before{ content:"·"; position:absolute; left:4px; color:var(--gold); font-weight:700; }
+  .ck-ws-form{ background:var(--bg2); border:1px solid var(--line); border-radius:8px; padding:7px 9px; margin-bottom:6px; }
+  .ck-ws-head{ display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 8px; }
+  .ck-ws-head b{ color:var(--ink); font-size:13px; }
+  .ck-ws-cr{ font-family:var(--mono); font-size:10.5px; letter-spacing:.5px; color:var(--gold); border:1px solid var(--line); border-radius:5px; padding:0 5px; }
+  .ck-ws-role{ font-size:11px; color:var(--pc); font-style:italic; }
+  .ck-ws-nums{ font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:4px; }
+  .ck-ws-sense{ font-family:var(--mono); font-size:10.5px; color:var(--muted); opacity:.85; margin-top:2px; }
+  .ck-ws-trait{ font-size:11.5px; color:var(--ink); opacity:.9; margin-top:4px; line-height:1.4; }
+  .ck-ws-act{ font-size:11.5px; color:var(--ink); margin-top:3px; line-height:1.4; }
+  .ck-ws-tip{ font-size:11.5px; color:var(--pc); margin-top:4px; line-height:1.4; }
 
   /* ---------- full DM scene reference (DM-notes back-face) ----------
      Ported from dm-screen.html's scene-body styles, scoped under .ck-scene and
@@ -432,6 +455,7 @@
     font-family:var(--mono); font-weight:700; font-size:15px; color:#fff; border:2px solid var(--mon);
     background:radial-gradient(circle at 50% 30%,#3a2a24,#241712); box-shadow:0 2px 6px rgba(0,0,0,.5); overflow:hidden; }
   .ck-tok.pc .ck-tok-label{ border-color:var(--pc); background:radial-gradient(circle at 50% 30%,#26392b,#142016); }
+  .ck-tok.ally .ck-tok-label{ border-color:var(--ally); background:radial-gradient(circle at 50% 30%,#1d3640,#0f1e24); }
   .ck-tok-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:50%; }
   .ck-tok-sil{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#e9cda4; opacity:.5; pointer-events:none; }
   .ck-tok-sil svg{ width:80%; height:80%; }
@@ -457,6 +481,7 @@
     color:var(--ink); background:rgba(10,14,20,.74); border:1px solid rgba(255,255,255,.08); border-radius:6px; padding:1px 6px;
     text-shadow:0 1px 2px #000; pointer-events:none; }
   .ck-tok.pc .ck-tok-name{ color:#dff0e2; } .ck-tok.mon .ck-tok-name{ color:#f3ddd2; }
+  .ck-tok.ally .ck-tok-name{ color:#cfe9f0; }
   .ck-tok.active .ck-tok-name{ color:var(--gold); border-color:rgba(216,162,74,.5); }
   /* action-economy pips on the ACTIVE token (A/B/R; dim = used) */
   .ck-tok-econ{ position:absolute; bottom:-3px; right:-5px; display:flex; gap:1px; }
@@ -564,6 +589,7 @@
   .ck-pop-mode button{ font-size:11px; padding:3px 7px; }
   .ck-pop-why{ font-size:11px; color:var(--gold); line-height:1.35; flex:1 1 100%; }
   .ck-pop-why.cond{ color:var(--warn); }
+  .ck-pop-why.fx{ color:var(--good); background:rgba(111,174,95,.10); border:1px solid rgba(111,174,95,.35); border-radius:6px; padding:3px 6px; margin-top:3px; }
   .ck-pop-ma{ font-size:11.5px; font-weight:700; color:var(--mon); background:rgba(168,106,90,.14);
     border:1px solid rgba(168,106,90,.4); border-radius:6px; padding:3px 7px; }
   /* ---------- area-of-effect template preview ---------- */
@@ -1046,7 +1072,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
   }
   // Expand {{SB:id}} / {{SB:id|count}} placeholders in a scene body into rendered stat blocks.
   function expandSB(html) {
-    return (html || "").replace(/\{\{SB:(\w+)(?:\|(\d+))?\}\}/g, (m, id, n) => renderSB(id, n ? { count: +n } : {}));
+    return (html || "").replace(/\{\{SB:(\w+)(?:\|(\d+))?(?:\|ally)?\}\}/g, (m, id, n) => renderSB(id, n ? { count: +n } : {}));
   }
 
   /* ---- beats: read-aloud (front) + DM notes (back) per playable scene ---- */
@@ -1090,15 +1116,16 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         body = body.slice(start, end);
       }
     }
-    const counts = {}, order = [], sb = M.statblocks || {};
-    const re = /\{\{SB:(\w+)(?:\|(\d+))?\}\}/g; let m;
+    const counts = {}, ally = {}, order = [], sb = M.statblocks || {};
+    const re = /\{\{SB:(\w+)(?:\|(\d+))?(?:\|(ally))?\}\}/g; let m;
     while ((m = re.exec(body))) {
-      const key = m[1], n = m[2] ? parseInt(m[2], 10) : 1;
+      const key = m[1], n = m[2] ? parseInt(m[2], 10) : 1, isAlly = m[3] === "ally";
       if (!sb[key]) continue;
       if (!(key in counts)) { counts[key] = 0; order.push(key); }
       counts[key] += n;
+      if (isAlly) ally[key] = true;
     }
-    return order.map((key) => ({ key, count: counts[key] }));
+    return order.map((key) => ({ key, count: counts[key], ally: !!ally[key] }));
   }
 
   window.TWGE = { rollDie, rollExpr, d20, parseAttack, monsters, beats, toNum, renderSB, expandSB, sceneEnemies };
@@ -1125,20 +1152,27 @@ const h = React.createElement; // compact alias for hand-written components belo
 const MON = E.monsters();
 const SB = (window.WEEPING_GROVE || window.MODULE || {}).statblocks || {}; // raw stat blocks (for monster actions on the board)
 const BEATS = E.beats();
-const MON_ORDER = ["wolf", "twig", "cultist", "thug", "fanatic", "hag", "mound"].filter(k => MON[k]);
+const MON_ORDER = ["wolf", "twig", "husk", "cultist", "thug", "fanatic", "hag", "mound"].filter(k => MON[k]);
+// Off-screen reinforcements: a separate "Reinforcements" group (background reserves) to dial a fight UP; not auto-loaded by any scene.
+const MON_RESERVE = ["dire", "needle", "vine", "shadow", "ghoul", "berserker"].filter(k => MON[k]);
 /* the real party (generated by build-party.mjs) — with each PC's attacks, spells & features */
 const PARTY = window.WEEPING_GROVE_PARTY || [];
 const PARTY_BY_SLUG = {};
 PARTY.forEach(p => { PARTY_BY_SLUG[p.slug] = p; });
 const CONDITIONS = ["Prone", "Grappled", "Restrained", "Poisoned", "Frightened", "Concentrating", "Stunned", "Paralyzed", "Blinded"];
 const COND_ICON = { Prone:"🛌", Grappled:"✊", Restrained:"🕸", Poisoned:"🤢", Frightened:"😱", Concentrating:"🧠", Stunned:"💫", Paralyzed:"⛓", Blinded:"🙈" };
-const condIcon = cd => COND_ICON[cd] || "⚑";
+/* class/spell effects that change how attacks resolve — tracked like conditions (stored in a
+   token's .conds), applied from the same palette, read by advInfo()/effectNotes() at attack time. */
+const EFFECTS = ["Reckless", "Rage", "Faerie Fire", "Vow of Enmity", "Bless", "Bane", "Hunter's Mark", "Hex", "Shield of Faith", "Barkskin"];
+const FX_ICON = { Reckless:"😤", Rage:"🔥", "Faerie Fire":"✨", "Vow of Enmity":"🎯", Bless:"🙏", Bane:"☠", "Hunter's Mark":"🏹", Hex:"👁", "Shield of Faith":"🔰", Barkskin:"🌳" };
+const condIcon = cd => COND_ICON[cd] || FX_ICON[cd] || "⚑";
 /* license-safe creature silhouettes (offline, no MM art) — keyed by statblock `sil` type. */
 const SIL_SVG = {
   humanoid: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="6.5" r="3.3"/><path d="M5.5 21c0-4 2.9-6.8 6.5-6.8S18.5 17 18.5 21z"/></svg>',
   beast: '<svg viewBox="0 0 24 24" fill="currentColor"><ellipse cx="12" cy="16.5" rx="4.2" ry="3.4"/><circle cx="6.6" cy="12" r="1.9"/><circle cx="17.4" cy="12" r="1.9"/><circle cx="9.2" cy="8.4" r="1.9"/><circle cx="14.8" cy="8.4" r="1.9"/></svg>',
   plant: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c-3.2 4.2-6.3 6.4-6.3 10.4a6.3 6.3 0 0 0 12.6 0c0-4-3.1-6.2-6.3-10.4z"/><path d="M11.2 22h1.6v-9h-1.6z"/></svg>',
   fey: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.2 5.4H8.8z"/><circle cx="12" cy="10.4" r="2.7"/><path d="M6.6 21c0-3.2 2.4-5.4 5.4-5.4S17.4 17.8 17.4 21z"/></svg>',
+  undead: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c-4 0-6.6 2.8-6.6 6.6 0 2.3 1.1 3.9 2.3 5v2.2c0 .7.5 1.2 1.2 1.2h.5v1.3c0 .7.5 1.2 1.2 1.2s1.2-.5 1.2-1.2V17.5h.4V18.8c0 .7.5 1.2 1.2 1.2s1.2-.5 1.2-1.2V17.5h.5c.7 0 1.2-.5 1.2-1.2v-2.2c1.2-1.1 2.3-2.7 2.3-5 0-3.8-2.6-6.6-6.6-6.6z"/><circle cx="9.2" cy="9.6" r="1.7" fill="#0e1117"/><circle cx="14.8" cy="9.6" r="1.7" fill="#0e1117"/><path d="M10.6 13.4h2.8l-1.4 1.6z" fill="#0e1117"/></svg>',
 };
 const tokSil = c => { const sb = c.side === "mon" && c.mkey ? SB[c.mkey] : null; return sb && SIL_SVG[sb.sil] ? SIL_SVG[sb.sil] : null; };
 /* movement + actions. Grid = 5 ft / cell; cosmetic cell = CELL_PX, so speed→reach-ring radius
@@ -1317,9 +1351,9 @@ function placeDefault(side, i) {
 function withPositions(list) {
   const idx = { pc: 0, mon: 0 };
   return (list || []).map(c => {
-    const side = c.side === "pc" ? "pc" : "mon";
-    const i = idx[side]++;
-    const out = (typeof c.x === "number" && typeof c.y === "number") ? { ...c } : { ...c, ...placeDefault(side, i) };
+    const placeSide = (c.side === "pc" || c.ally) ? "pc" : "mon";  // allies stand with the party band
+    const i = idx[placeSide]++;
+    const out = (typeof c.x === "number" && typeof c.y === "number") ? { ...c } : { ...c, ...placeDefault(placeSide, i) };
     if (!out.econ) out.econ = emptyEcon();
     if (!out.slots || !out.innate) { const sd = slotsFor(out); if (!out.slots) out.slots = sd.slots; if (!out.innate) out.innate = sd.innate; }
     return out;
@@ -1337,11 +1371,12 @@ function pcCombatant(p) {
     econ: emptyEcon(), slots: sd.slots, innate: sd.innate,
   };
 }
-function monCombatant(key, i) {
+function monCombatant(key, i, ally) {
   const m = MON[key];
   const sd = monsterCasting(SB[key] || {});
   return {
-    id: uid(), side: "mon", mkey: key, name: m.name + " " + (i + 1),
+    id: uid(), side: "mon", ally: !!ally, mkey: key,
+    name: (ally ? "🤝 " : "") + m.name + " " + (i + 1),
     init: E.rollDie(20) + m.dexmod, ac: m.ac, maxhp: m.maxhp, hp: m.maxhp,
     dexmod: m.dexmod, conds: [], deaths: { s: 0, f: 0 },
     econ: emptyEcon(), slots: sd.slots, innate: sd.innate,
@@ -1352,9 +1387,9 @@ function monCombatant(key, i) {
 function buildLoadState(payload) {
   const combatants = [];
   if (payload.addParty) PARTY.forEach(p => combatants.push(pcCombatant(p)));
-  (payload.enemies || []).forEach(({ key, count }) => {
+  (payload.enemies || []).forEach(({ key, count, ally }) => {
     if (!MON[key]) return;
-    for (let i = 0; i < (count || 1); i++) combatants.push(monCombatant(key, i));
+    for (let i = 0; i < (count || 1); i++) combatants.push(monCombatant(key, i, ally));
   });
   return { combatants: withPositions(combatants), round: 0, turnId: null, view: "board", selId: null };
 }
@@ -1395,7 +1430,21 @@ function PCDetail({ pc }) {
       h("h6", null, "★ Features"),
       feats.map((f, i) => h("div", { key: i, className: "ck-feat" },
         h("b", null, f.n), f.use ? h("span", { className: "ck-feat-use" }, " " + f.use) : null,
-        h("div", { className: "ck-feat-t" }, f.t)))) : null);
+        h("div", { className: "ck-feat-t" }, f.t)))) : null,
+    pc.wildShape ? h("div", { className: "ck-pcd-sec" },
+      h("h6", null, "🐾 Wild Shape", h("span", { className: "ck-sp-dc" }, " forms she can take · DM ref")),
+      pc.wildShape.summary ? h("div", { className: "ck-ws-sum" }, pc.wildShape.summary) : null,
+      pc.wildShape.rules && pc.wildShape.rules.length
+        ? h("ul", { className: "ck-ws-rules" }, pc.wildShape.rules.map((r, i) => h("li", { key: i }, r))) : null,
+      (pc.wildShape.forms || []).map((f, i) => h("div", { key: i, className: "ck-ws-form" },
+        h("div", { className: "ck-ws-head" }, h("b", null, f.name),
+          f.cr != null ? h("span", { className: "ck-ws-cr" }, "CR " + f.cr) : null,
+          f.role ? h("span", { className: "ck-ws-role" }, f.role) : null),
+        h("div", { className: "ck-ws-nums" }, ["AC " + f.ac, f.hp + " HP", f.speed, f.stats].filter(Boolean).join(" · ")),
+        f.senses ? h("div", { className: "ck-ws-sense" }, f.senses) : null,
+        (f.traits || []).map((t, j) => h("div", { key: "t" + j, className: "ck-ws-trait" }, "◆ " + t)),
+        (f.actions || []).map((a, j) => h("div", { key: "a" + j, className: "ck-ws-act" }, "⚔ " + a)),
+        f.tip ? h("div", { className: "ck-ws-tip" }, "▸ " + f.tip) : null))) : null);
 }
 
 /* ============================ ROOT ============================ */
@@ -1608,14 +1657,14 @@ function Cockpit() {
     if (s.fightSig === sig) return;
     const enemies = E.sceneEnemies(beat, ver);
     if (!enemies.length) { up({ fightSig: sig }); return; }
-    const aliveMons = s.combatants.some(c => c.side === "mon" && c.hp > 0);
+    const aliveMons = s.combatants.some(c => c.side === "mon" && !c.ally && c.hp > 0);
     if (s.round > 0 && aliveMons &&
         !window.confirm("Set up “" + (beat ? beat.name : "this") + "” fight? Replaces the current monsters (party kept).")) {
       up({ fightSig: sig }); return;
     }
     const pcs = s.combatants.filter(c => c.side === "pc");
     const mons = [];
-    enemies.forEach(({ key, count }) => { for (let i = 0; i < count; i++) mons.push(monCombatant(key, i)); });
+    enemies.forEach(({ key, count, ally }) => { for (let i = 0; i < count; i++) mons.push(monCombatant(key, i, ally)); });
     up({ combatants: withPositions([...pcs, ...mons]), fightSig: sig });
   };
   useEffect(() => { maybeLoadFight(); }, [st.beat, effVersion]);
@@ -1834,7 +1883,7 @@ function InitRow({
     });
   };
   return /*#__PURE__*/React.createElement("div", {
-    className: "ck-row " + c.side + (active ? " active" : "") + (down ? " down" : "")
+    className: "ck-row " + c.side + (c.ally ? " ally" : "") + (active ? " active" : "") + (down ? " down" : "")
   }, /*#__PURE__*/React.createElement("div", {
     className: "ck-rmain"
   }, /*#__PURE__*/React.createElement("input", {
@@ -1958,7 +2007,7 @@ function InitRow({
   }, "+ condition"), open && /*#__PURE__*/React.createElement("div", {
     className: "ck-condmenu",
     onMouseLeave: () => setOpen(false)
-  }, CONDITIONS.filter(cd => !c.conds.includes(cd)).map(cd => /*#__PURE__*/React.createElement("button", {
+  }, CONDITIONS.concat(EFFECTS).filter(cd => !c.conds.includes(cd)).map(cd => /*#__PURE__*/React.createElement("button", {
     key: cd,
     onClick: () => {
       onPatch(c.id, cc => ({
@@ -2062,9 +2111,12 @@ function ReadAloud({ beat, flip, version, img, onImg }) {
     return () => el.removeEventListener("click", onClick);
   }, [beat, flip, version, b]);
   if (!b) return null;
+  // optional companion image img/scenes/<sceneId>2.png (e.g. the Cold Open's cold-open2.png) — auto-hides if absent
+  const img2 = img ? ("img/scenes/" + b.id + "2.png") : "";
   return h("div", { className: "ck-card" + (flip ? " flip" : "") },
     h("div", { className: "ck-face ck-front" },
       img ? h("img", { className: "ck-ra-img", src: img, alt: "", onError: e => { e.target.style.display = "none"; } }) : null,
+      img2 ? h("img", { className: "ck-ra-img", src: img2, alt: "", onError: e => { e.target.style.display = "none"; } }) : null,
       b.ra.length
         ? b.ra.map((r, i) => h("div", { key: i, className: "ck-ra-block" },
             h("span", { className: "ck-ra-eyebrow" }, "\uD83D\uDCD6 " + r.label),
@@ -2345,14 +2397,48 @@ function advInfo(ability, target, source) {
       if (sc.includes(c)) { dis = true; reasons.push(source.name + " " + c + " → disadvantage"); }
     });
   }
+  // party buffs/marks tracked in .conds (Effects palette) that swing the attack roll
+  if (tc.includes("Faerie Fire")) { adv = true; reasons.push("target Faerie Fire → advantage"); }
+  if (tc.includes("Reckless")) { adv = true; reasons.push("target used Reckless Attack → advantage"); }
+  if (source && (source.conds || []).includes("Reckless")) { adv = true; reasons.push((source.name || "attacker") + " Reckless Attack → advantage"); }
   const mode = (adv && dis) ? "normal" : adv ? "adv" : dis ? "dis" : "normal";
   if (adv && dis) reasons.push("advantage + disadvantage cancel → normal");
   return { mode, reasons };
 }
+/* ongoing buffs/debuffs that don't change adv/dis but modify the roll, damage, AC or save —
+   surfaced as reminders in the resolve popover so the DM doesn't forget to apply them. */
+function effectNotes(ability, target, source) {
+  const notes = [], tc = (target && target.conds) || [];
+  if (ability.kind === "attack") {
+    // Bless/Bane on the attacker are auto-applied to the roll (see ResolvePopover.roll) — no reminder.
+    if (tc.includes("Hunter's Mark")) notes.push("🏹 target is Hunter's Marked → +1d6 damage (the marker's attacks only)");
+    if (tc.includes("Hex")) notes.push("👁 target is Hexed → +1d6 necrotic (the hexer's attacks only)");
+    if (tc.includes("Vow of Enmity")) notes.push("🎯 target is Vowed → the vowing paladin attacks with advantage");
+  }
+  if (ability.kind === "save") {
+    if (tc.includes("Bless")) notes.push("🙏 target is Blessed → +1d4 to the saving throw");
+    if (tc.includes("Bane")) notes.push("☠ target is Baned → −1d4 to the saving throw");
+  }
+  if (tc.includes("Rage")) notes.push("🔥 target is Raging → physical (b/p/s) damage auto-halved on apply");
+  if (tc.includes("Shield of Faith")) notes.push("🔰 target has Shield of Faith → +2 AC (adjust its AC if you haven't)");
+  if (tc.includes("Barkskin")) notes.push("🌳 target has Barkskin → its AC is at least 16");
+  return notes;
+}
+/* action-economy pip an ability ticks on resolve: "action"|"bonus"|"reaction"|"none" — parsed
+   from the feature's `use` / spell's `castTime` / attack's `use` text ("no action"/"declare" = a
+   free rider that spends no pip). */
+function econSlotFrom(use, dflt) {
+  const u = String(use || "").toLowerCase();
+  if (/no action|declare/.test(u)) return "none";
+  if (/reaction/.test(u)) return "reaction";
+  if (/bonus/.test(u)) return "bonus";
+  if (/action/.test(u)) return "action";
+  return dflt;
+}
 function pcAttackAbility(a) {
   const d = parseDmgString(a.dmg);
   const cc = parseCond(a.note || "");
-  return { name: a.name, kind: "attack", tohit: E.toNum(a.bonus), dmgExpr: d.expr, dmgType: d.type, note: a.note || a.range || "", cond: cc ? cc.cond : null, condOn: cc ? cc.on : null, src: a };
+  return { name: a.name, kind: "attack", tohit: E.toNum(a.bonus), dmgExpr: d.expr, dmgType: d.type, note: a.note || a.range || "", cond: cc ? cc.cond : null, condOn: cc ? cc.on : null, econSlot: econSlotFrom(a.use, "action"), src: a };
 }
 function pcSpellAbility(sp, s) {
   const roll = s.roll || "", eff = s.effect || "", dice = firstDice(eff);
@@ -2365,8 +2451,15 @@ function pcSpellAbility(sp, s) {
     save = { dc: sp.dc, ability: ab ? ab[1] : "" };
   }
   const cc = parseCond(eff);
-  return { name: s.name, kind, tohit, dmgExpr, dmgType, healExpr, save, note: eff, cond: cc ? cc.cond : null, condOn: cc ? cc.on : null,
+  return { name: s.name, kind, tohit, dmgExpr, dmgType, healExpr, save, note: eff, cond: cc ? cc.cond : null, condOn: cc ? cc.on : null, econSlot: econSlotFrom(s.castTime, "action"),
     level: s.lvl === "cantrip" ? "cantrip" : "L" + s.lvl, slotLevel: (typeof s.lvl === "number" && s.lvl >= 1) ? s.lvl : null, src: s };
+}
+function pcFeatureAbility(f) {
+  /* an active class/race feature (Rage, Frenzy, Channel Divinity, Lay on Hands, Wild Shape…) → a
+     clickable reference chip: click for the full detail tooltip, drag onto a token to log its use.
+     Reckless Attack carries the "Reckless" marker so dropping it feeds advInfo's advantage logic. */
+  const cond = f.n === "Reckless Attack" ? "Reckless" : null;
+  return { name: f.n, kind: "utility", tohit: null, dmgExpr: null, dmgType: "", healExpr: null, save: null, note: f.t || "", cond, condOn: null, econSlot: econSlotFrom(f.use, "none"), src: f };
 }
 function monActionAbility(act) {
   const p = E.parseAttack(act.n, act.t);
@@ -2415,6 +2508,11 @@ function abilitiesFor(c) {
     const pc = PARTY_BY_SLUG[c.slug]; if (!pc) return [];
     const out = (pc.attacks || []).map(pcAttackAbility);
     if (pc.spell) [].concat(pc.spell.cantrips || []).concat(pc.spell.known || pc.spell.prepared || []).forEach(s => out.push(pcSpellAbility(pc.spell, s)));
+    const F = pc.features || {};
+    const CHIP_ALWAYS = ["Reckless Attack", "Divine Smite"];   // "Passive"-tagged but still worth a drag chip
+    [].concat(F.class || [], F.race || [], F.background || [])
+      .filter(f => { if (CHIP_ALWAYS.includes(f.n)) return true; const u = String(f.use || "").trim().toLowerCase(); return !u.startsWith("passive") && /\b(action|bonus|reaction)\b/.test(u); })
+      .forEach(f => out.push(pcFeatureAbility(f)));
     return out;
   }
   const sb = SB[c.mkey]; if (!sb) return [];
@@ -2473,6 +2571,9 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
   const manual = rollMode === "me";
   const isAoe = !!(aoeTargets && aoeTargets.length && (ability.kind === "save" || ability.kind === "attack"));
   const adv = advInfo(ability, target, source);
+  const fxNotes = effectNotes(ability, target, source);
+  /* Bless/Bane on the attacker: auto-rolled into the total below (auto mode) or shown as a reminder (manual). */
+  const atkFx = ability.kind === "attack" && source ? ((source.conds || []).includes("Bless") ? "Bless" : (source.conds || []).includes("Bane") ? "Bane" : null) : null;
   /* Multiattack progress (monster weapon attacks): which attack of the chain is this, and does it spend the Action? */
   const maN = source ? maCountOf(source) : 1;
   const maChain = !!source && maN > 1 && ability.kind === "attack" && ability.level == null && !spendOf(ability);
@@ -2486,13 +2587,27 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
   const [mode, setMode] = useState(adv.mode);   // pre-picked from conditions; DM can override
   const roll = () => {
     if (ability.kind === "heal") { const r = E.rollExpr(ability.healExpr || "0"); setRes({ heal: r ? r.total : 0 }); return; }
-    const r = E.d20(ability.tohit || 0, mode), nat = r.die, crit = r.nat20, total = r.total;
+    const r = E.d20(ability.tohit || 0, mode), nat = r.die, crit = r.nat20;
+    let total = r.total, fxMod = null;
+    if (ability.kind === "attack" && source) {   // Bless/Bane on the attacker → ±1d4 on the attack roll
+      const scc = source.conds || [];
+      if (scc.includes("Bless")) { const b = E.rollExpr("1d4"); const n = b ? b.total : 0; total += n; fxMod = { n, label: "Bless" }; }
+      else if (scc.includes("Bane")) { const b = E.rollExpr("1d4"); const n = b ? b.total : 0; total -= n; fxMod = { n: -n, label: "Bane" }; }
+    }
     const hit = ability.kind === "save" ? null : (total >= target.ac || crit);
     let dmg = null; if (ability.dmgExpr) { const d = E.rollExpr(ability.dmgExpr, { crit }); dmg = d ? d.total : null; }
-    setRes({ nat, total, hit, crit, dmg, dice: r.dice });
+    setRes({ nat, total, hit, crit, dmg, dice: r.dice, fxMod });
   };
   useEffect(() => { if (!manual) roll(); }, [mode]);
   const applyCond = () => { if (ability.cond && onPatch) onPatch(target.id, (cc) => ({ conds: cc.conds.includes(ability.cond) ? cc.conds : [...cc.conds, ability.cond] })); };
+  /* deal damage to a token, auto-halving physical (b/p/s) damage vs a Raging target (5e resistance).
+     Shared by every damage path so the rule can't diverge; returns the amount actually applied. */
+  const applyDmg = (tok, amount, abil) => {
+    let amt = amount, halved = false;
+    if (amt > 0 && /bludgeoning|piercing|slashing/i.test(abil.dmgType || "") && (tok.conds || []).includes("Rage")) { amt = Math.floor(amt / 2); halved = true; }
+    if (amt) onDamage(tok.id, amt);
+    return { amt, halved };
+  };
   const condNote = ability.cond ? ` · ${condIcon(ability.cond)} ${ability.cond}` : "";
   const saveHint = (() => {
     if (!ability.save) return "";
@@ -2515,18 +2630,20 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
      held open (its A pip stays unlit) until the LAST attack of the chain resolves. */
   const spend = () => {
     if (!source || !onPatch) return;
+    const slot = ability.econSlot || "action";   // which pip this ability ticks (monsters have none → "action")
+    if (slot === "none") return;                  // free riders (Reckless Attack, Divine Smite) spend no pip or slot
     const sp = spendOf(ability);
     const maN = maCountOf(source);
     const chain = maN > 1 && ability.kind === "attack" && ability.level == null && !sp; // a weapon attack inside a Multiattack
     onPatch(source.id, cc => {
       const econ0 = cc.econ || emptyEcon();
-      let actionUsed = true, maLeft;
+      let used = true, maLeft;
       if (chain && !econ0.action) {
         const left = ((typeof cc.maLeft === "number" && cc.maLeft > 0 && cc.maLeft <= maN) ? cc.maLeft : maN) - 1;
-        if (left > 0) { actionUsed = false; maLeft = left; }   // attacks remain → keep the Action open
-        else { actionUsed = true; maLeft = maN; }              // last attack → spend it, reseed for next turn
+        if (left > 0) { used = false; maLeft = left; }         // attacks remain → keep the Action open
+        else { used = true; maLeft = maN; }                    // last attack → spend it, reseed for next turn
       }
-      const patch = { econ: { ...econ0, action: actionUsed } };
+      const patch = { econ: { ...econ0, [slot]: used } };
       if (chain) patch.maLeft = maLeft;
       if (sp && sp.kind === "slot") { const cur = (cc.slots && cc.slots[sp.lvl]) || 0; patch.slots = { ...(cc.slots || {}), [sp.lvl]: Math.max(0, cur - 1) }; }
       else if (sp && sp.kind === "innate") { const cur = (cc.innate && cc.innate[sp.key]) || 0; patch.innate = { ...(cc.innate || {}), [sp.key]: Math.max(0, cur - 1) }; }
@@ -2536,29 +2653,29 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
 
   const applyAttack = () => {
     const isHit = hit(), dmg = dmgVal();
-    if (isHit && dmg) onDamage(target.id, dmg);
+    const ap = isHit && dmg ? applyDmg(target, dmg, ability) : { amt: 0, halved: false };
     if (isHit) applyCond();
-    onLog({ kind: isHit ? "hit" : "miss", html: `${ability.name} → <b>${target.name}</b> (AC ${target.ac}): d20+${ability.tohit || 0} = <b>${total()}</b> — ${isHit ? "HIT" : "miss"}${isHit && dmg ? ` · <b>${dmg}</b> ${ability.dmgType || ""}${crit() ? " (CRIT)" : ""}` : ""}${isHit ? condNote : ""}` });
+    onLog({ kind: isHit ? "hit" : "miss", html: `${ability.name} → <b>${target.name}</b> (AC ${target.ac}): d20+${ability.tohit || 0} = <b>${total()}</b> — ${isHit ? "HIT" : "miss"}${isHit && dmg ? ` · <b>${ap.amt}</b> ${ability.dmgType || ""}${crit() ? " (CRIT)" : ""}${ap.halved ? " (halved — Rage)" : ""}` : ""}${isHit ? condNote : ""}` });
     spend();
     onClose();
   };
   const applySave = out => {
-    const dmg = dmgVal(), applied = out === "fail" ? dmg : out === "half" ? Math.floor(dmg / 2) : 0;
-    if (applied) onDamage(target.id, applied);
+    const dmg = dmgVal(), full = out === "fail" ? dmg : out === "half" ? Math.floor(dmg / 2) : 0;
+    const ap = full ? applyDmg(target, full, ability) : { amt: 0, halved: false };
     if (out === "fail") applyCond();
-    onLog({ kind: out === "fail" ? "hit" : "roll", html: `${ability.name} → <b>${target.name}</b>: DC ${ability.save ? ability.save.dc : "?"} ${ability.save ? ability.save.ability : ""} save — ${out === "fail" ? "FAILED" : out === "half" ? "saved ½" : "saved"}${applied ? ` · <b>${applied}</b> ${ability.dmgType || ""}` : ""}${out === "fail" ? condNote : ""}` });
+    onLog({ kind: out === "fail" ? "hit" : "roll", html: `${ability.name} → <b>${target.name}</b>: DC ${ability.save ? ability.save.dc : "?"} ${ability.save ? ability.save.ability : ""} save — ${out === "fail" ? "FAILED" : out === "half" ? "saved ½" : "saved"}${ap.amt ? ` · <b>${ap.amt}</b> ${ability.dmgType || ""}${ap.halved ? " (halved — Rage)" : ""}` : ""}${out === "fail" ? condNote : ""}` });
     spend();
     onClose();
   };
   const applyHeal = () => { const amt = healVal(); if (amt) onHeal(target.id, amt); onLog({ kind: "roll", html: `${ability.name} → <b>${target.name}</b>: healed <b>${amt}</b>` }); spend(); onClose(); };
-  const applyUtil = () => { onLog({ kind: "roll", html: `${ability.name} → <b>${target.name}</b>` }); spend(); onClose(); };
+  const applyUtil = () => { applyCond(); onLog({ kind: "roll", html: `${ability.name} → <b>${target.name}</b>${condNote}` }); spend(); onClose(); };
   /* AoE: apply the single shared damage roll to one caught token; spend the caster's economy/slot only once. */
   const aoeApply = (t, outcome) => {
-    const dmg = dmgVal(), applied = outcome === "full" ? dmg : outcome === "half" ? Math.floor(dmg / 2) : 0;
-    if (applied) onDamage(t.id, applied);
+    const dmg = dmgVal(), full = outcome === "full" ? dmg : outcome === "half" ? Math.floor(dmg / 2) : 0;
+    const ap = full ? applyDmg(t, full, ability) : { amt: 0, halved: false };
     if (outcome === "full" && ability.cond && onPatch) onPatch(t.id, cc => ({ conds: cc.conds.includes(ability.cond) ? cc.conds : [...cc.conds, ability.cond] }));
     const verb = ability.kind === "save" ? (outcome === "full" ? "FAILED" : outcome === "half" ? "saved ½" : "saved") : (outcome === "full" ? "HIT" : "miss");
-    onLog({ kind: applied ? "hit" : "roll", html: `${ability.name} → <b>${t.name}</b>: ${verb}${applied ? ` · <b>${applied}</b> ${ability.dmgType || ""}` : ""}${outcome === "full" ? condNote : ""}` });
+    onLog({ kind: ap.amt ? "hit" : "roll", html: `${ability.name} → <b>${t.name}</b>: ${verb}${ap.amt ? ` · <b>${ap.amt}</b> ${ability.dmgType || ""}${ap.halved ? " (halved — Rage)" : ""}` : ""}${outcome === "full" ? condNote : ""}` });
     if (!aoeSpent.current) { spend(); aoeSpent.current = true; }
     setAoeDone(d => ({ ...d, [t.id]: outcome }));
   };
@@ -2603,19 +2720,22 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
             h("span", { className: "ck-pop-eq" }, "+" + (ability.tohit || 0) + " = " + total()),
             h("span", { className: hit() ? "ck-pop-hit" : "ck-pop-miss" }, "vs AC " + target.ac + " · " + (hit() ? "HIT" : "miss")))
         : h("div", { className: "ck-pop-row" },
-            h("span", { className: res && res.hit ? "ck-pop-hit" : "ck-pop-miss" }, "d20 " + (res ? res.nat : "?") + (res && res.dice && res.dice.length > 1 ? " [" + res.dice.join("/") + "]" : "") + "+" + (ability.tohit || 0) + " = " + total() + " vs AC " + target.ac + " · " + (res && res.hit ? "HIT" : "miss") + (res && res.crit ? " CRIT" : "")),
+            h("span", { className: res && res.hit ? "ck-pop-hit" : "ck-pop-miss" }, "d20 " + (res ? res.nat : "?") + (res && res.dice && res.dice.length > 1 ? " [" + res.dice.join("/") + "]" : "") + (res && res.fxMod ? " [" + (res.fxMod.n < 0 ? "−" : "+") + Math.abs(res.fxMod.n) + " " + res.fxMod.label + "]" : "") + "+" + (ability.tohit || 0) + " = " + total() + " vs AC " + target.ac + " · " + (res && res.hit ? "HIT" : "miss") + (res && res.crit ? " CRIT" : "")),
             h("button", { className: "ck-pop-btn ghost", onClick: roll }, "🎲")),
       h("div", { className: "ck-pop-row" }, h("label", null, "dmg"),
         manual
           ? h("input", { className: "ck-d20in", inputMode: "numeric", placeholder: ability.dmgExpr || "#", value: dmgv, onChange: e => setDmgv(e.target.value.replace(/[^0-9]/g, "")) })
           : h("span", { className: "ck-pop-dmg" }, (res && res.dmg != null ? res.dmg : "—") + " " + (ability.dmgType || "") + (ability.dmgExpr ? " (" + ability.dmgExpr + ")" : ""))),
       ability.cond ? h("div", { className: "ck-pop-why cond" }, condIcon(ability.cond) + " applies " + ability.cond + " on hit") : null,
+      manual && atkFx ? h("div", { className: "ck-pop-why fx" }, atkFx === "Bless" ? "🙏 Blessed → add +1d4 to your d20" : "☠ Baned → subtract 1d4 from your d20") : null,
+      fxNotes.length ? h("div", { className: "ck-pop-why fx" }, fxNotes.map((n, i) => h("div", { key: i }, n))) : null,
       h("button", { className: "ck-pop-btn apply", onClick: applyAttack }, hit() ? ("⚔ Apply " + dmgVal() + " dmg") : "Log miss"));
   } else if (ability.kind === "save") {
     body = h("div", { className: "ck-pop-body" },
       h("div", { className: "ck-pop-save" }, "DC " + (ability.save ? ability.save.dc : "?") + " " + (ability.save ? ability.save.ability : "") + " save — player rolls"),
       saveHint ? h("div", { className: "ck-pop-why" }, saveHint) : null,
       ability.cond ? h("div", { className: "ck-pop-why cond" }, condIcon(ability.cond) + " applies " + ability.cond + " on failed save") : null,
+      fxNotes.length ? h("div", { className: "ck-pop-why fx" }, fxNotes.map((n, i) => h("div", { key: i }, n))) : null,
       h("div", { className: "ck-pop-row" }, h("label", null, "dmg"),
         manual
           ? h("input", { className: "ck-d20in", inputMode: "numeric", placeholder: ability.dmgExpr || "#", value: dmgv, onChange: e => setDmgv(e.target.value.replace(/[^0-9]/g, "")) })
@@ -2836,7 +2956,7 @@ function BoardView({ sorted, active, st, up, onDamage, onHeal, onPatch, onRemove
           const ringSel = !down && ((c.id === st.selId) || (active && c.id === active.id));
           const reachD = (speedOf(c) / 5) * CELL_PX * 2;
           const inAoe = chip && chip.aoe && chip.aoe.hitIds.includes(c.id);
-          const cls = "ck-tok " + c.side + (c.id === st.selId ? " sel" : "") + (active && c.id === active.id ? " active" : "") + (chip && chip.overId === c.id ? " over" : "") + (inAoe ? " aoe-hit" : "") + (bloodied ? " bloodied" : "") + (down ? " down" : "") + (dragging ? " dragging" : "");
+          const cls = "ck-tok " + c.side + (c.ally ? " ally" : "") + (c.id === st.selId ? " sel" : "") + (active && c.id === active.id ? " active" : "") + (chip && chip.overId === c.id ? " over" : "") + (inAoe ? " aoe-hit" : "") + (bloodied ? " bloodied" : "") + (down ? " down" : "") + (dragging ? " dragging" : "");
           return h("div", { key: c.id, "data-tokenid": c.id, className: cls, title: c.name, style: { left: x * 100 + "%", top: y * 100 + "%" }, onPointerDown: e => startToken(e, c), onPointerMove: moveToken, onPointerUp: e => endToken(e, c) },
             h("span", { className: "ck-tok-name" }, tokName(c)),
             ringSel && c.actions && c.actions.dash ? h("div", { className: "ck-ring dash", style: { width: reachD * 2, height: reachD * 2 } }) : null,
@@ -2848,7 +2968,7 @@ function BoardView({ sorted, active, st, up, onDamage, onHeal, onPatch, onRemove
                 : h("span", { className: "ck-tok-txt" }, tokLabel(c))),
             h("div", { className: "ck-tok-hp" }, h("i", { className: band, style: { width: pct + "%" } })),
             h("span", { className: "ck-tok-hpn" }, c.hp + "/" + c.maxhp),
-            c.conds.length ? h("div", { className: "ck-tok-conds" }, c.conds.slice(0, 4).map(cd => h("span", { key: cd, className: "ck-tok-cond", title: cd }, condIcon(cd)))) : null,
+            c.conds.length ? h("div", { className: "ck-tok-conds" }, c.conds.slice(0, 6).map(cd => h("span", { key: cd, className: "ck-tok-cond", title: cd }, condIcon(cd)))) : null,
             acts.length ? h("div", { className: "ck-tok-acts" }, acts.map(k => h("span", { key: k, className: "ck-tok-act", title: k }, ACT_ICON[k]))) : null,
             active && c.id === active.id && !down ? h("div", { className: "ck-tok-econ" }, ECON.map(a => h("span", { key: a.k, className: "ck-tok-econd" + ((c.econ && c.econ[a.k]) ? " used" : ""), title: a.title + (c.econ && c.econ[a.k] ? " — used" : " — available") }, a.label))) : null,
             down ? h("span", { className: "ck-tok-down" }, c.deaths && c.deaths.f >= 3 ? "💀" : "🩸") : null);
@@ -2911,8 +3031,8 @@ function BoardDetail({ sel, onClose, onPatch, onDamage, onHeal, onRemove, startC
       h("h6", null, "Drag onto a target"),
       h("div", { className: "ck-chips" }, abilities.map(chip))) : null,
     h("div", { className: "ck-detail-sec" },
-      h("h6", null, "Conditions — drag to apply"),
-      h("div", { className: "ck-chips" }, CONDITIONS.map((cd, i) => h("button", { key: i, className: "ck-chip ck-chip-cond", title: "drag onto a target", onPointerDown: e => startChip(e, { kind: "condition", cond: cd, name: cd }), onPointerMove: moveChip, onPointerUp: endChip }, h("span", { className: "ck-chip-name" }, condIcon(cd) + " " + cd))))),
+      h("h6", null, "Conditions & effects — drag to apply"),
+      h("div", { className: "ck-chips" }, CONDITIONS.concat(EFFECTS).map((cd, i) => h("button", { key: i, className: "ck-chip ck-chip-cond", title: "drag onto a target", onPointerDown: e => startChip(e, { kind: "condition", cond: cd, name: cd }), onPointerMove: moveChip, onPointerUp: endChip }, h("span", { className: "ck-chip-name" }, condIcon(cd) + " " + cd))))),
     pc ? h(PCDetail, { pc }) : sel.side === "mon" ? h("div", { className: "ck-scene ck-detail-sb", dangerouslySetInnerHTML: { __html: E.renderSB(sel.mkey, { open: true }) } }) : null);
 }
 
@@ -2969,7 +3089,19 @@ function HUD({
     key: k,
     onClick: () => onAddMonster(k),
     title: MON[k].usage || ""
-  }, MON[k].name, " ", /*#__PURE__*/React.createElement("small", null, "CR ", MON[k].cr, " \xB7 ", MON[k].maxhp, "hp")))), /*#__PURE__*/React.createElement(PCAdd, {
+  }, MON[k].name, " ", /*#__PURE__*/React.createElement("small", null, "CR ", MON[k].cr, " \xB7 ", MON[k].maxhp, "hp")))), MON_RESERVE.length ? /*#__PURE__*/React.createElement("div", {
+    className: "ck-reserve"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "ck-reserve-hd",
+    title: "Off-screen reinforcements — click one to drop it into the current fight and dial the difficulty up on the fly"
+  }, "⚔️ Reinforcements ", /*#__PURE__*/React.createElement("small", null, "dial up difficulty")), /*#__PURE__*/React.createElement("div", {
+    className: "ck-rosterbtns"
+  }, MON_RESERVE.map(k => /*#__PURE__*/React.createElement("button", {
+    key: k,
+    className: "ck-reservebtn",
+    onClick: () => onAddMonster(k),
+    title: MON[k].usage || ""
+  }, MON[k].name, " ", /*#__PURE__*/React.createElement("small", null, "CR ", MON[k].cr, " \xB7 ", MON[k].maxhp, "hp"))))) : null, /*#__PURE__*/React.createElement(PCAdd, {
     onAddPC: onAddPC
   })));
 }

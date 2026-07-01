@@ -372,6 +372,43 @@ html[data-theme="light"] .play .play-h{ color:#f5efdc; }
   .portrait, .portrait-col{ width:150px !important; }  .portrait{ height:182px !important; }
   .identity .cname{ font-size:1.5rem !important; }  .identity .blurb{ margin-bottom:.4rem !important; }
 }
+
+/* ============================== PLAY TRACKERS ============================== */
+.trackers .trk-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; margin-top:.2rem; }
+.trk-item{ background:var(--panel2); border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:var(--radius-s); padding:.5rem .65rem; break-inside:avoid; }
+.trk-item.danger{ border-left-color:var(--danger); }
+.trk-lab{ font-family:var(--sans); font-size:.7rem; letter-spacing:.03em; text-transform:uppercase; font-weight:800; color:var(--ink-soft); margin-bottom:.42rem; line-height:1.3; }
+.trk-sub{ font-size:.62rem; letter-spacing:.01em; text-transform:none; font-weight:600; color:var(--muted); }
+.trk-boxes{ display:inline-flex; flex-wrap:wrap; gap:.3rem; }
+.trk-boxes .box{ display:inline-block; width:15px; height:15px; border:1.6px solid var(--gold); border-radius:3px; background:transparent; }
+.trk-item.danger .box{ border-color:var(--danger); }
+.trk-write{ font-size:.76rem; color:var(--muted); display:flex; align-items:center; gap:.35rem; flex-wrap:wrap; }
+.wl{ display:inline-block; min-width:2.4em; height:1.25em; border:1px solid var(--line); border-radius:4px; background:var(--panel3); }
+.wl.wide{ min-width:3em; }
+.trk-death{ display:flex; align-items:center; gap:.35rem; margin:.1rem 0; font-weight:800; color:var(--muted); font-size:.9rem; }
+.trk-death > span{ width:1em; text-align:center; }
+
+/* ============================== CONDITIONS CHEAT ============================== */
+.conditions .cond-list{ columns:2; column-gap:1.4rem; margin:.2rem 0 0; }
+.cond{ break-inside:avoid; padding:.34rem 0; border-bottom:1px dotted var(--line2); font-size:.84rem; color:var(--ink-soft); }
+.cond b{ color:var(--gold-2); }
+.cond .adv{ color:var(--good); font-weight:700; }
+.cond .dis{ color:var(--danger); font-weight:700; }
+.cond-exh{ margin-top:.75rem; background:var(--panel2); border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:var(--radius-s); padding:.55rem .72rem; font-size:.82rem; color:var(--ink-soft); }
+.cond-exh b{ color:var(--gold-2); }
+
+@media (max-width:860px){ .trackers .trk-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:620px){ .trackers .trk-grid{ grid-template-columns:1fr; } .conditions .cond-list{ columns:1; } }
+@media print{
+  .trackers .trk-grid{ grid-template-columns:repeat(4,1fr) !important; gap:.4rem !important; }
+  .trk-item{ padding:.35rem .5rem !important; }
+  .trk-lab{ font-size:.62rem !important; margin-bottom:.3rem !important; }
+  .trk-boxes .box{ width:12px; height:12px; border-color:#8a6c24 !important; }
+  .wl{ border-color:#c9b98f !important; }
+  .conditions .cond-list{ columns:3; }
+  .cond{ font-size:8.6px !important; }
+  .trk-item, .cond, .cond-exh{ break-inside:avoid !important; }
+}
 </style>
 </head>
 <body>
@@ -389,6 +426,7 @@ html[data-theme="light"] .play .play-h{ color:#f5efdc; }
 <main class="sheet">
   <section class="head" id="head" data-screen-label="Header"></section>
   <section class="statrow" id="stats"></section>
+  <section class="sec trackers" id="trackers" data-screen-label="Play Trackers"></section>
   <section class="sec primer" id="primer" data-screen-label="Beginner primer"></section>
   <section class="play" id="play" data-screen-label="How to Play"></section>
   <section class="sec turnmenu" id="turnmenu" data-screen-label="On Your Turn"></section>
@@ -398,6 +436,7 @@ html[data-theme="light"] .play .play-h{ color:#f5efdc; }
   </div>
   <section class="sec" id="features" data-screen-label="Features &amp; Personality"></section>
   <section class="sec" id="equipment" data-screen-label="Equipment"></section>
+  <section class="sec conditions" id="conditions" data-screen-label="Conditions"></section>
 </main>
 
 <div class="toast" id="toast"></div>
@@ -470,6 +509,14 @@ const CHARACTER = {
   /* — Spellcasting — Tuf is a Barbarian: no spells (and Rage even shuts off casting).
      caster:false removes the whole Spellcasting section from the sheet. */
   caster:false,
+
+  /* — Play trackers: extra countable resources to pencil off in play.
+     HP, Hit Dice, spell slots, death saves & Inspiration are added automatically.
+     boxes:N → N checkboxes · pool:N → a write-in “__/N” · danger:true → red accent. — */
+  trackers:[
+    { n:"Rage", boxes:3, sub:"per long rest" },
+    { n:"Exhaustion", boxes:6, sub:"level 0–6 · Frenzy adds one", danger:true },
+  ],
 
   /* — Features, grouped by source. Each: n=name, t=what it does, when=when it matters.
      use = how it costs you on your turn — one of "Action", "Bonus action", "Reaction", or
@@ -715,7 +762,7 @@ function abilitiesSec(){
     </div>`;
   }).join("");
   return sec("⚔", "Ability Scores", `
-    <p class="lead">The big number is your <b>modifier</b> — add it to rolls of that type. The <b>save</b> is what you roll to resist effects (poison, fear, a spell). Gold-edged abilities are your trained saves.</p>
+    <p class="lead">The big number is your <b>modifier</b> — for a raw ability check, roll a <b>d20</b> and add it. The <b>Save</b> is what you add to a d20 to resist an effect (poison, fear, a spell). Gold-edged abilities are your trained saves.</p>
     <div class="abil-grid">${cells}</div>`);
 }
 
@@ -743,7 +790,7 @@ function skillsSec(){
     </div>` : "";
 
   return sec("🎯", "Skills", `
-    <p class="lead">Roll these when the DM asks, based on what you're trying to do — e.g. a <b>History</b> check to recall lore about an old book.</p>
+    <p class="lead">Roll these when the DM asks — roll a <b>d20</b> and add the number shown. Which skill depends on what you're doing (e.g. a <b>History</b> check to recall lore about an old book).</p>
     <div class="skills">${rows}</div>${strong}`);
 }
 
@@ -927,6 +974,20 @@ function renderEquipment(){
 
 /* ───────────── render: beginner primer ───────────── */
 function renderPrimer(){
+  const sp = C.spell || {};
+  const rollGuide = `
+     <div class="rollguide" style="margin-top:1rem;padding-top:.95rem;border-top:1px solid var(--line);">
+       <div class="gh" style="font-family:var(--sans);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;font-weight:800;color:var(--gold);margin-bottom:.55rem;">🎲 When the DM asks you to roll…</div>
+       <dl class="prof-list">
+         <dt>a Perception (or any skill) check</dt><dd>Roll a <b>d20</b> + the number beside that skill in your <b>Skills</b> list. <span class="mi-meta">Your Perception = ${sign(perceptionBonus)}.</span></dd>
+         <dt>a Strength (or any ability) check</dt><dd>Roll a <b>d20</b> + that ability's big <b>modifier</b> (in Ability Scores) — used for a raw ability when no skill fits.</dd>
+         <dt>a Dexterity (or any) saving throw</dt><dd>Roll a <b>d20</b> + that ability's <b>Save</b> number (in Ability Scores). Saves resist spells, traps, poison, fear…</dd>
+         <dt>an attack roll</dt><dd>Roll a <b>d20</b> + your <b>“to&nbsp;hit”</b> (see Attacks). Meet or beat the target's Armor Class, then roll <b>damage</b>.</dd>
+         ${C.caster ? `<dt>to cast a spell</dt><dd>Follow the spell's card: either <b>you</b> roll a <b>Spell&nbsp;attack (${esc(sp.atk)})</b> to hit, or the <b>target</b> makes a save against your <b>Spell&nbsp;save&nbsp;DC ${sp.dc}</b>. Cantrips are free; leveled spells spend a slot.</dd>` : ""}
+         <dt>initiative</dt><dd>Roll a <b>d20</b> ${sign(initiative)} — highest goes first; that sets the turn order.</dd>
+         <dt>with advantage / disadvantage</dt><dd>Roll <b>two</b> d20s and keep the <b>higher</b> (advantage) or <b>lower</b> (disadvantage), then add your number as usual.</dd>
+       </dl>
+     </div>`;
   const lines = [
     "<b>Your turn in a fight:</b> move up to your Speed <em>and</em> take <b>one action</b>. Many turns also have a quick <b>bonus action</b> (a spell or feature will say so), and you always get <b>one reaction</b> to spend when it <em>isn't</em> your turn — like swinging at an enemy who runs past you.",
     "<b>Your action — pick one:</b> <b>Attack</b> (roll d20 + your to-hit vs the foe's Armor Class; on a hit, roll the weapon's damage) · <b>Cast a spell</b> (do what its card says) · <b>Dash</b> (move twice as far) · <b>Disengage</b> (step away without being hit for leaving) · <b>Dodge</b> (attacks against you have disadvantage) · <b>Help</b> (give an ally advantage) · <b>Hide</b> (roll Stealth to slip out of sight).",
@@ -937,7 +998,63 @@ function renderPrimer(){
   document.getElementById("primer").innerHTML =
     `<div class="sec-h"><span class="ic">📖</span> New to D&amp;D? How to play</div>
      <div class="sec-b"><ol>${lines.map((l) => `<li>${l}</li>`).join("")}</ol>
+     ${rollGuide}
      <p class="close">You don't need to memorise any of this. Make choices that sound right, ask questions freely, and let the story carry you. There are no wrong moves — only the next one.</p></div>`;
+}
+
+/* ───────────── render: play trackers (print & pencil in) ───────────── */
+function trkBoxes(n){ let s = ""; for (let i = 0; i < (n || 1); i++) s += '<span class="box"></span>'; return `<span class="trk-boxes">${s}</span>`; }
+function trkItem(name, sub, inner, danger){
+  return `<div class="trk-item${danger ? " danger" : ""}"><div class="trk-lab">${esc(name)}${sub ? ` <span class="trk-sub">${esc(sub)}</span>` : ""}</div>${inner}</div>`;
+}
+function renderTrackers(){
+  const items = [];
+  items.push(trkItem("Hit Points", `max ${C.hpMax}`, `<div class="trk-write">now <span class="wl wide"></span> temp <span class="wl"></span></div>`));
+  const die = "d" + String(C.hitDice || "").split("d")[1];
+  items.push(trkItem("Hit Dice", `${C.level}× ${die} · short rest`, trkBoxes(C.level)));
+  if (C.caster && C.spell && C.spell.slots){
+    Object.entries(C.spell.slots).forEach(([lv, n]) =>
+      items.push(trkItem(`Level ${lv} slots`, `per ${C.slotRest || "long rest"}`, trkBoxes(n))));
+  }
+  (C.trackers || []).forEach((t) => {
+    const inner = (t.pool != null)
+      ? `<div class="trk-write"><span class="wl wide"></span> / ${t.pool}</div>`
+      : trkBoxes(t.boxes);
+    items.push(trkItem(t.n, t.sub, inner, t.danger));
+  });
+  items.push(trkItem("Death Saves", "when at 0 HP", `<div class="trk-death"><span>✓</span>${trkBoxes(3)}</div><div class="trk-death"><span>✗</span>${trkBoxes(3)}</div>`));
+  items.push(trkItem("Inspiration", "reroll a d20", trkBoxes(1)));
+  document.getElementById("trackers").innerHTML =
+    `<div class="sec-h"><span class="ic">🎯</span> Play Trackers — print &amp; pencil in</div>
+     <div class="sec-b"><p class="lead">Mark these off as you spend them. Each <b>▢</b> is one use — fill it when used, erase it on the matching rest.</p>
+     <div class="trk-grid">${items.join("")}</div></div>`;
+}
+
+/* ───────────── render: conditions cheat-sheet (same for everyone) ───────────── */
+function renderConditions(){
+  const A = '<span class="adv">advantage</span>', D = '<span class="dis">disadvantage</span>';
+  const conds = [
+    ["Blinded", `Can't see; auto-fails any check needing sight. Attacks against it have ${A}; its own attacks have ${D}.`],
+    ["Charmed", `Can't attack or magically harm the charmer; the charmer has ${A} on social checks with it.`],
+    ["Deafened", `Can't hear; auto-fails any check needing hearing.`],
+    ["Frightened", `${D} on ability checks &amp; attacks while it can see the source of its fear, and it can't willingly move closer to it.`],
+    ["Grappled", `Speed becomes 0. Ends if the grappler is incapacitated or it's moved out of reach.`],
+    ["Incapacitated", `Can take no actions and no reactions.`],
+    ["Invisible", `Can't be seen without magic or a special sense (heavily obscured). Attacks against it have ${D}; its own attacks have ${A}.`],
+    ["Paralyzed", `Incapacitated; can't move or speak; auto-fails STR &amp; DEX saves; attacks against it have ${A}; any hit from within 5 ft is a <b>critical hit</b>.`],
+    ["Petrified", `Turned to stone: incapacitated &amp; unaware; ${A} to attackers; auto-fails STR &amp; DEX saves; resistance to all damage; immune to poison &amp; disease.`],
+    ["Poisoned", `${D} on attack rolls and ability checks.`],
+    ["Prone", `Can only crawl (or stand, which ends it); ${D} on its attacks; attacks against it have ${A} from within 5 ft, ${D} from farther away.`],
+    ["Restrained", `Speed becomes 0; attacks against it have ${A} and its own attacks have ${D}; ${D} on DEX saves.`],
+    ["Stunned", `Incapacitated; can't move and barely speaks; auto-fails STR &amp; DEX saves; attacks against it have ${A}.`],
+    ["Unconscious", `Incapacitated; drops what it holds and falls prone; unaware; auto-fails STR &amp; DEX saves; ${A} to attackers; any hit from within 5 ft is a <b>critical hit</b>.`],
+  ];
+  const rows = conds.map(([n, e]) => `<div class="cond"><b>${n}.</b> ${e}</div>`).join("");
+  const exh = `<div class="cond-exh"><b>Exhaustion</b> — 6 cumulative levels (you suffer your level and every level below it): <b>1</b> disadvantage on ability checks · <b>2</b> speed halved · <b>3</b> disadvantage on attacks &amp; saves · <b>4</b> HP maximum halved · <b>5</b> speed 0 · <b>6</b> death. A long rest with food &amp; drink removes 1 level.</div>`;
+  document.getElementById("conditions").innerHTML =
+    `<div class="sec-h"><span class="ic">📕</span> Conditions — what they do to you (or a foe)</div>
+     <div class="sec-b"><p class="lead"><span class="adv">Green</span> means advantage, <span class="dis">red</span> means disadvantage — the swing each condition creates.</p>
+     <div class="cond-list">${rows}</div>${exh}</div>`;
 }
 
 /* small helper to wrap a section */
@@ -1031,6 +1148,7 @@ function boot(){
   document.getElementById("head").innerHTML = renderHead();
   renderPortrait();
   renderStats();
+  renderTrackers();
   renderPlay();
 
   renderTurnMenu();
@@ -1039,6 +1157,7 @@ function boot(){
 
   renderFeatures();
   renderEquipment();
+  renderConditions();
   renderPrimer();
 
   document.getElementById("themeBtn").onclick = () => {

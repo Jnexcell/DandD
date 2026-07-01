@@ -251,6 +251,147 @@ window.WEEPING_GROVE_PARTY = [
         }
       ]
     },
+    "wildShape": {
+      "summary": "Transform (Action) into a beast she's seen — CR 1/4 or lower with no flying or swimming speed — for up to 1 hour. 2 uses per short/long rest; she reverts as a bonus action, when the form drops to 0 HP, or when knocked out.",
+      "rules": [
+        "She takes the form's AC, HP, speed, senses and physical stats (STR/DEX/CON) as a fresh second health bar — but keeps her own INT/WIS/CHA, saving throws and skill proficiencies (use whichever bonus is higher). Damage past the form's HP carries over to her own HP as she reverts.",
+        "She can't cast spells while shifted, but may keep concentration on a spell already running and still speak if the beast is able. Her gear melds into the form (or drops).",
+        "Level-3 limit: CR ≤ 1/4, no flying or swimming form. (At L4 this rises to CR 1/2 and allows swim forms; flight comes at L8.)"
+      ],
+      "forms": [
+        {
+          "name": "Wolf",
+          "cr": "1/4",
+          "role": "Best all-round combat form",
+          "ac": 13,
+          "hp": 11,
+          "speed": "40 ft",
+          "stats": "STR 12 (+1) · DEX 15 (+2) · CON 12 (+1)",
+          "senses": "passive Perception 13 · Keen Hearing & Smell",
+          "page": "MM p.341",
+          "traits": [
+            "Pack Tactics — advantage on an attack if an ally is within 5 ft of the target and not incapacitated."
+          ],
+          "actions": [
+            "Bite +4, 2d4+2 piercing; target must make a DC 11 STR save or be knocked prone."
+          ],
+          "tip": "Her default fighter — the biggest bite, and the knockdown sets the party up for advantage."
+        },
+        {
+          "name": "Giant Badger",
+          "cr": "1/4",
+          "role": "Durable bruiser",
+          "ac": 10,
+          "hp": 13,
+          "speed": "30 ft (burrow 10)",
+          "stats": "STR 13 (+1) · DEX 10 (+0) · CON 15 (+2)",
+          "senses": "darkvision 30 ft · passive Perception 11",
+          "page": "MM p.323",
+          "traits": [
+            "Keen Smell — advantage on Perception checks that rely on smell."
+          ],
+          "actions": [
+            "Multiattack — one Bite and one Claws.",
+            "Bite +3, 1d6+1 piercing.",
+            "Claws +3, 2d4+1 slashing."
+          ],
+          "tip": "Most HP of her forms plus two attacks a turn — the pick when she wants to soak a fight."
+        },
+        {
+          "name": "Boar",
+          "cr": "1/4",
+          "role": "Charging bruiser",
+          "ac": 11,
+          "hp": 11,
+          "speed": "40 ft",
+          "stats": "STR 13 (+1) · DEX 11 (+0) · CON 12 (+1)",
+          "senses": "passive Perception 9",
+          "page": "MM p.319",
+          "traits": [
+            "Charge — if she moves 20+ ft straight in then hits with a tusk, +1d6 slashing and the target makes a DC 11 STR save or is knocked prone.",
+            "Relentless (recharges on a short/long rest) — a hit of 7 damage or less that would drop her to 0 leaves the form at 1 HP instead."
+          ],
+          "actions": [
+            "Tusk +3, 1d6+1 slashing."
+          ],
+          "tip": "Rush a foe for the Charge bonus; Relentless can shrug off one would-be killing blow."
+        },
+        {
+          "name": "Panther",
+          "cr": "1/4",
+          "role": "Ambusher / scout",
+          "ac": 12,
+          "hp": 13,
+          "speed": "50 ft (climb 40)",
+          "stats": "STR 14 (+2) · DEX 15 (+2) · CON 10 (+0)",
+          "senses": "passive Perception 14 · Stealth +6 · Keen Smell",
+          "page": "MM p.333",
+          "traits": [
+            "Pounce — if she moves 20+ ft straight in then hits with a claw, the target makes a DC 12 STR save or is knocked prone; if it's prone she can make a Bite as a bonus action."
+          ],
+          "actions": [
+            "Bite +4, 1d6+2 piercing.",
+            "Claw +4, 1d4+2 slashing."
+          ],
+          "tip": "Fast, stealthy and a climber — great to scout ahead or open a fight with Pounce + bonus Bite."
+        },
+        {
+          "name": "Giant Wolf Spider",
+          "cr": "1/4",
+          "role": "Climber / poisoner",
+          "ac": 13,
+          "hp": 11,
+          "speed": "40 ft (climb 40)",
+          "stats": "STR 12 (+1) · DEX 16 (+3) · CON 13 (+1)",
+          "senses": "blindsight 10 ft · darkvision 60 ft · passive Perception 13 · Stealth +7",
+          "page": "MM p.330",
+          "traits": [
+            "Spider Climb — moves up, down and across walls & ceilings without a check."
+          ],
+          "actions": [
+            "Bite +3, 1d6+1 piercing, and DC 11 CON save or 2d6 poison (half on a save)."
+          ],
+          "tip": "The infiltrator — best Stealth, climbs anything, and the bite adds a poison save."
+        },
+        {
+          "name": "Giant Rat",
+          "cr": "1/8",
+          "role": "Small scout",
+          "ac": 12,
+          "hp": 7,
+          "speed": "30 ft",
+          "stats": "STR 7 (−2) · DEX 15 (+2) · CON 11 (+0)",
+          "senses": "darkvision 60 ft · passive Perception 10",
+          "page": "MM p.327",
+          "traits": [
+            "Pack Tactics — advantage if an ally is within 5 ft of the target.",
+            "Keen Smell."
+          ],
+          "actions": [
+            "Bite +4, 1d4+2 piercing."
+          ],
+          "tip": "Small and quick — squeeze through gaps and scout tunnels. Not a real fighter."
+        },
+        {
+          "name": "Cat",
+          "cr": "0",
+          "role": "Tiny infiltrator",
+          "ac": 12,
+          "hp": 2,
+          "speed": "40 ft (climb 30)",
+          "stats": "STR 3 (−4) · DEX 15 (+2) · CON 10 (+0)",
+          "senses": "passive Perception 13 · Stealth +4 · Keen Smell",
+          "page": "MM p.320",
+          "traits": [
+            "Tiny and harmless-looking — most creatures ignore it; climbs and sneaks freely."
+          ],
+          "actions": [
+            "Claws +0, 1 slashing (effectively no attack)."
+          ],
+          "tip": "Pure espionage form — slip into a room unnoticed. No combat value."
+        }
+      ]
+    },
     "portrait": "../../../characters/alary-fern/portrait.png"
   },
   {
@@ -489,6 +630,7 @@ window.WEEPING_GROVE_PARTY = [
         }
       ]
     },
+    "wildShape": null,
     "portrait": "../../../characters/douglas-dimmadome/portrait.png"
   },
   {
@@ -704,6 +846,7 @@ window.WEEPING_GROVE_PARTY = [
         }
       ]
     },
+    "wildShape": null,
     "portrait": "../../../characters/idrenk-bier/portrait.png"
   },
   {
@@ -931,6 +1074,7 @@ window.WEEPING_GROVE_PARTY = [
         }
       ]
     },
+    "wildShape": null,
     "portrait": "../../../characters/jarlaxle-smith/portrait.png"
   },
   {
@@ -1066,6 +1210,7 @@ window.WEEPING_GROVE_PARTY = [
         }
       ]
     },
+    "wildShape": null,
     "portrait": "../../../characters/tuf/portrait.png"
   }
 ];

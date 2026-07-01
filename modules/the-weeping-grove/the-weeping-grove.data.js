@@ -28,9 +28,9 @@ const MODULE = {
     lengthHours: "3–4",
     pitch: "Travelers keep vanishing on the old forest road; the village hires you to kill the beast responsible — but the woods are mourning, not hunting, and the real predator walks on two legs.",
     keyLogic: "The Key = the truth that the 'monster' is the grove's wronged Guardian (Sorrowroot) and the real villains are the Withering death-cult. Obtained from Clue 3 (a heart-sap crate at the camp) OR Clue 4 (Fenn's testimony/journal). Having it flips trending Ending A->B and unlocks Showdown Version B.",
-    clock: "The Great Harvest completes at dusk on the third day (an invisible clock; dawdling advances the Showdown into the rite's final moments).",
+    clock: "No timer — the Great Harvest is already underway at the grove; the Showdown is the party interrupting the rite in progress. There is no deadline to race; take the scenes at whatever pace the table enjoys.",
     endings: "No Key -> Version A / Ending A (fight the grieving Guardian). Key -> Version B / Ending B (turn the Guardian on the cult, stop Mother Sere).",
-    statblockNote: "All 7 stat blocks (CR 0-5) are inlined in `statblocks`. CR 6+ / spells L6-9 -> MM PDF."
+    statblockNote: "All 8 stat blocks (CR 0-5) are inlined in `statblocks`. CR 6+ / spells L6-9 -> MM PDF."
   },
   statblocks: {
   wolf:{
@@ -89,12 +89,22 @@ const MODULE = {
     traits:[{n:"False Appearance",t:"While motionless, indistinguishable from a dead shrub."}],
     actions:[{n:"Claws",t:"<i>Melee Weapon Attack:</i> +3 to hit, reach 5 ft., one target. <i>Hit:</i> 3 (1d4 + 1) piercing."}]
   },
+  husk:{
+    name:"Grave-Husk", sil:"undead", rf:"reflavor: an undead Twig Blight — one of the taken, risen root-bound and rot-wrapped — Showdown B", cr:"1/8", xp:25, src:"MM p.32 (Twig Blight, reflavored undead)",
+    usage:"Showdown B (undead minions Mother Sere raised from the taken)", ac:"13 (natural armor)", hp:"4 (1d6 + 1)", maxhp:4, speed:"20 ft.",
+    ab:{STR:["6","−2"],DEX:["13","+1"],CON:["12","+1"],INT:["4","−3"],WIS:["8","−1"],CHA:["3","−4"]},
+    skills:"Stealth +3", vuln:"fire", imm:"poison", condimm:"blinded, charmed, deafened, exhaustion, frightened, poisoned",
+    senses:"blindsight 60 ft. (blind beyond), passive Perception 9", langs:"understands Common but can't speak",
+    traits:[{n:"False Appearance",t:"While motionless, indistinguishable from a half-buried corpse or a dead shrub."}],
+    actions:[{n:"Claws",t:"<i>Melee Weapon Attack:</i> +3 to hit, reach 5 ft., one target. <i>Hit:</i> 3 (1d4 + 1) piercing."}]
+  },
   hag:{
     name:"Green Hag", sil:"fey", rf:"reflavor: Mother Sere, the withered prophet — Showdown B", cr:"3", xp:700, src:"MM p.177",
     usage:"Showdown B (boss)", ac:"17 (natural armor)", hp:"82 (11d8 + 33)", maxhp:82, speed:"30 ft.",
     ab:{STR:["18","+4"],DEX:["12","+1"],CON:["16","+3"],INT:["13","+1"],WIS:["14","+2"],CHA:["14","+2"]},
     skills:"Arcana +3, Deception +4, Perception +4, Stealth +3", senses:"darkvision 60 ft., passive Perception 14", langs:"Common, Draconic, Sylvan",
     traits:[
+      {n:"Withered Vitality (rite-fueled)",t:"While the heart-sap rite burns, stolen life holds Mother Sere together. <b>Once per round</b> (no action), she can choose to <b>succeed on a saving throw she just failed</b>, <b>or end one condition</b> affecting her (grappled, restrained, frightened, prone, and the like). <b>This trait ends the instant the ritual vial or the green fire is destroyed</b> (treat as an object, AC 12) — after that she is only a Green Hag. <i>(Reflavor/boss buff for this module — not a standard Green Hag trait.)</i>"},
       {n:"Amphibious",t:"Can breathe air and water."},
       {n:"Innate Spellcasting",t:"Cha (save DC 12), no material components. At will: <i>dancing lights, minor illusion, vicious mockery</i>."},
       {n:"Mimicry",t:"Mimics animal sounds and humanoid voices. A listener can tell they are imitations with a successful DC 14 Wisdom (Insight) check."}
@@ -117,6 +127,85 @@ const MODULE = {
       {n:"Multiattack",t:"Two <b>Slams</b>. If both hit a Medium-or-smaller target, the target is <b>grappled (escape DC 14)</b> and the mound uses <b>Engulf</b> on it."},
       {n:"Slam",t:"<i>Melee Weapon Attack:</i> +7 to hit, reach 5 ft., one target. <i>Hit:</i> 13 (2d8 + 4) bludgeoning."},
       {n:"Engulf",t:"The mound engulfs a Medium-or-smaller creature grappled by it. The engulfed target is <b>blinded, restrained, and unable to breathe</b>, and must make a <b>DC 14 Con save</b> at the start of each of the mound's turns or take 13 (2d8 + 4) bludgeoning damage. It moves with the mound; only one creature at a time."}
+    ]
+  },
+
+  /* ---- RESERVES: off-screen reinforcements the DM can drop in to dial a fight UP on the fly.
+     Not wired into any scene's auto-load — they only appear under "Reinforcements" in the
+     Add-to-the-fight roster. All CR 1/4–2 so you add them in ones and twos. Grove side:
+     dire/needle/vine · Cult-&-Withering side: shadow/ghoul/berserker. ---- */
+  dire:{
+    name:"Dire Wolf", sil:"beast", rf:"reflavor: Elder Bramble-Wolf — a bigger, older pack-leader (reserve)", cr:"1", xp:200, src:"MM p.321",
+    usage:"RESERVE · escalate Scene 1 / any wolf fight", ac:"14 (natural armor)", hp:"37 (5d10 + 10)", maxhp:37, speed:"50 ft.",
+    ab:{STR:["17","+3"],DEX:["15","+2"],CON:["15","+2"],INT:["3","−4"],WIS:["12","+1"],CHA:["7","−2"]},
+    skills:"Perception +3, Stealth +4", senses:"passive Perception 13", langs:"—",
+    traits:[
+      {n:"Keen Hearing and Smell",t:"Advantage on Wisdom (Perception) checks relying on hearing or smell."},
+      {n:"Pack Tactics",t:"Advantage on an attack roll if at least one ally is within 5 ft. of the target and not incapacitated."}
+    ],
+    actions:[
+      {n:"Bite",t:"<i>Melee Weapon Attack:</i> +5 to hit, reach 5 ft., one target. <i>Hit:</i> 10 (2d6 + 3) piercing. If the target is a creature, <b>DC 13 Strength save</b> or be knocked prone."}
+    ]
+  },
+  needle:{
+    name:"Needle Blight", sil:"plant", rf:"reflavor: Thornspitter — a ranged Thorn-Spawn (reserve)", cr:"1/4", xp:50, src:"MM p.32",
+    usage:"RESERVE · escalate Showdown A (ranged minion)", ac:"12 (natural armor)", hp:"11 (2d8 + 2)", maxhp:11, speed:"30 ft.",
+    ab:{STR:["12","+1"],DEX:["12","+1"],CON:["13","+1"],INT:["4","−3"],WIS:["8","−1"],CHA:["3","−4"]},
+    condimm:"blinded, deafened",
+    senses:"blindsight 60 ft. (blind beyond), passive Perception 9", langs:"understands Common but can't speak",
+    actions:[
+      {n:"Claws",t:"<i>Melee Weapon Attack:</i> +3 to hit, reach 5 ft., one target. <i>Hit:</i> 6 (2d4 + 1) piercing."},
+      {n:"Needles",t:"<i>Ranged Weapon Attack:</i> +3 to hit, range 30/60 ft., one target. <i>Hit:</i> 8 (2d6 + 1) piercing."}
+    ]
+  },
+  vine:{
+    name:"Vine Blight", sil:"plant", rf:"reflavor: Snare-Root — a grasping bramble that drags takers down (reserve)", cr:"1/2", xp:100, src:"MM p.32",
+    usage:"RESERVE · grove controller (grapple / entangle)", ac:"12 (natural armor)", hp:"26 (4d8 + 8)", maxhp:26, speed:"10 ft.",
+    ab:{STR:["15","+2"],DEX:["8","−1"],CON:["14","+2"],INT:["5","−3"],WIS:["10","+0"],CHA:["3","−4"]},
+    skills:"Stealth +1", condimm:"blinded, deafened",
+    senses:"blindsight 60 ft. (blind beyond), passive Perception 10", langs:"Common",
+    traits:[{n:"False Appearance",t:"While motionless, indistinguishable from a tangle of vines."}],
+    actions:[
+      {n:"Constrict",t:"<i>Melee Weapon Attack:</i> +4 to hit, reach 10 ft., one target. <i>Hit:</i> 9 (2d6 + 2) bludgeoning, and a Large-or-smaller target is <b>grappled (escape DC 12)</b>. Until the grapple ends the target is <b>restrained</b> and the blight can't constrict another target."},
+      {n:"Entangling Plants (Recharge 5–6)",t:"Roots and vines sprout in a 15-ft radius (wither after 1 min); the area becomes difficult terrain for nonplant creatures, and each creature of the blight's choice there must make a <b>DC 12 Strength save</b> or be <b>restrained</b> (action + DC 12 Strength check to free itself or another in reach)."}
+    ]
+  },
+  shadow:{
+    name:"Shadow", sil:"undead", rf:"reflavor: Withering Shade — stolen grief given shape; drains the life it once had (reserve)", cr:"1/2", xp:100, src:"MM p.269",
+    usage:"RESERVE · Withering flavor (Strength-drain, resists nonmagical weapons)", ac:"12", hp:"16 (3d8 + 3)", maxhp:16, speed:"40 ft.",
+    ab:{STR:["6","−2"],DEX:["14","+2"],CON:["13","+1"],INT:["6","−2"],WIS:["10","+0"],CHA:["8","−1"]},
+    skills:"Stealth +4 (+6 in dim light or darkness)", vuln:"radiant",
+    resist:"acid, cold, fire, lightning, thunder; bludgeoning, piercing, and slashing from nonmagical weapons",
+    imm:"necrotic, poison", condimm:"exhaustion, frightened, grappled, paralyzed, petrified, poisoned, prone, restrained",
+    senses:"darkvision 60 ft., passive Perception 10", langs:"—",
+    traits:[
+      {n:"Amorphous",t:"Can move through a space as narrow as 1 inch wide without squeezing."},
+      {n:"Shadow Stealth",t:"While in dim light or darkness, can take the Hide action as a bonus action."},
+      {n:"Sunlight Weakness",t:"While in sunlight, has disadvantage on attack rolls, ability checks, and saving throws."}
+    ],
+    actions:[
+      {n:"Strength Drain",t:"<i>Melee Weapon Attack:</i> +4 to hit, reach 5 ft., one creature. <i>Hit:</i> 9 (2d6 + 2) necrotic, and the target's <b>Strength is reduced by 1d4</b> (it dies if this drops Strength to 0; otherwise the reduction lasts until it finishes a short or long rest). If a non-evil humanoid dies from this, a new shadow rises from the corpse in 1d4 hours."}
+    ]
+  },
+  ghoul:{
+    name:"Ghoul", sil:"undead", rf:"reflavor: Risen Taken — one of the vanished, clawed back up hungry — Showdown B (reserve)", cr:"1", xp:200, src:"MM p.148",
+    usage:"RESERVE · escalate Showdown B (paralyzing undead)", ac:"12", hp:"22 (5d8)", maxhp:22, speed:"30 ft.",
+    ab:{STR:["13","+1"],DEX:["15","+2"],CON:["10","+0"],INT:["7","−2"],WIS:["10","+0"],CHA:["6","−2"]},
+    imm:"poison", condimm:"charmed, exhaustion, poisoned",
+    senses:"darkvision 60 ft., passive Perception 10", langs:"Common",
+    actions:[
+      {n:"Bite",t:"<i>Melee Weapon Attack:</i> +2 to hit, reach 5 ft., one creature. <i>Hit:</i> 9 (2d6 + 2) piercing."},
+      {n:"Claws",t:"<i>Melee Weapon Attack:</i> +4 to hit, reach 5 ft., one target. <i>Hit:</i> 7 (2d4 + 2) slashing. If the target is a creature other than an elf or undead, <b>DC 10 Constitution save</b> or be <b>paralyzed 1 min</b> (repeat save at the end of each of its turns to end)."}
+    ]
+  },
+  berserker:{
+    name:"Berserker", sil:"humanoid", rf:"reflavor: Poacher-Brute — hired harvest muscle, half-mad on cult brew — Scene 3 (reserve)", cr:"2", xp:450, src:"MM p.344",
+    usage:"RESERVE · escalate Scene 3 (heavy hitter)", ac:"13 (hide armor)", hp:"67 (9d8 + 27)", maxhp:67, speed:"30 ft.",
+    ab:{STR:["16","+3"],DEX:["13","+1"],CON:["17","+3"],INT:["9","−1"],WIS:["11","+0"],CHA:["9","−1"]},
+    senses:"passive Perception 10", langs:"any one (usually Common)",
+    traits:[{n:"Reckless",t:"At the start of its turn, it can gain advantage on all melee weapon attack rolls this turn, but attacks against it have advantage until the start of its next turn."}],
+    actions:[
+      {n:"Greataxe",t:"<i>Melee Weapon Attack:</i> +5 to hit, reach 5 ft., one target. <i>Hit:</i> 9 (1d12 + 3) slashing."}
     ]
   }
   },
@@ -170,10 +259,11 @@ const MODULE = {
 <div class="zone">
   <h4>⏱️ How to run this</h4>
   <ul>
-    <li><b>Clock:</b> the cult finishes the <b>Great Harvest at dusk on the third day</b> — an invisible clock. Dawdle and the rite nears completion; if fast, the Showdown is a fight to <i>stop</i> it; if slow, a fight <i>during</i> its final moments. (Track it in the Tools rail.)</li>
+    <li><b>No timer — no race.</b> The cult's <b>Great Harvest is already underway</b> at the grove; the Showdown is the party walking in on the rite <i>in progress</i> and interrupting it. There's no deadline to beat, so let the table linger, investigate, and explore at whatever pace they enjoy — curiosity is never punished by a ticking clock.</li>
     <li><b>Tags:</b> <span class="badge core">★ CORE</span> scenes always run (Cold Open + Showdown); <span class="badge modular">⬡ MODULAR</span> scenes are skippable — each has a <b>Bypass</b>.</li>
     <li><b>Cut-list (in order):</b> Scene 4 (→ one Nature check) → Scene 1 → Scene 3. <b>Never cut the Showdown.</b> Cutting <b>Scene 2 (Fenn)</b> removes the clearest route to the Key — only do it for a party racing straight up the road (Ending A's path).</li>
     <li><b>Seed the truth (three-clue rule):</b> clues 1–2 on the direct path, 3–4 on the side path, and the <b>Guardian pleads</b> at the Showdown (clue 5) so even a kill-first party gets one last chance to flip.</li>
+    <li><b>🍞 Breadcrumbs — reward curiosity, never gate it.</b> The mystery is built to <i>pull</i> a curious party toward the truth and to <b>fail forward</b> when they miss a roll — <b>never withhold a clue on a bad die</b>; hand it over on the next look, from an NPC, or later. Keep dropping enticements and pay off the players who bite with <b>Inspiration</b>. The trail, in order they'll meet it: the <b>oak figure + birch-bark note</b> in the cart (names Fenn by name), the <b>victim pattern</b> (only those who came to <i>take</i> vanish), the <b>churned roots / no beast</b>, the <b>green-glow hollow</b> and the <b>thread of smoke</b> on the horizon (two places worth a look), <b>Brother Aldous</b> going out of his way to steer them <i>off</i> Fenn (a tell a sharp party reads as a signpost), and the <b>rumor table</b>. Whenever a player stops to <b>look closer</b> or asks <b>"wait — why?"</b>, lean in and give them something real — that instinct is the whole road to Ending B.</li>
   </ul>
 </div>`
     },
@@ -316,7 +406,7 @@ const MODULE = {
     {label:"📖 The pack on the road (the encounter opens)", text:`You've walked the road maybe an hour, the ruts narrowing as the old trees lean closer overhead, when the wood goes wrong. You hear them before you see them — a low, ragged panting, more sob than snarl. Then they come slinking from the brush on every side: wolves, eight of them — but no wolves were ever like <i>these</i>. Thorned vines have grown <i>through</i> their hides, knotting in the fur; their eyes weep a slow amber sap, like tears; and they move stiff and wrong, as though something behind them were driving them on against their will. They don't circle to feed. They fan out to <b>herd</b> — to push you back the way you came.<br><span style="opacity:.65">(DM: the Scene 1 image — the green-eyed, sap-weeping pack. Roll initiative — group <b>+2</b>, suggested <b>14</b>. Let round 1 feel dangerous, then watch for the player who tries to read or calm them → next beat.)</span>`},
     {label:"📖 Read the pack — they're driven, not hunting (Animal Handling / Nature DC 15, on a hit)", text:`“You catch it between heartbeats — the way they flinch from their own thorns, the sap running down their muzzles like tears, the cringe in them even as they lunge. These aren't hunting you. Something behind them is driving them, and it's hurting them to do it. They don't want your throats — they want you to turn back.”<br><span style="opacity:.65">(DM: on a hit, DC 15. A PC who then lowers weapons or gives ground ends the fight without a kill — and it reinforces Clue 2: the wood, not a beast.)</span>`},
     {label:"📖 The wood lets them go — the fight ends (read after ~2 rounds, a retreat, or a calm)", text:`All at once the fight goes out of them. The thorns that drove the pack seem to <i>loosen</i> — the wolves shudder, whine low in their throats, and slink backward into the green dark, leaving only flattened ferns and the smell of sap. Whatever was holding their leash has decided you've been pushed back far enough.<br><span style="opacity:.65">(DM: read after ~2 rounds, a retreat, a calm, or once the pack's down to 2–3 — don't grind all eight. Then move them onward → next beat.)</span>`},
-    {label:"📖 Onward — the ridge (read as they move on)", text:`You climb on, and the road lifts toward a low ridge. Through a gap in the canopy the land opens ahead: deeper in, a hollow glows a faint, sourceless <b>green</b>, as though something down there were lit from within. And off to one side, nearer, a thin grey thread of <b>woodsmoke</b> climbs above the trees — someone is camped in the deep wood.<br><span style="opacity:.65">(DM: the green hollow is the grove → <b>Scene 4</b>, the warded ring (the road party's path to the Showdown). The smoke is the harvesters' camp → <b>Scene 3</b> — a last chance for a curious party to pick up the truth before the grove, if they detour.)</span>`}
+    {label:"📖 Onward — the ridge (read as they move on)", text:`You climb on, and the road lifts toward a low ridge. Through a gap in the canopy the land opens ahead: deeper in, a hollow glows a faint, sourceless <b>green</b>, as though something down there were lit from within. And off to one side, nearer, a thin grey thread of <b>woodsmoke</b> climbs above the trees — and on the breeze it carries the same <b>sweet cut-sap reek</b> you smelled at the wrecked cart, mixed now with woodsmoke and something like boiling resin. Someone is <i>working</i> out there in the deep wood.<br><span style="opacity:.65">(DM: the green hollow is the grove → <b>Scene 4</b>, the warded ring (the road party's path to the Showdown). The smoke is the harvesters' camp → <b>Scene 3</b> — the road party's <b>last chance to find the Key.</b> The shared sap-smell is the breadcrumb: it ties the camp to the crime scene, so a curious party has a concrete reason to detour toward the smoke rather than push straight on. If they bite, that detour is what earns them Ending B.)</span>`}
   ],
   body:`
 <div class="zone dm-only">
@@ -446,7 +536,7 @@ const MODULE = {
   <p class="lbl">Bypass ⬡</p>
   <p>If cut: a single tense moment — a wolf or two lunge, a <b>Survival DC 13</b> scatters them, the party reads Clue 2 off the thorns and sap.</p>
   <p class="lbl">Exit / lead</p>
-  <p>The road climbs toward a ridge; through the trees they glimpse <b>smoke</b> (the camp, Scene 3) and beyond, a <b>green-glowing hollow</b> (the grove, Scene 4).</p>
+  <p>The road climbs toward a ridge; through the trees they glimpse <b>smoke</b> (the camp, Scene 3 — carrying the <i>same sweet cut-sap reek</i> as the cart, the breadcrumb that invites a detour) and beyond, a <b>green-glowing hollow</b> (the grove, Scene 4). <b>The smoke is the road party's last chance at the Key</b> — make it tempting; don't force it.</p>
 </div>`
     },
 
@@ -461,7 +551,7 @@ const MODULE = {
       <p><b>Outcomes:</b> win her trust → the <b>full Key</b> + the “go to the grove unarmed and grieve” method. Lie to her → she flees (journal only = partial Key). Full conversation logic + DCs are on the DM-notes face.</p>`},
     {label:"📖 Fenn on her step (the opener)", text:`The drag-trail winds deeper than you'd think a body could be hauled, and ends at a <b>sod-roofed hut grown half into a living oak</b> — its low door hung with bundles of drying herbs, little bone charms, and small skulls that turn in the breeze. On the step sits an old woman with a carving knife and a piece of pale heartwood, whittling, not looking up. <i>(In her hands: a small oak figure with a face — the twin of the one from the cart.)</i> “You smell of the road,” she says, before anyone speaks. “Of axes. And of coin. Greywater sent you to kill the thing in my wood — don't trouble yourself denying it.” The knife never stops moving. At last she lifts her eyes to yours, pale and sharp. “So tell me true — and spare me the kind word you think I want to hear: when you find what's been taking folk off that road… what will you <i>do</i>? Lie to me, and the wood will know.”<br><span style="opacity:.65">(DM: don't let it land as a yes/no — let her press, next beat. Reward honesty over the word “save.” The returned oak figure = advantage and a faster thaw.)</span>`},
     {label:"📖 Fenn presses — her follow-up probes (pick 1–2; she reads sincerity, not the word “save”)", text:`<i>Don't let her question land as a yes/no — press for a real answer:</i><br>• “There's a man in Greywater waiting on his sister Wren. When you find what took her — do you <b>swing</b> first, or do you <b>look</b> first?”<br>• “The reeve put a price on its head. Is that the whole of why you're here, or is there more to you than coin?”<br>• “Say it <i>is</i> a monster. Say it's been killing folk. What then — your mercy, or your blade?”<br>• “What did you see by that cart? Tell me, and I'll know whether you've eyes worth trusting.”<br><span style="opacity:.65">(DM: treat her as passive Insight 13 — press a hollow answer, reward a specific/honest one. This sets the DC 15 trust check; advantage/disadvantage per the table on the DM-notes face.)</span>`},
-    {label:"📖 If they win her trust → the Key (read, low and steady)", text:`“Then hear it true. The thing on the road is no beast — it's <b>Sorrowroot</b>, the old heart of this wood, and it takes only those who come to <b>wound</b> it. The grey-robes — the <b>Withering</b> — have been felling the heartwood for months, boiling it down to <b>heart-sap</b> so their <b>Mother Sere</b> will never die. They started the beast-tale themselves: they want hired swords to put my friend down, so none are left to guard the grove when they take the last of it. <b>Dusk, the third day, they finish.</b> If you mean to save it — go to the grove <i>unarmed</i>, and <i>grieve</i> with it. It will know.”<br><span style="opacity:.65">(DM: sets Clue 4 = the full Key → flips to Ending B / Showdown Version B, and unlocks the “approach unarmed → reach the Guardian with no roll” prize.)</span>`},
+    {label:"📖 If they win her trust → the Key (read, low and steady)", text:`“Then hear it true. The thing on the road is no beast — it's <b>Sorrowroot</b>, the old heart of this wood, and it takes only those who come to <b>wound</b> it. The grey-robes — the <b>Withering</b> — have been felling the heartwood for months, boiling it down to <b>heart-sap</b> so their <b>Mother Sere</b> will never die. They started the beast-tale themselves: they want hired swords to put my friend down, so none are left to guard the grove when they take the last of it. <b>They are at it now — bleeding the last of my friend's heart into their vials.</b> If you mean to save it — go to the grove <i>unarmed</i>, and <i>grieve</i> with it. It will know.”<br><span style="opacity:.65">(DM: sets Clue 4 = the full Key → flips to Ending B / Showdown Version B, and unlocks the “approach unarmed → reach the Guardian with no roll” prize.)</span>`},
     {label:"📖 If they lie or threaten — she closes (read)", text:`The knife stops. For the first time she looks <i>old</i>, and afraid. “You smell too much of axes,” she says — or, if you lied to her: “…and the wood <b>knows</b> a false tongue.” She's up and gone into the green before you've finished, quick as a girl, leaving only the door swinging and the herb-smell. <span style="opacity:.65">(She leaves the hut — her journal is still inside: Clue 4, the gist of the truth, but not the live ally or the unarmed approach. Deception miss = no retry; flag the risk before a player commits to lying.)</span>`},
     {label:"📖 Onward — where Fenn sends them (read the branch that applies)", text:`<b>Trusted:</b> Fenn rises, and for a moment the years fall off her. “Then go — up through the green dark, to the ring of standing stones, and the grove beyond. Unarmed. And remember: it is grieving, not hunting.”<br><b>Without her trust:</b> she's gone into the trees, and you're left with more doubt than answers — but the drag-trail runs on, deeper in, toward that thin thread of smoke.<br><span style="opacity:.65">(DM: trusted → the grove, <b>Scene 4</b> → Showdown; she lives, Ending B hook. Untrusted/journal → the drag-trail leads on to the camp, <b>Scene 3</b>.)</span>`}
   ],
@@ -503,7 +593,7 @@ const MODULE = {
     <div class="ck-head"><span class="ck-name">Step 2 — The trust check → the Key</span> <span class="dc">DC 15</span> <span class="pill">Persuasion / Insight / Deception</span></div>
     <p style="margin:.3rem 0"><b>Advantage</b> if they've found <b>Clue 1 or 2</b> and <i>say so</i>, <b>or</b> they produce / return her <b>oak figure</b> from the cart (or cite the note that named her). · <b>Disadvantage</b> if they brag about the bounty, threaten, or wave weapons.</p>
     <div class="hit"><b>On a hit → sets Clue 4 (the full Key). Read:</b>
-      <div class="ra reveal" style="margin-top:.4rem"><span class="ra-label">Fenn, low and steady</span>“Then hear it true. The thing on the road is no beast — it's <b>Sorrowroot</b>, the old heart of this wood, and it takes only those who come to <b>wound</b> it. The grey-robes — the <b>Withering</b> — have been felling the heartwood for months, boiling it down to <b>heart-sap</b> so their <b>Mother Sere</b> will never die. They started the beast-tale themselves: they want hired swords to put my friend down, so none are left to guard the grove when they take the last of it. <b>Dusk, the third day, they finish.</b> If you mean to save it — go to the grove <i>unarmed</i>, and <i>grieve</i> with it. It will know.”</div>
+      <div class="ra reveal" style="margin-top:.4rem"><span class="ra-label">Fenn, low and steady</span>“Then hear it true. The thing on the road is no beast — it's <b>Sorrowroot</b>, the old heart of this wood, and it takes only those who come to <b>wound</b> it. The grey-robes — the <b>Withering</b> — have been felling the heartwood for months, boiling it down to <b>heart-sap</b> so their <b>Mother Sere</b> will never die. They started the beast-tale themselves: they want hired swords to put my friend down, so none are left to guard the grove when they take the last of it. <b>They are at it now — bleeding the last of my friend's heart into their vials.</b> If you mean to save it — go to the grove <i>unarmed</i>, and <i>grieve</i> with it. It will know.”</div>
     </div>
     <div class="miss"><b>On a miss → fail forward (never a dead end):</b>
       <ul style="margin:.3rem 0 0">
@@ -552,9 +642,9 @@ const MODULE = {
       <p><b>Morale:</b> overseer down or cultists to 2 → they break and beg — <b>capture one, it's a goldmine</b>. Avenues: fight, stealth a crate, or pose as buyers (Deception DC 15). Full fight detail on the DM-notes face.</p>`},
     {label:"📖 The clearing & the overseer (the opener)", text:`The trees simply <i>stop</i>. A raw clearing opens where a stand of ancient oaks once stood — now a field of <b>stumps</b>, each weeping pale sap into a catch-bucket, the cuts still bright. The reek hits next: resin, woodsmoke, and under it something sweetly rotten. At the centre, robed figures tend a crude copper <b>still</b> that drips a slow, glowing <b>green ichor</b> into iron crates — and every crate wears the same brand: a <b>withered crown</b>, a ring of dead, leafless branches. A harder-eyed man in stained vestments turns at your approach, a hand drifting to the dagger at his belt. “Pilgrims?” His mouth twists. “No. The Mother said hunters would come. She didn't say they'd be fool enough to come <i>here</i>.”<br><span style="opacity:.65">(DM: the Scene 3 image — stumps in buckets, the green still, branded crates. He bluffs, then fights. Mind the still hazard and his opening hold person on your heaviest hitter.)</span>`},
     {label:"📖 The camp breaks — a captured cultist (read when the overseer drops / cultists hit 2)", text:`The fight goes out of them the moment the overseer drops. The last grey-robe throws down a sap-slick blade and presses into the dirt, hands over his head. “Please — please, I only carry the crates,” he babbles, eyes darting to the green-lit hollow uphill. “It's all up at the grove. Whatever you want to know — just don't put me in the ground.”<br><span style="opacity:.65">(DM: that kneeling cultist is your capture → Clue 3 intel, next beat. Don't grind the last fodder.)</span>`},
-    {label:"📖 A captured cultist talks (Clue 3 · Intimidation / Persuasion DC 13)", text:`“Please — I only carry crates! The Mother's at the grove, finishing the <b>Great Harvest</b> — by <b>dusk on the third day</b> she drinks the last of it and never dies. The thing in the wood? We <b>made</b> that story. We needed it dead before the harvest was done, so we sent for hunters. You. You were meant to do it for us.”<br><span style="opacity:.65">(DM: the spoken half of Clue 3 — the rite, the dusk deadline, and that the cult invented the beast and hired the party. Miss = he clams up, but his eyes flick to the grove.)</span>`},
+    {label:"📖 A captured cultist talks (Clue 3 · Intimidation / Persuasion DC 13)", text:`“Please — I only carry crates! The Mother's at the grove, finishing the <b>Great Harvest</b> right now — any breath now she drinks the last of it and never dies. The thing in the wood? We <b>made</b> that story. We needed it dead before the harvest was done, so we sent for hunters. You. You were meant to do it for us.”<br><span style="opacity:.65">(DM: the spoken half of Clue 3 — the rite in progress, and that the cult invented the beast and hired the party. Miss = he clams up, but his eyes flick to the grove.)</span>`},
     {label:"📖 Crack a crate / read the brand → Clue 3, the proof (auto)", text:`Inside the iron crate, glass vials nest in straw, each full of that slow green light — <b>heart-sap</b>, thick as honey and faintly <i>pulsing.</i> Every crate, every tool, every grey robe wears the same mark: a <b>withered crown.</b> Whatever's been taking folk on the road, <i>this</i> is what they died to hide — someone is bleeding the wood dry on purpose, and they wanted a “beast” blamed for it.<br><span style="opacity:.65">(DM: the physical half of Clue 3 — a stealth party can grab a crate with no fight. Optional Nature/Arcana/Religion DC 13 names it: the wood's life distilled to cheat death.)</span>`},
-    {label:"📖 Onward — to the grove (read as they move on)", text:`Every loaded cart, every brand, every word from the kneeling cultist points the same way: <b>up</b> — toward that green-lit hollow on the rise, where <b>Mother Sere</b> means to finish the Great Harvest at dusk.<br><span style="opacity:.65">(DM: leads to the grove → <b>Scene 4</b> (the warded ring) → Showdown. They now hold the Key, Clue 3 → Ending B / Version B.)</span>`}
+    {label:"📖 Onward — to the grove (read as they move on)", text:`Every loaded cart, every brand, every word from the kneeling cultist points the same way: <b>up</b> — toward that green-lit hollow on the rise, where <b>Mother Sere</b> is finishing the Great Harvest even now.<br><span style="opacity:.65">(DM: leads to the grove → <b>Scene 4</b> (the warded ring) → Showdown. They now hold the Key, Clue 3 → Ending B / Version B.)</span>`}
   ],
   body:`
 <div class="zone dm-only">
@@ -659,7 +749,7 @@ const MODULE = {
   </div>
   <div class="check">
     <div class="ck-head"><span class="ck-name">A captured / cornered cultist</span> <span class="dc easy">DC 13</span> <span class="pill">Intimidation / Persuasion</span></div>
-    <div class="hit"><b>Hit, read (cultist, babbling):</b> <span class="q">“Please — I only carry crates! The Mother's at the grove, finishing the <b>Great Harvest</b> — by <b>dusk on the third day</b> she drinks the last of it and never dies. The thing in the wood? We <b>made</b> that story. We needed it dead before the harvest was done, so we sent for hunters. You. You were meant to do it for us.”</span></div>
+    <div class="hit"><b>Hit, read (cultist, babbling):</b> <span class="q">“Please — I only carry crates! The Mother's at the grove, finishing the <b>Great Harvest</b> right now — any breath now she drinks the last of it and never dies. The thing in the wood? We <b>made</b> that story. We needed it dead before the harvest was done, so we sent for hunters. You. You were meant to do it for us.”</span></div>
     <div class="miss"><b>Miss / clams up:</b> they spit and say nothing — but their eyes flick to the grove, and every loaded cart points the same way.</div>
   </div>
 </div>
@@ -671,7 +761,7 @@ const MODULE = {
   <p class="lbl">Bypass ⬡</p>
   <p>If cut: the camp is found <i>already struck</i> — stumps, a dropped crate of heart-sap, and a dying/captured cultist who gasps the truth (Clue 3 handed over free).</p>
   <p class="lbl">Exit / lead</p>
-  <p>The crates' brand + a cultist's words point to <b>the grove</b>, where <b>Mother Sere</b> performs the <b>Great Harvest</b> at dusk (Scene 4 → Showdown).</p>
+  <p>The crates' brand + a cultist's words point to <b>the grove</b>, where <b>Mother Sere</b> is performing the <b>Great Harvest</b> right now (Scene 4 → Showdown).</p>
 </div>`
     },
 
@@ -685,7 +775,7 @@ const MODULE = {
   readAloud:[
     {label:"🎬 Scene 4 — the scene at a glance (your eyes only)", text:`<p style="opacity:.7"><i>Not read aloud — your orientation. Both paths funnel here, the approach to the Showdown.</i></p>
       <p>A <b>fey-warded</b> grove; crossing it is a <b>skill challenge / rune-riddle</b> (the Weeping Crown). The carvings reveal the <b>guardian's nature</b> (an old, grieving protector that takes only those who wound the wood) and reinforce Clue 1/2 — but old stone can't name the modern cult, so this is <b>not the full Key</b>.</p>
-      <p><b>Never a dead end:</b> a stuck party always gets through — only the <b>edge</b> is at stake (a free surprise round, or advantage reaching the guardian; the full 5-leaf crown, with the Key, makes them “recognized”). The rite-clock keeps ticking while they puzzle.</p>
+      <p><b>Never a dead end:</b> a stuck party always gets through — only the <b>edge</b> is at stake (a free surprise round, or advantage reaching the guardian; the full 5-leaf crown, with the Key, makes them “recognized”). No timer here — let them take their time and puzzle it out.</p>
       <p>Cipher, run-steps, and the full solution are on the DM-notes face. <b>Solution: Oak 1 · Hazel 2 · Blackthorn 3 · Yew 4 · Willow 5.</b></p>`},
     {label:"📖 The warded ring (the arrival)", text:`The air thickens, sweet and grievous, and the world stops behaving. Ahead, a ring of <b>standing stones</b> leans around the oldest trees you have ever seen — and the way between them <i>shifts</i>: a path doubles back on itself, a fallen log becomes a yawning ravine, birdsong loops like a stuck bell, and faint music drifts with no source. Old <b>fey wards</b> still guard this place, tangled now with the wood's grief. Each leaning stone is cut with a single deep, antler-straight <b>tree-rune</b>; on the nearest, worn carvings catch the green light — a great tree <b>crowned in leaves</b>, a procession of small robed keepers, and, over and over, others laid into the earth. At the centre, a <b>stone crown of five leaves</b> lies toppled and scattered in the moss, its ward humming wrong.<br><span style="opacity:.65">(DM: the Scene 4 image. Crossing is the rune-riddle below — reinforces Clue 1/2 and the guardian's nature, not the full Key.)</span>`},
     {label:"📖 The crown speaks — the riddle's challenge (read)", text:`“Read me true, axe-bearer. I will <b>name</b> you nothing — not a tree, not a number. My stones speak only in the old <b>kennings</b>, and never in the order grief fell. Read the wood-runes, learn what each leaf means, weigh my five stones against one another, and lay each leaf where it belongs. Lay them wrong, and the wood will turn you in circles till you do.”`},
@@ -776,7 +866,7 @@ const MODULE = {
 
 <div class="zone dm-only">
   <h4>🎲 How to run the rune-riddle (drives the crown)</h4>
-  <p>Run it as a <b>two-layer skill challenge</b> — <i>decode</i>, then <i>deduce</i> — so it rewards heads <b>and</b> dice. It is <b>modular &amp; never a dead end</b> (MMOS): a stuck party always gets through — only the <b>edge</b> is at stake, and the rite-clock keeps ticking while they puzzle.</p>
+  <p>Run it as a <b>two-layer skill challenge</b> — <i>decode</i>, then <i>deduce</i> — so it rewards heads <b>and</b> dice. It is <b>modular &amp; never a dead end</b> (MMOS): a stuck party always gets through — only the <b>edge</b> is at stake. No timer, so give the table room to reason it out.</p>
   <ol>
     <li><b>Name the goal &amp; stakes:</b> read the crown right and cross with the grove's blessing — or be turned in circles and stumble in <i>off-balance</i> (and the rite ticks on).</li>
     <li><b>Layer 1 — read the runes</b> (which leaf is which). <b>History / Arcana / Nature / Investigation DC 15.</b> Each success identifies a leaf's tree (hand them one rune from the cipher). A natural reader — druid, ranger, an elf or Outlander — may get one free.</li>
@@ -823,7 +913,7 @@ const MODULE = {
   readAloud:[
     {label:"🎬 The Showdown — the scene at a glance (your eyes only)", text:`<p style="opacity:.7"><i>Not read aloud — your orientation. They cross from Scene 4 into the grove's heart, the Great Harvest at its climax.</i></p>
       <p><b>The Key decides who you fight</b> — same mechanics, different flavor:</p>
-      <p>• <b>No Key → Version A:</b> the party fights the grieving Guardian itself (Deadly; your biggest TPK risk — it grapples + Engulfs, <b>heals from lightning</b>, resists cold &amp; fire).<br>• <b>Key → Version B:</b> the party turns the Guardian on the cult — Mother Sere + cultists are the enemy, the Guardian fights as your <b>ally</b> (Deadly but heroic; 3-round rite clock).</p>
+      <p>• <b>No Key → Version A:</b> the party fights the grieving Guardian itself (Deadly; your biggest TPK risk — it grapples + Engulfs, <b>heals from lightning</b>, resists cold &amp; fire).<br>• <b>Key → Version B:</b> the party turns the Guardian on the cult — Mother Sere + her cultists + risen <b>grave-husks</b> are the enemy, the Guardian fights as your <b>ally</b> (Deadly but heroic; no timer — smashing her ritual vial strips the buff keeping her on her feet).</p>
       <p><b>Clue 5 = the Guardian's plea + vision</b> is the fail-safe: whatever path they took, it speaks first and any PC may try to reach it — even a kill-first party gets one last chance to flip. Pick the version live on the DM-notes face (it follows the clue tracker). Carry over any edge from Scene 4.</p>`},
     {label:"📖 The grove at the climax (the opener)", text:`The grove opens like a wound. At its heart the greatest tree of all has half torn <i>itself</i> from the earth — bark gnarled into a vast, grieving face set with too many sorrowful eyes, its roots dragging up soil churned with cut stumps and pale bones. Around its feet, robed figures chant over a fire of cold <b>green flame</b>; and beside it a withered woman in a <b>crown of dead branches</b> lifts a vial of glowing sap to her lips. The great tree turns its slow, sorrowing face toward you. <i>“Another axe,”</i> it says, in a voice like splitting heartwood. <i>“Have you come to cut me too?”</i><br><span style="opacity:.65">(DM: the Showdown image — the many-eyed grieving treant, the green ritual fire, Mother Sere drinking the vial, bones at the roots. The Guardian speaks first — the vision &amp; plea, next beat.)</span>`},
     {label:"📖 Before initiative — the Guardian's vision & plea (Clue 5, the fail-safe — read whatever path they took)", text:`The tree's sorrow washes over you as a <i>seeing:</i> this grove green and singing, small keepers leaving bread at its roots — then the axes come, the green goes grey, and one by one its children are laid in the earth. The vision breaks. <i>“I was the keeping-place of this wood. I took only those who came to <b>wound</b> it. Now they bleed my heart into their vials and send me killers wearing the faces of heroes. If you too have come for my heartwood — strike; I am so tired. But if you have eyes to see who truly holds the axe… lay down your blade, and help me.”</i><br><span style="opacity:.65">(DM: read whatever path they took — the vision, then the plea (Clue 5). With the Key or naming the cult → Version B (next beat); without → it attacks, Version A. With Fenn's full Key, a PC who lays down arms reaches it automatically — no roll.)</span>`},
@@ -933,23 +1023,25 @@ const MODULE = {
   <div class="ver-block" data-verblock="B">
     <div class="zone">
       <h4>Version B — “The True Harvest” (has the Key) · Deadly</h4>
-      <p>The party turns the Guardian on the cult. <b>Mother Sere, her Harvest Overseer + cultists</b> are the enemy; the <b>Guardian fights as the party's ally</b> (DM runs it; it focuses Mother Sere).</p>
-      <div class="budget"><b>Budget check (enemies only):</b> Mother Sere (Green Hag, 700) + Harvest Overseer (Cult Fanatic, 450) + 4 Cultists (100) = 1,250 base ×2 (6 monsters) = <b>2,500 adjusted → Deadly+</b>, brought back to a winnable, heroic Deadly by the <b>Guardian ally</b>. <i>Rescaled for 5 — the Overseer joins by default; if he fell at Scene 3, use 6 Cultists instead.</i></div>
-      <p><b>Tactics:</b> <b>Mother Sere</b> opens with <b>Invisible Passage</b> and <b>Illusory Appearance</b> (she may look like a frightened captive — let a PC's Insight or the Guardian's senses cut through), strikes with <b>Claws (2d8+4)</b>, uses <b>vicious mockery / minor illusion</b> to split the party; cultists screen her and tend the green fire (the rite — a <b>clock: 3 rounds to completion</b> unless disrupted; smashing the fire/vial sets it back). The <b>Guardian</b> grapples and Engulfs Mother Sere if it can. <b>Morale:</b> cultists break when she falls.</p>
+      <p>The party turns the Guardian on the cult. <b>Mother Sere, her Harvest Overseer, cultists,</b> and the <b>grave-husks</b> she has raised from the taken are the enemy; the <b>Guardian fights as the party's ally</b> (DM runs it; it focuses Mother Sere).</p>
+      <div class="budget"><b>Budget check (enemies only):</b> Mother Sere (Green Hag, 700) + Harvest Overseer (Cult Fanatic, 450) + 4 Cultists (100) + 4 Grave-Husks (100) = 1,350 base ×2.5 (10 monsters) = <b>3,375 adjusted → well past Deadly, on purpose.</b> The <b>Guardian ally</b> (a CR-5 body focusing Sere) and the party's <b>Faerie Fire</b> counters bring it back to a winnable, climactic Deadly. The <b>husks exist to soak the ally's action economy</b> so Mother Sere stays a live threat instead of folding turn 1. <i>Rescaled for 5 — the Overseer joins by default; <b>if he fell at Scene 3, delete his token</b> (or swap in 2 more Cultists).</i></div>
+      <p><b>Tactics:</b> <b>Mother Sere</b> opens with <b>Invisible Passage</b> and <b>Illusory Appearance</b> (she may look like a frightened captive — let a PC's Insight or the Guardian's senses cut through), strikes with <b>Claws (2d8+4)</b>, uses <b>vicious mockery / minor illusion</b> to split the party, and leans on <b>Withered Vitality</b> (the rite's stolen life keeps her on her feet — see her stat block) until the party <b>smashes her ritual vial / the green fire</b> to strip it. Cultists screen her; the <b>grave-husks</b> shamble in to tie up the Guardian and the frontline. The <b>Guardian</b> grapples and Engulfs Mother Sere if it can. <b>Morale:</b> cultists break when she falls; the mindless husks fight to nothing.</p>
     </div>
     {{SB:hag}}
     {{SB:fanatic|1}}
     {{SB:cultist|4}}
-    {{SB:mound}}
+    {{SB:husk|4}}
+    {{SB:mound|1|ally}}
     <div class="runfight">
       <h4>🎬 Run Version B — Mother Sere &amp; the rite</h4>
       <div class="initline">
         <span class="ini">Mother Sere <b>init +1</b></span>
         <span class="ini">Overseer (if alive) <b>init +2</b></span>
         <span class="ini">Cultists <b>init +1</b></span>
+        <span class="ini">Grave-Husks <b>init +1</b> <span class="die">(one group roll)</span></span>
         <span class="ini">Sorrowroot (ally) <b>init −1</b> <span class="die">(you run it — it focuses Sere)</span></span>
       </div>
-      <div class="callout danger" style="margin:.4rem 0"><b>⏳ The rite clock — 3 rounds.</b> The green fire completes Mother Sere's Harvest at the end of <b>round 3</b> unless disrupted. <b>Smashing the fire or the vial</b> (an object — AC 12, or a clean action) sets it back a round. Track it in the Tools rail clock or on the table.</div>
+      <div class="callout danger" style="margin:.4rem 0"><b>🩸 No clock — smash the vial instead.</b> There is <b>no timer</b>: the Harvest is already underway and the fight <i>is</i> the interruption. What the green fire / <b>ritual vial</b> now controls is <b>Mother Sere's Withered Vitality</b> — while it burns she can shrug off a failed save or a condition <b>once per round</b> (the stolen life holding her together). Treat the vial/fire as an <b>object (AC 12, a clean action, or any solid hit)</b>; the instant it's destroyed she <b>loses Withered Vitality</b> and is only a Green Hag. Point the party at it — breaking the vial is the smart play, not a countdown to beat.</div>
       <div class="turns">
         <div class="turn-card">
           <h5>👑 Mother Sere (Green Hag) <span class="pri">Hides, splits the party, drinks the rite</span></h5>
@@ -957,23 +1049,31 @@ const MODULE = {
             <li><b>Opens hidden:</b> <i>Invisible Passage</i> (invisible until she attacks/casts) and/or <i>Illusory Appearance</i> — she may pose as a <b>frightened captive.</b> See through with <b>Insight DC 14</b> (mimicry) or <b>Investigation DC 20</b>; the <b>Guardian's blindsight ignores it.</b></li>
             <li><b>Claws</b> +6, <b>13 (2d8+4) slashing</b> — strikes a caster, then vanishes again next turn.</li>
             <li><b>Control:</b> <i>vicious mockery</i> (Wis DC 12, 1d4 psychic + disadv. on its next attack) &amp; <i>minor illusion</i> to fracture the party and guard the fire.</li>
+            <li><b>Withered Vitality (until the vial breaks):</b> once each round she can <b>auto-succeed a save she just failed</b> or <b>shrug one condition</b> (grapple, restrained, frightened, prone…). This is what lets her survive the Guardian — so the party wants the vial gone. It ends the moment the vial/fire is destroyed.</li>
           </ol>
         </div>
         <div class="turn-card">
           <h5>🤝 Sorrowroot — your ally <span class="pri">DM runs it · focuses Mother Sere</span></h5>
           <ul>
-            <li>Wades to Sere and tries to <b>grapple + Engulf</b> her (escape DC 14) — its blindsight cuts her illusions. Pull it back if it outshines the players; it's their win to land.</li>
+            <li>Wades to Sere and tries to <b>grapple + Engulf</b> her (escape DC 14) — its blindsight cuts her illusions. Note her <b>Withered Vitality</b> will shrug the first grapple/Engulf each round until the vial breaks, so it can't just pin her solo — the players still have to do the work. Pull it back if it outshines them; it's their win to land.</li>
           </ul>
         </div>
         <div class="turn-card">
           <h5>🗡 Cultists ×4 <span class="pri">Screen Sere · tend the green fire</span></h5>
           <ul><li><b>Scimitar</b> +3, 4 (1d6+1). They feed the rite and body-block the fire. <b>Morale:</b> they break when Sere falls.</li></ul>
         </div>
+        <div class="turn-card">
+          <h5>🧟 Grave-Husks ×4 <span class="pri">The risen taken · tie up the Guardian &amp; frontline</span></h5>
+          <ul>
+            <li><b>Claws</b> +3, <b>3 (1d4+1) piercing.</b> 4 HP each — they die easy, but they're bodies: swarm the Guardian and the tank so the ally can't just walk to Sere. Mindless; no morale, they fight to nothing.</li>
+            <li><b>Vulnerable to fire, undead</b> (immune to poison, can't be charmed/frightened). Alary's <i>Produce Flame</i> / any fire clears them fast — reward that.</li>
+          </ul>
+        </div>
       </div>
       <div class="rounds">
-        <div class="rd"><b>Round 1</b> Sere hidden/illusory; cultists feed the fire (<b>clock 1</b>). Guardian crashes toward her.</div>
-        <div class="rd"><b>Round 2</b> <b>Clock 2.</b> Sere claws a caster &amp; mocks; reward anyone who smashes the fire/vial (−1 clock).</div>
-        <div class="rd"><b>Round 3</b> <b>Clock 3 = rite completes</b> unless disrupted — drop her or break the fire <i>now.</i> When Sere falls, the rite shatters.</div>
+        <div class="rd"><b>Round 1</b> Sere hidden/illusory; cultists screen and grave-husks shamble in on the Guardian &amp; tank. Guardian crashes toward Sere.</div>
+        <div class="rd"><b>Round 2</b> Sere claws a caster &amp; mocks, shrugging the ally's grapple with <b>Withered Vitality</b>; point the party at the <b>vial/fire</b> — break it and her armor of stolen life drops.</div>
+        <div class="rd"><b>Round 3+</b> Vial broken → Sere is just a hag; the party + Guardian close the trap. When Sere falls, the rite shatters and the husks collapse.</div>
       </div>
       <div class="attable">
         <p class="lbl">🎲 At the table — the rolls, both sides</p>
@@ -982,24 +1082,24 @@ const MODULE = {
             <h5>🎲 You roll <span class="pri">Sere, cult & the ally</span></h5>
             <ul>
               <li><b>Mother Sere — Claws:</b> d20 <b>+6</b> vs. AC → 2d8+4. <i>vicious mockery</i> → <b>"Wisdom save, DC 12"</b> (fail = 1d4 psychic ＋ disadv. on her target's next attack).</li>
-              <li><b>Cultists:</b> Scimitar <b>+3</b> → 1d6+1. <b>Overseer (if alive):</b> spells as Scene 3 (hold person Wis DC 11; inflict wounds +3 → 3d10; sacred flame Dex DC 11).</li>
-              <li><b>Sorrowroot (you run the ally):</b> Slams +7 → 2d8+4; tries to grapple ＋ Engulf Sere (escape DC 14). Keep it on Sere so it doesn't steal the players' kills.</li>
+              <li><b>Cultists:</b> Scimitar <b>+3</b> → 1d6+1. <b>Grave-Husks:</b> Claws <b>+3</b> → 1d4+1 (4 HP, vulnerable to fire). <b>Overseer (if alive):</b> spells as Scene 3 (hold person Wis DC 11; inflict wounds +3 → 3d10; sacred flame Dex DC 11).</li>
+              <li><b>Sorrowroot (you run the ally):</b> Slams +7 → 2d8+4; tries to grapple ＋ Engulf Sere (escape DC 14 — but her <b>Withered Vitality</b> shrugs the first one each round until the vial breaks). Keep it on Sere so it doesn't steal the players' kills.</li>
             </ul>
           </div>
           <div class="turn-card q-exp">
             <h5>🎯 Expect from the party <span class="pri">see-through & smash</span></h5>
             <ul>
               <li><b>Finding Sere:</b> she opens invisible / posing as a captive. <b>Insight DC 14</b> (Mimicry) or <b>Investigation DC 20</b> sees through it; the Guardian's blindsight ignores it — let a PC's check or the ally out her.</li>
-              <li><b>Attacks vs.</b> Sere AC 17 (high — they'll miss; that's the boss) · Cultist AC 12.</li>
-              <li>Expect them to <b>smash the green fire / vial</b> to beat the clock — say yes (AC 12 object, or one clean action) → −1 round.</li>
+              <li><b>Attacks vs.</b> Sere AC 17 (high — they'll miss; that's the boss) · Cultist AC 12 · Grave-Husk AC 13 (4 HP, fire tears them up).</li>
+              <li>Expect them to <b>smash the green fire / vial</b> — say yes (AC 12 object, or one clean action). It's not a countdown: breaking it <b>strips Withered Vitality</b>, so Sere stops shrugging saves/grapples and becomes killable.</li>
             </ul>
           </div>
           <div class="turn-card q-rx">
-            <h5>🔁 How to react <span class="pri">run the clock</span></h5>
+            <h5>🔁 How to react <span class="pri">the vial is the objective</span></h5>
             <ul>
-              <li><b>Rite clock (3 rounds):</b> tick it up at the END of each round on the Tools rail / table. Round 3 completes it <i>unless</i> Sere falls or the fire's broken. Make the ticks loud — that's the tension.</li>
+              <li><b>Withered Vitality:</b> until the vial breaks, Sere ignores one failed save or one condition each round — so "just grapple her" won't stick and she'll keep vanishing. Make the vial obvious and reward the party that targets it.</li>
               <li><b>Concentration:</b> Overseer holding a spell takes damage → Con save DC 10 / half. Sere's invisibility ends the instant she attacks or casts.</li>
-              <li><b>Morale:</b> cultists break when Sere falls; when she drops, the rite shatters — cue the ending.</li>
+              <li><b>Morale:</b> cultists break when Sere falls; the mindless husks don't — but they collapse when she dies. When she drops, the rite shatters — cue the ending.</li>
             </ul>
           </div>
         </div>
@@ -1009,7 +1109,7 @@ const MODULE = {
 
   <div class="zone">
     <h4>↔️ Avenues (either version)</h4>
-    <p><span class="pill">straight fight</span><span class="pill">disrupt the rite — smash the green fire/vial (shortens Version B)</span><span class="pill">turn the guardian with words / the Key</span><span class="pill">use the grove — cover, standing stones, lured Engulf</span></p>
+    <p><span class="pill">straight fight</span><span class="pill">smash the ritual vial/green fire — strips Mother Sere's Withered Vitality (Version B)</span><span class="pill">turn the guardian with words / the Key</span><span class="pill">use the grove — cover, standing stones, lured Engulf</span></p>
   </div>
 </div>`
     },
@@ -1046,7 +1146,7 @@ const MODULE = {
 
 /* ---------- STAT BLOCKS (Appendix A) ---------- */
     { id:"statblocks", nav:"Stat Blocks", icon:"📕", name:"Appendix A — Stat Blocks", play:false, body:`
-<p class="subtitle">All seven inlined once. Reflavor notes change the <i>fiction only</i> — the mechanics are unchanged. Collapsed by default; click to expand, or use the buttons.</p>
+<p class="subtitle">All eight inlined once. Reflavor notes change the <i>fiction only</i> — the mechanics are unchanged. Collapsed by default; click to expand, or use the buttons.</p>
 <div class="sb-toolbar">
   <button class="btn" id="sbExpand">Expand all</button>
   <button class="btn ghost" id="sbCollapse">Collapse all</button>
@@ -1057,6 +1157,7 @@ const MODULE = {
   {{SB:fanatic}}
   {{SB:thug}}
   {{SB:twig}}
+  {{SB:husk}}
   {{SB:hag}}
   {{SB:mound}}
 </div>`
@@ -1069,7 +1170,6 @@ const MODULE = {
   <h4>🎛 What's in the rail</h4>
   <ul>
     <li><b>🔎 Clue tracker → the Key.</b> Tick clues; the banner flips to Version B / Ending B when the Key lands (Clue 3 or 4). <i>This also unlocks the Crown's 5th leaf in Scene 4.</i></li>
-    <li><b>⏳ The clock.</b> Step the Great Harvest from Day 1 to dusk on Day 3.</li>
     <li><b>❤️ Party HP.</b> Name, <b>AC</b>, current/max HP, <b>temp HP</b> (damage eats temp first), quick ±buttons, and <b>death-save pips</b> that appear at 0 HP (3 ✓ = stable, 3 ✕ = dead; healing clears them).</li>
     <li><b>⚔️ Combat tracker.</b> Add PCs &amp; monsters (quick-add buttons, or ＋ from any stat block), set initiative, then <b>▶ Start combat</b> → <b>⏭ Next turn</b> walks the order and counts <b>rounds</b>; the active combatant is highlighted.</li>
     <li><b>🧭 Scene status.</b> Mark each beat current / done / skipped.</li>
@@ -1081,12 +1181,12 @@ const MODULE = {
   <div class="sb-board" id="sceneBoardMain"></div>
 </div>
 <div class="zone">
-  <h4>⏳ The clock — the Great Harvest</h4>
-  <p>Completes <b>dusk, day 3</b>. Track time loosely; dawdling advances the Showdown into the rite's final moments (Version B gains the 3-round ritual clock). Advance it in the Tools rail.</p>
+  <h4>⏱️ Pacing — no clock</h4>
+  <p>This one-shot has <b>no timer</b>: the Great Harvest is already underway, and the Showdown is the party interrupting it. Nothing gets worse if they linger, so let them investigate, talk, and explore freely — curiosity is the whole point of the mystery.</p>
 </div>
 <div class="zone secret">
   <h4><span class="dm-tag">CARE</span> ♻️ Reset</h4>
-  <p>Clears every tracker (clues, clock, party HP, combat, scene status, showdown version) and starts a fresh session. Read-aloud and theme preferences are kept.</p>
+  <p>Clears every tracker (clues, party HP, combat, scene status, showdown version) and starts a fresh session. Read-aloud and theme preferences are kept.</p>
   <button class="btn danger" id="resetBtn">Reset session</button>
 </div>`
     },

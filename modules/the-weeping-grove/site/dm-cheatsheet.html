@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Weeping Grove — DM Cheat Sheet</title>
+<style>
+  :root{
+    --ink:#1b1a17; --mut:#5c574e; --line:#c9c1b2; --soft:#efe9dc;
+    --grn:#2f6b41; --red:#8f2d24; --gold:#8a6a1f; --blu:#274b6b; --pur:#5a3c6b;
+    --bg:#f6f1e6;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#4a4a48; color:var(--ink);
+    font:12px/1.32 "Segoe UI",-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  .page{
+    width:8.5in; min-height:11in; background:var(--bg);
+    margin:14px auto; padding:0.42in 0.46in; position:relative;
+    box-shadow:0 3px 14px rgba(0,0,0,.4);
+  }
+  .ph{display:flex; align-items:baseline; justify-content:space-between; border-bottom:2px solid var(--ink); padding-bottom:4px; margin-bottom:7px;}
+  .ph h1{font-size:15px; margin:0; letter-spacing:.3px; text-transform:uppercase;}
+  .ph .sub{font-size:10px; color:var(--mut); font-style:italic;}
+  .ph .pg{font-size:10px; color:var(--mut); font-weight:700;}
+  .cols{column-count:2; column-gap:14px;}
+  section{break-inside:avoid; margin:0 0 7px; padding:5px 7px; border:1px solid var(--line); border-radius:4px; background:#fffdf8;}
+  section.tight{padding:4px 6px;}
+  section.full{column-span:all;}
+  h2{font-size:10.5px; margin:0 0 3px; text-transform:uppercase; letter-spacing:.4px; color:var(--grn); border-bottom:1px solid var(--soft); padding-bottom:2px;}
+  h2.r{color:var(--red);} h2.b{color:var(--blu);} h2.g{color:var(--gold);} h2.p{color:var(--pur);}
+  p{margin:0 0 3px;}
+  ul{margin:0 0 3px; padding-left:14px;}
+  li{margin:0 0 1.5px;}
+  b{color:#000;}
+  .k{color:var(--red); font-weight:700;}
+  .d{display:inline-block; background:var(--ink); color:#fff; border-radius:3px; padding:0 4px; font-weight:700; font-size:10px; white-space:nowrap;}
+  .dc{display:inline-block; background:var(--gold); color:#fff; border-radius:3px; padding:0 4px; font-weight:700; font-size:10px;}
+  table{width:100%; border-collapse:collapse; font-size:10px; margin:1px 0 2px;}
+  th,td{border:1px solid var(--line); padding:1.5px 4px; text-align:left; vertical-align:top;}
+  th{background:var(--soft); font-size:9px; text-transform:uppercase; letter-spacing:.3px;}
+  td.c,th.c{text-align:center;}
+  .mono{font-variant-numeric:tabular-nums;}
+  .note{font-size:9.5px; color:var(--mut); font-style:italic;}
+  .flag{background:#fbeee9; border-left:3px solid var(--red); padding:3px 6px; border-radius:2px; margin:2px 0;}
+  .win{background:#eaf3ec; border-left:3px solid var(--grn); padding:3px 6px; border-radius:2px; margin:2px 0;}
+  .tag{font-size:8.5px; background:var(--ink); color:#fff; padding:0 4px; border-radius:6px; text-transform:uppercase; letter-spacing:.3px;}
+  /* party cards */
+  .pc{break-inside:avoid; margin:0 0 7px; border:1px solid var(--line); border-radius:4px; background:#fffdf8; overflow:hidden;}
+  .pc-h{padding:3px 7px; color:#fff; display:flex; justify-content:space-between; align-items:baseline; gap:6px;}
+  .pc-h b{color:#fff; font-size:11.5px;} .pc-h .who{font-size:9px; opacity:.9; text-align:right;}
+  .pc-b{padding:4px 7px;}
+  .strip{font-size:9.5px; background:var(--soft); border-radius:3px; padding:2px 5px; margin:0 0 4px; font-variant-numeric:tabular-nums;}
+  .tib{font-size:9.5px; margin:0 0 3px;}
+  .tib b{display:inline-block; min-width:34px; color:var(--mut); text-transform:uppercase; font-size:8px; letter-spacing:.3px;}
+  .hook{font-size:9.5px; background:#eef1ea; border-left:3px solid var(--grn); padding:2px 5px; border-radius:2px;}
+  .cPal{background:var(--red);} .cBar{background:var(--gold);} .cRan{background:var(--blu);}
+  .cDru{background:var(--grn);} .cWar{background:var(--pur);}
+  @media print{
+    body{background:#fff;}
+    .page{margin:0; box-shadow:none; width:auto; min-height:auto; page-break-after:always;}
+    .noprint{display:none;}
+    @page{size:letter; margin:0.4in;}
+  }
+  .noprint{max-width:8.5in; margin:10px auto; color:#eee; font-size:12px; text-align:center;}
+  .noprint b{color:#fff;}
+</style>
+</head>
+<body>
+
+<div class="noprint">DM-only (full spoilers). Print at <b>100% scale, Letter, no headers/footers</b> — 6 sheets: Rules · Party · Grove · Monsters ×2 · Reinforcements. Ctrl/Cmd-P.</div>
+
+<!-- ================= PAGE 1 — RULES & DICE ================= -->
+<div class="page">
+  <div class="ph">
+    <h1>The Weeping Grove — DM Cheat Sheet</h1>
+    <span class="sub">D&amp;D 5e (2014) · 5 PCs · Lv 3</span>
+    <span class="pg">1 / 6 · Rules &amp; Dice</span>
+  </div>
+
+  <section class="full">
+    <h2 class="b">Ability &amp; skill checks — spot them &amp; run them</h2>
+    <p><b>When to call one:</b> only when the outcome is <b>uncertain</b> and <b>failure is interesting</b> — otherwise just say yes. Then <b>pick the ability</b>, <b>set a DC</b>, the player rolls <b>d20 + ability mod (+ proficiency if trained)</b>; <b>meet or beat = success.</b> &nbsp;DCs: <span class="dc">Easy 10</span> <span class="dc">Medium 15</span> <span class="dc">Hard 20</span> (very easy 5 · very hard 25). &nbsp;·&nbsp; <b>Adv/Disadv:</b> 2d20 take higher/lower — don't stack, one of each cancels. &nbsp;·&nbsp; <b>Passive</b> (no roll, for noticing/secret things): 10 + mods. &nbsp;·&nbsp; <b>Group check:</b> half the party succeeds → all succeed. &nbsp;·&nbsp; <b>Contest</b> (grapple, stealth-vs-perception): opposed rolls, higher wins.</p>
+    <table>
+      <tr><th style="width:22%">Skill (ability)</th><th>You'll call for it when…</th><th class="c">DC</th></tr>
+      <tr><td><b>Perception</b> (Wis)</td><td>Check <b>passive first</b> — the S1 ambush, hidden cultists, Mother Sere — or searching a space. <i>Eyes: Alary PP 15, Jarlaxle PP 14. Blind spots: I'Drenk &amp; Douglas PP 9.</i></td><td class="c mono">12–15</td></tr>
+      <tr><td><b>Investigation</b> (Int)</td><td>Search the cart, read Fenn's journal, crack a crate; <b>see through Sere's illusion</b> (DC 20).</td><td class="c mono">12/15/20</td></tr>
+      <tr><td><b>Insight</b> (Wis)</td><td>Read Fenn's sincerity (she's passive Insight 13), read the wolves' intent, pierce Sere's mimicry.</td><td class="c mono">13–14</td></tr>
+      <tr><td><b>Nature / Survival</b> (Int/Wis)</td><td>"No beast" tracks, follow the drag-marks, calm the pack, ID the heart-sap. <i>Jarlaxle &amp; Alary shine in forest.</i></td><td class="c mono">13–15</td></tr>
+      <tr><td><b>Animal Handling</b> (Wis)</td><td>Calm / scatter the bramble-wolves and end S1 without a kill.</td><td class="c mono">15</td></tr>
+      <tr><td><b>Persuasion / Deception / Intimidation</b> (Cha)</td><td>Win Fenn's trust → the Key, make the captive cultist talk, <b>flip the Guardian</b> (DC 20). <i>Faces: Douglas (Cha 16), I'Drenk (14).</i></td><td class="c mono">13/15/20</td></tr>
+      <tr><td><b>History / Arcana / Religion</b> (Int)</td><td>Decode the S4 rune-riddle; identify what heart-sap really is.</td><td class="c mono">13–15</td></tr>
+      <tr><td><b>Athletics / Acrobatics</b> (Str/Dex)</td><td>Escape the Guardian's Engulf; cross the warded, shifting grove.</td><td class="c mono">14–15</td></tr>
+    </table>
+    <p class="note">Golden rule for this mystery — <b>fail forward:</b> never lock a clue behind a bad roll. On a miss, hand it over on the next look, from an NPC, or later.</p>
+  </section>
+
+  <div class="cols">
+
+    <section>
+      <h2>The core loop</h2>
+      <p>You describe → a player says what they <b>do</b> → if the outcome's in doubt they roll <b>d20 + a number off their sheet</b> vs a target you hold → you narrate the result. That's the whole game.</p>
+      <p><b>Lean toward yes.</b> Clever ideas usually just work; when unclear, pick an ability + DC and move on. A toolbox, not a menu.</p>
+    </section>
+
+    <section>
+      <h2>Who rolls what</h2>
+      <ul>
+        <li><b>Attacks (either side):</b> d20 + bonus <b>vs. AC</b>. Meet-or-beat = hit → roll damage dice.</li>
+        <li><b>You never roll the PCs' saves.</b> When a monster forces one, just <b>announce ability + DC</b> ("Dex save, DC 11") — the player rolls.</li>
+        <li><b>PC casts a save-spell?</b> The <b>target</b> rolls vs. the caster's <b>Spell DC</b> — the player tells you the DC.</li>
+        <li><b>Nat 20</b> = crit (roll damage dice <b>twice</b>); <b>Nat 1</b> = miss. (On checks: best/worst version of the try.)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>A turn: Move + 1 Action <span class="note">(+ maybe 1 Bonus, + 1 Reaction)</span></h2>
+      <table>
+        <tr><th>Player says…</th><th>Your instant ruling</th></tr>
+        <tr><td>"I attack"</td><td>d20+bonus vs AC → damage on hit</td></tr>
+        <tr><td>"Grapple / Shove"</td><td>Their <b>Athletics</b> vs target's <b>Athletics or Acrobatics</b>. Win = speed 0, or shove 5ft / prone</td></tr>
+        <tr><td>"I Help"</td><td>An ally gets <b>advantage</b> on next attack/check</td></tr>
+        <tr><td>"I Dodge"</td><td>Attacks vs them have <b>disadv</b>; adv on Dex saves</td></tr>
+        <tr><td>"I Disengage"</td><td>No opportunity attacks this turn · <b>"I Dash"</b> = double move</td></tr>
+        <tr><td>"I Hide"</td><td>Stealth vs passive Perception; hidden = first attack adv, then revealed</td></tr>
+        <tr><td>"I Ready…"</td><td>Name a trigger now; fires later as a Reaction</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2 class="r">Reactions (1 / round, each side)</h2>
+      <ul>
+        <li><b>Opportunity attack:</b> a creature leaves your reach <i>without</i> Disengaging → spend your reaction for <b>one melee attack</b>.</li>
+        <li><b>Concentration:</b> a caster holding a conc. spell who <b>takes damage</b> → <b>Con save, DC 10 or ½ the damage, whichever is higher</b>. Fail = spell drops. <span class="k">Call it every hit</span> — it's how the party breaks the Overseer's <i>hold person</i>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="r">At 0 HP — Death Saves</h2>
+      <ul>
+        <li>On your turn, roll <b>d20</b>: <b>10+ = success</b>, under = fail.</li>
+        <li><b>3 successes = stable · 3 fails = dead.</b> <b>Nat 20</b> = up at 1 HP. <b>Nat 1</b> = two fails.</li>
+        <li><b>Damage while down = an auto-fail</b> (a crit = two). <b>Any healing</b> wakes them at that HP.</li>
+        <li>Massive hit (damage ≥ max HP over 0) = instant death.</li>
+      </ul>
+    </section>
+
+    <section class="tight">
+      <h2 class="b">Cover &amp; the conditions you'll use</h2>
+      <p><b>Cover:</b> half <b>+2 AC/Dex</b> · three-quarters <b>+5</b> · total = can't be targeted.</p>
+      <p><b>Prone:</b> melee adv / ranged disadv vs it. <b>Grappled/Restrained:</b> speed 0; <b>restrained</b> = attacks vs it adv, its attacks disadv, Dex-save disadv. <b>Paralyzed</b> (<i>hold person</i>): can't act, auto-fails Str/Dex saves, <b>melee within 5ft auto-crits</b>. <b>Frightened:</b> disadv while source in sight, can't move closer. <b>Invisible</b> (Sere): attacks vs it disadv, its attacks adv.</p>
+    </section>
+
+    <section class="tight">
+      <h2 class="g">Rests &amp; Inspiration</h2>
+      <ul>
+        <li>Tonight the party gets <b>one short + one long rest</b>. <b>Short</b> = breather, spend Hit Dice to heal, some abilities/Warlock slots recharge. <b>Long</b> = full HP + all slots. Tell them when it's safe.</li>
+        <li><b>Inspiration:</b> reward brave / funny / truly in-character play (esp. when it costs them) and <b>curiosity</b>. Hold one; spend to <b>reroll one die</b>, take the better. (Play the Trait/Ideal/Bond/Flaw on p.2.)</li>
+      </ul>
+    </section>
+
+  </div>
+</div>
+
+<!-- ================= PAGE 2 — THE PARTY ================= -->
+<div class="page">
+  <div class="ph">
+    <h1>The Party — Who They Are</h1>
+    <span class="sub">play their Trait · Ideal · Bond · Flaw → hand out Inspiration</span>
+    <span class="pg">2 / 6 · The Party</span>
+  </div>
+
+  <section class="full tight">
+    <h2>Combat stats at a glance <span class="note">— ask each AC up front; jot HP as it drops</span></h2>
+    <table>
+      <tr><th>PC (player)</th><th class="c">AC</th><th class="c">HP</th><th class="c">Init</th><th class="c">Spell DC</th><th class="c">Pass.Per</th><th>Signature / gotcha</th></tr>
+      <tr><td><b>I'Drenk Bier</b> · Ethan</td><td class="c mono"><b>19</b></td><td class="c mono">36</td><td class="c mono">+1</td><td class="c mono">12</td><td class="c mono">9</td><td>Tank. Divine Smite +2d8 (3d8 vs undead/fiend). Lay on Hands 15. Relentless Endurance 1/day.</td></tr>
+      <tr><td><b>Tuf</b> · Bee</td><td class="c mono">14</td><td class="c mono"><b>42</b></td><td class="c mono">+2</td><td class="c">—</td><td class="c mono">10</td><td>Rage ½ physical dmg (3/day). Reckless = adv, but adv vs him. Frenzy = extra swing then exhaustion.</td></tr>
+      <tr><td><b>Jarlaxle Smith</b> · Liam</td><td class="c mono">15</td><td class="c mono">30</td><td class="c mono">+3</td><td class="c mono">12</td><td class="c mono">14</td><td>Longbow +7. <span class="k">Sunlight Sensitivity.</span> Ol' Moe (AC 14 / HP 12). Faerie Fire 1/day. Favored Enemy: Fey.</td></tr>
+      <tr><td><b>Alary Fern</b> · Mackenzie</td><td class="c mono">14</td><td class="c mono">30</td><td class="c mono">+1</td><td class="c mono">13</td><td class="c mono">15</td><td>Healer. Moonbeam, Faerie Fire, Cure/Healing Word. Produce Flame +5 (fire = husks).</td></tr>
+      <tr><td><b>Douglas Dimmadome III</b> · Richard</td><td class="c mono"><b>12</b></td><td class="c mono">30</td><td class="c mono">+1</td><td class="c mono">13</td><td class="c mono">9</td><td><span class="k">Squishy, AC 12.</span> Eldritch Blast +5, 1d10+3, 240ft, shoves 10ft. Slots back on short rest.</td></tr>
+    </table>
+  </section>
+
+  <div class="cols">
+
+    <div class="pc">
+      <div class="pc-h cPal"><b>I'Drenk Bier</b><span class="who">Ethan · Half-Orc<br>Paladin (Oath of Vengeance) · Outlander · CG</span></div>
+      <div class="pc-b">
+        <div class="tib"><b>Trait</b> Always has a plan for when things go wrong.</div>
+        <div class="tib"><b>Ideal</b> Protection — the weak deserve a shield against the strong.</div>
+        <div class="tib"><b>Bond</b> A vow, sworn over his father's body, to avenge his death.</div>
+        <div class="tib"><b>Flaw</b> Weakness for the vices of the road: drink, dice, and dares.</div>
+        <div class="hook"><b>Hook:</b> his whole class is grief turned to a vengeance oath — the exact engine driving the Guardian <i>and</i> Mother Sere. He'll itch to smite "the beast"; the twist (the real villain hid behind a monster story) is his arc. Lean on <b>Protection</b> to pull him toward mercy/Ending B. His flaw is a fun derail — one more pint, take the bet.</div>
+      </div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-h cBar"><b>Tuf</b><span class="who">Bee · Rock Gnome<br>Barbarian (Berserker) · Criminal · TN</span></div>
+      <div class="pc-b">
+        <div class="tib"><b>Trait</b> Spits on the ground after saying something tough.</div>
+        <div class="tib"><b>Ideal</b> Money, baby — the only sure thing in this ugly world.</div>
+        <div class="tib"><b>Bond</b> Rocko — "more than a rock, the only friend I got."</div>
+        <div class="tib"><b>Flaw</b> Called "little" = blind rage. Also: <i>extremely</i> ticklish.</div>
+        <div class="hook"><b>Hook:</b> your comic-relief wall of HP. The <b>150 gp bounty</b> is his reason to be here — dangle coin. Play the "little" trigger and Rocko for laughs, and let his greed be the voice arguing to just take the money (Ending A) until the grief gets under even his skin.</div>
+      </div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-h cRan"><b>Jarlaxle Smith</b><span class="who">Liam · Drow<br>Ranger (Beast Master) · Criminal · TN</span></div>
+      <div class="pc-b">
+        <div class="tib"><b>Trait</b> Notices the smallest details everyone else misses.</div>
+        <div class="tib"><b>Ideal</b> Trust — everyone keeps a bargain as long as it serves them.</div>
+        <div class="tib"><b>Bond</b> His adoptive parents who taught him everything — and Ol' Moe.</div>
+        <div class="tib"><b>Flaw</b> Naive; takes people's stories at face value.</div>
+        <div class="hook"><b>Hook:</b> perfect for this wood — Favored Enemy <b>Fey</b> + Sylvan makes him the one who reads the hag and the fey wards. But his <b>naivety</b> is the trap the module is built on: Brother Aldous's misdirection and Mother Sere posing as a captive prey on "takes stories at face value." His sharp eyes (PP 14) find clues; his gullibility can bury them.</div>
+      </div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-h cDru"><b>Alary Fern</b><span class="who">Mackenzie · Half-Elf<br>Druid (Land — Forest) · Sage · NG</span></div>
+      <div class="pc-b">
+        <div class="tib"><b>Trait</b> Curious, whimsical, quietly passionate — keeps to herself.</div>
+        <div class="tib"><b>Ideal</b> Everything deserves to have its story heard.</div>
+        <div class="tib"><b>Bond</b> Will protect the forests and the creatures that became her friends.</div>
+        <div class="tib"><b>Flaw</b> Trusts too easily; her curiosity gets the better of her.</div>
+        <div class="hook"><b>Hook:</b> the emotional heart. A forest druid whose entire creed is that the grove's story deserves hearing — she's your natural Key-finder and the obvious one to "go unarmed and grieve" with Sorrowroot. Feed her curiosity (it's literally her Inspiration engine) and she'll drag the party toward the truth.</div>
+      </div>
+    </div>
+
+    <div class="pc">
+      <div class="pc-h cWar"><b>Douglas Dimmadome III</b><span class="who">Richard · Variant Human<br>Warlock (Great Old One) · Urchin · CG</span></div>
+      <div class="pc-b">
+        <div class="tib"><b>Trait</b> Always eating snacks (to curb the opium cravings).</div>
+        <div class="tib"><b>Ideal</b> Greater Good — his new talents are meant to serve others.</div>
+        <div class="tib"><b>Bond</b> Carries a token from someone who believed in him.</div>
+        <div class="tib"><b>Flaw</b> Trusts too easily, and it's burned him before.</div>
+        <div class="hook"><b>Hook:</b> a glass cannon (<span class="k">AC 12</span>) with a soft heart — his <b>Greater Good</b> stops for the desperate and the overlooked (Tomas, Wren, the wood itself), steering toward Ending B. His Great Old One patron and Awakened Mind resonate with the grove's alien, many-eyed grief — let the Guardian's telepathy land on him.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= PAGE 3 — RUNNING THE GROVE ================= -->
+<div class="page">
+  <div class="ph">
+    <h1>The Weeping Grove — Run It</h1>
+    <span class="sub">the woods mourn, not hunt — the predator walks on two legs</span>
+    <span class="pg">3 / 6 · The Session</span>
+  </div>
+
+  <div class="cols">
+
+    <section>
+      <h2 class="r">The Key = the whole twist</h2>
+      <p>The "monster" is the grove's wronged Guardian <b>Sorrowroot</b>; the villains are the <b>Withering</b> death-cult bleeding it for <b>heart-sap</b> to make <b>Mother Sere</b> immortal — and they seeded the beast rumor.</p>
+      <ul>
+        <li><b>Get the Key</b> from <b>Clue 3</b> (heart-sap crate + brand, Scene 3) <b>or Clue 4</b> (Fenn, Scene 2).</li>
+        <li>Key found → flips to <b>Ending B / Showdown Version B</b> (fight the cult, Guardian is your ally).</li>
+        <li><b>3-clue rule / fail forward:</b> never withhold a clue on a bad roll — hand it over next look. <b>Clue 5</b> (Guardian's plea) is the fail-safe: even a kill-first party gets one last flip.</li>
+        <li><b>No clock.</b> The Harvest is already underway; the showdown IS the interruption. Let them linger.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="b">Scene DCs</h2>
+      <table>
+        <tr><th>Beat</th><th>Check</th><th class="c">DC</th></tr>
+        <tr><td>Cold Open · Clue 1 victim pattern</td><td>Insight/Invest.</td><td class="c mono">12</td></tr>
+        <tr><td>Cold Open · Clue 2 no beast</td><td>Survival/Nature</td><td class="c mono">13</td></tr>
+        <tr><td>S1 · read/calm the pack</td><td>An.Handling/Nat.</td><td class="c mono">15</td></tr>
+        <tr><td>S1 · spot ambush</td><td>Survival</td><td class="c mono">13</td></tr>
+        <tr><td>S2 · <b>Fenn's trust → Key</b></td><td>Persuade/Ins/Dec</td><td class="c mono">15</td></tr>
+        <tr><td>S2 · find journal (bypass)</td><td>Investigation</td><td class="c mono">15</td></tr>
+        <tr><td>S3 · captured cultist talks</td><td>Intim./Persuade</td><td class="c mono">13</td></tr>
+        <tr><td>S3 · still hazard → 1d6 fire</td><td>Dex</td><td class="c mono">13</td></tr>
+        <tr><td>S4 · rune-riddle (decode+order)</td><td>Hist/Arc/Ins/Rel</td><td class="c mono">15</td></tr>
+        <tr><td>Showdown · flip Guardian mid-fight</td><td>Persuasion</td><td class="c mono">20</td></tr>
+        <tr><td>Showdown · see through Sere's illusion</td><td>Insight</td><td class="c mono">14</td></tr>
+      </table>
+      <p class="note">Fenn reads sincerity, not the word "save" (passive Insight 13); the oak figure = adv. Crown order: <b>Oak · Hazel · Blackthorn · Yew · Willow</b>.</p>
+    </section>
+
+    <section class="full">
+      <h2>Monster quick-stats <span class="note">— you roll their attacks; announce the save + DC and let PCs roll · full stat blocks + tactics → p.4–5 · reserves → p.6</span></h2>
+      <table>
+        <tr><th>Monster (reflavor)</th><th class="c">AC</th><th class="c">HP</th><th>Attack (you roll)</th><th>Save it forces</th><th>Where</th></tr>
+        <tr><td><b>Wolf</b> ×8 (bramble-wolf)</td><td class="c mono">13</td><td class="c mono">11</td><td>Bite <span class="d">+4</span> 2d4+2. Pack Tactics = adv if ally adjacent</td><td>Str <span class="dc">11</span> or prone</td><td>S1</td></tr>
+        <tr><td><b>Cultist</b> (grey-robe)</td><td class="c mono">12</td><td class="c mono">9</td><td>Scimitar <span class="d">+3</span> 1d6+1</td><td>—</td><td>S3, Show B</td></tr>
+        <tr><td><b>Cult Fanatic</b> (Overseer)</td><td class="c mono">13</td><td class="c mono">33</td><td><i>inflict wounds</i> <span class="d">+3</span> 3d10 · <i>spirit. weapon</i> +3 1d8+1</td><td><i>hold person</i> Wis <span class="dc">11</span> · <i>sacred flame</i> Dex <span class="dc">11</span></td><td>S3, Show B</td></tr>
+        <tr><td><b>Thug</b> (poacher)</td><td class="c mono">11</td><td class="c mono">32</td><td>2× Mace <span class="d">+4</span> 1d6+2 · H.Xbow +2 1d10</td><td>—</td><td>S3</td></tr>
+        <tr><td><b>Twig Blight</b> ×6 (thorn-spawn)</td><td class="c mono">13</td><td class="c mono">4</td><td>Claws <span class="d">+3</span> 1d4+1 · <span class="k">vuln. fire</span></td><td>—</td><td>Show A</td></tr>
+        <tr><td><b>Grave-Husk</b> ×4 (risen taken)</td><td class="c mono">13</td><td class="c mono">4</td><td>Claws <span class="d">+3</span> 1d4+1 · <span class="k">vuln. fire</span>, immune poison</td><td>—</td><td>Show B</td></tr>
+        <tr><td><b>Green Hag</b> (Mother Sere)</td><td class="c mono"><b>17</b></td><td class="c mono">82</td><td>Claws <span class="d">+6</span> 2d8+4 · <i>vicious mockery</i></td><td><i>v.mockery</i> Wis <span class="dc">12</span></td><td>Show B boss</td></tr>
+        <tr><td><b>Shambling Mound</b> (Sorrowroot)</td><td class="c mono">15</td><td class="c mono"><b>136</b></td><td>2× Slam <span class="d">+7</span> 2d8+4; both hit = grapple+Engulf</td><td>Engulf Con <span class="dc">14</span> 2d8+4 · escape <span class="dc">14</span></td><td>Show A boss / B ally</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2 class="r">Showdown A — fight the Guardian <span class="tag">no Key · Deadly · TPK risk</span></h2>
+      <div class="flag">
+        <b>Say it aloud before a caster commits:</b> <span class="k">lightning HEALS it</span> · resists cold &amp; fire · AC 15 / 136 HP (a grind by design).
+      </div>
+      <ul>
+        <li><b>Grief, not malice:</b> it grapples + Engulfs to <b>stop</b> "the axes" — never chases fleers or finishes the downed. Engulfed PC at 0 still rolls death saves. Escape DC 14; free by dropping it low.</li>
+        <li><b>Flip is open every round:</b> lower weapons or <b>Persuasion DC 20</b> → Version B, it becomes an ally.</li>
+        <li><b>Valves:</b> too fast? +20–25 HP / grasping-roots grapple a 2nd PC. On the ropes? Cut thorn-spawn, or Engulf-and-<i>hold</i> (no damage).</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="g">Showdown B — turn it on the cult <span class="tag">has Key · Deadly · heroic</span></h2>
+      <div class="win"><b>The objective isn't a clock — it's the vial.</b> Mother Sere's <b>Withered Vitality</b> lets her auto-succeed one failed save / shrug one condition <b>each round</b> while the green fire burns. <b>Smash the vial/fire</b> (object, AC 12) → she's just a Green Hag.</div>
+      <ul>
+        <li><b>Sere opens hidden</b> (invisible / posing as a frightened captive): <b>Insight DC 14</b> or the Guardian's blindsight outs her. Invisibility ends when she attacks/casts.</li>
+        <li><b>Guardian is your ally</b> (you run it, focuses Sere) — pull it back so it doesn't steal the kill. Grave-husks exist to soak its actions.</li>
+        <li><b>Morale:</b> cultists break when Sere falls; husks fight to nothing but collapse when she dies. If the Overseer died in S3, delete his token.</li>
+      </ul>
+    </section>
+
+    <section class="full tight">
+      <h2>Remember at the table</h2>
+      <p><b>Keep S1 to ~2 rounds</b> — the wood "lets them go," don't grind all eight wolves. · <b>Reward curiosity with Inspiration;</b> "wait — why?" is the road to Ending B. · <b>Fail forward,</b> never gate a clue on a die. · <b>Safety:</b> X-card / tap the table — this one gets dark (grief, a death-cult). · <b>Wren</b> (Tomas's sister) = only bones in Ending A; comes home alive in Ending B. · <b>Close on the matching hook.</b></p>
+    </section>
+
+  </div>
+</div>
+
+<!-- ================= PAGE 4 — MONSTERS I (MINIONS & CULT) ================= -->
+<div class="page">
+  <div class="ph">
+    <h1>The Monsters — Minions &amp; the Cult</h1>
+    <span class="sub">the pack, the thorns, the grey-robes — stat blocks + how to run them</span>
+    <span class="pg">4 / 6 · Monsters I</span>
+  </div>
+
+  <section class="full tight">
+    <h2>Reading these <span class="note">— the at-a-glance grid is on p.3; these add ability scores, full attacks/spells &amp; tactics</span></h2>
+    <p><b>You roll monster attacks</b> (d20 + bonus vs the PC's AC → damage on a hit). When an attack or spell <b>forces a save</b>, just announce the <b>ability + DC</b> and the player rolls. The ability line reads <b>score (modifier)</b>.</p>
+  </section>
+
+  <div class="cols">
+
+    <section>
+      <h2>Wolf — Bramble-Wolf <span class="note">CR 1/4 · AC 13 · HP 11 · Scene 1</span></h2>
+      <div class="strip">STR 12 (+1) · DEX 15 (+2) · CON 12 (+1) · INT 3 (−4) · WIS 12 (+1) · CHA 6 (−2)</div>
+      <p><b>Attacks:</b> Bite <span class="d">+4</span> (2d4+2 pierce); the target makes <span class="dc">Str 11</span> or is knocked prone. <b>Pack Tactics</b> · <b>Keen Hearing &amp; Smell</b> (adv Perception).</p>
+      <ul>
+        <li><b>Pack Tactics is the plan:</b> bite whatever an ally is already next to → <b>advantage</b>; hunt in twos and threes, never solo.</li>
+        <li><b>Prone-lock:</b> knock a squishy down (Str 11), then every adjacent wolf gets melee adv on them.</li>
+        <li><b>Grief, not hunger</b> — the pack drives the party <b>off</b>, it doesn't hunt to kill. Keep S1 to ~2 rounds; <b>An.Handling / Nature DC 15</b> scatters them without a death.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Twig Blight — Thorn-Spawn <span class="note">CR 1/8 · AC 13 · HP 4 · Showdown A</span></h2>
+      <div class="strip">STR 6 (−2) · DEX 13 (+1) · CON 12 (+1) · INT 4 (−3) · WIS 8 (−1) · CHA 3 (−4)</div>
+      <p><b>Attacks:</b> Claws <span class="d">+3</span> (1d4+1 pierce). <b>Blindsight 60 ft</b> (can't be blinded/deafened) · <b>False Appearance</b> (motionless = a dead shrub).</p>
+      <div class="flag"><span class="k">Vulnerable to fire</span> — Alary's Produce Flame or any fire double-damages them (4 HP = a one-shot). Let the party feel clever.</div>
+      <ul>
+        <li><b>Fragile swarm:</b> 4 HP each — they exist to chip damage and to <b>soak PC attacks &amp; opportunity attacks</b> so Sorrowroot keeps grappling.</li>
+        <li>Ambush out of the "scenery" via False Appearance, then close and rake.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Cultist — Grey-robe <span class="note">CR 1/8 · AC 12 · HP 9 · S3 &amp; Show B</span></h2>
+      <div class="strip">STR 11 (+0) · DEX 12 (+1) · CON 10 (+0) · INT 10 (+0) · WIS 11 (+0) · CHA 10 (+0)</div>
+      <p><b>Attacks:</b> Scimitar <span class="d">+3</span> (1d6+1 slash). <b>Dark Devotion</b> — advantage on saves vs charmed &amp; frightened.</p>
+      <ul>
+        <li><b>Fodder &amp; screen:</b> put bodies between the party and the real threat (the Overseer / Mother Sere).</li>
+        <li>Fear &amp; charm tricks fizzle (Dark Devotion) — they win on numbers, not nerve.</li>
+        <li><b>Morale:</b> they break and flee when the boss drops.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Thug — Poacher-Muscle <span class="note">CR 1/2 · AC 11 · HP 32 · Scene 3</span></h2>
+      <div class="strip">STR 15 (+2) · DEX 11 (+0) · CON 14 (+2) · INT 10 (+0) · WIS 10 (+0) · CHA 11 (+0)</div>
+      <p><b>Attacks:</b> Multiattack — <b>2× Mace</b> <span class="d">+4</span> (1d6+2 bludg), or <b>Heavy Crossbow</b> +2 (1d10 pierce, 100/400 ft). <b>Pack Tactics</b>.</p>
+      <ul>
+        <li><b>Durable bruiser</b> (32 HP) — soaks hits and swings twice. Low <b>AC 11</b>, so the party lands on it easily; fine, it's a body.</li>
+        <li>Gang a target with a cultist for Pack-Tactics advantage; send it at the squishy casters (Douglas AC 12).</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="p">Grave-Husk — Risen Taken <span class="note">CR 1/8 · AC 13 · HP 4 · Showdown B</span></h2>
+      <div class="strip">STR 6 (−2) · DEX 13 (+1) · CON 12 (+1) · INT 4 (−3) · WIS 8 (−1) · CHA 3 (−4)</div>
+      <p><b>Attacks:</b> Claws <span class="d">+3</span> (1d4+1 pierce). An <b>undead Twig Blight</b> — still <span class="k">vulnerable to fire</span>, now also <b>immune to poison</b> &amp; to charm / fear / exhaustion.</p>
+      <ul>
+        <li>4 HP fodder — they soak the <b>Guardian-ally's</b> actions in Show B and chip the party while Sere works.</li>
+        <li><b>Collapse the instant Mother Sere dies</b> — her rite is what holds them up.</li>
+      </ul>
+    </section>
+
+  </div>
+</div>
+
+<!-- ================= PAGE 5 — MONSTERS II (LIEUTENANT & BOSSES) ================= -->
+<div class="page">
+  <div class="ph">
+    <h1>The Monsters — Lieutenant &amp; Bosses</h1>
+    <span class="sub">the Overseer, Mother Sere, Sorrowroot — the ones that end sessions</span>
+    <span class="pg">5 / 6 · Monsters II</span>
+  </div>
+
+  <div class="cols">
+
+    <section>
+      <h2 class="r">Cult Fanatic — Harvest Overseer <span class="note">CR 2 · AC 13 · HP 33 · S3 / Show B</span></h2>
+      <div class="strip">STR 11 (+0) · DEX 14 (+2) · CON 12 (+1) · INT 10 (+0) · WIS 13 (+1) · CHA 14 (+2)</div>
+      <p><b>Attacks:</b> Multiattack — <b>2× Dagger</b> <span class="d">+4</span> (1d4+2). <b>Dark Devotion</b> (adv vs charm/fear).</p>
+      <p><b>Spells</b> (Wis, <b>save DC 11</b>, +3 to hit): <i>cantrips</i> — light, <b>sacred flame</b> (<span class="dc">Dex 11</span>, 1d8 radiant), thaumaturgy · <i>1st (4 slots)</i> — command, <b>inflict wounds</b> (+3, 3d10 necro), shield of faith · <i>2nd (3)</i> — <b>hold person</b>, spiritual weapon.</p>
+      <div class="flag"><span class="k">hold person</span> (<span class="dc">Wis 11</span>) paralyzes a PC → melee within 5 ft <b>auto-crits</b>; <b>inflict wounds</b> (3d10) is a burst-down. <b>Call concentration saves</b> to break its hold / spiritual weapon.</div>
+      <ul>
+        <li><b>Opening play:</b> shield of faith (+2 AC) or spiritual weapon (bonus-action 1d8+1 that floats &amp; attacks), then <b>hold person</b> the tank, then inflict wounds whoever's in melee.</li>
+        <li>Stay back and cast; the dagger is a last resort.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="p">Green Hag — Mother Sere <span class="note">CR 3 · AC 17 · HP 82 · Showdown B boss</span></h2>
+      <div class="strip">STR 18 (+4) · DEX 12 (+1) · CON 16 (+3) · INT 13 (+1) · WIS 14 (+2) · CHA 14 (+2)</div>
+      <p><b>Attacks:</b> Claws <span class="d">+6</span> (2d8+4 = 13 avg). <b>Invisible Passage</b> (turns invisible until she attacks or casts) · <b>Illusory Appearance</b>.</p>
+      <p><b>Innate spells</b> (Cha, <b>save DC 12</b>): at will — dancing lights, minor illusion, <b>vicious mockery</b> (<span class="dc">Wis 12</span>, 3d6 psychic + disadv on its next attack). <b>Mimicry</b> of voices (Insight DC 14 to catch).</p>
+      <div class="flag"><span class="k">Withered Vitality:</span> while the green fire burns she <b>auto-succeeds one failed save OR ends one condition every round</b>. <b>Smash the vial / green fire</b> (object, AC 12) and she's just a hag — that's the win, not her 82 HP.</div>
+      <ul>
+        <li><b>Opens hidden</b> — invisible, or posing as a frightened captive (<span class="dc">Insight 14</span>, or the Guardian's blindsight outs her). Invisibility drops when she attacks/casts.</li>
+        <li><b>Hit-and-hide:</b> Claw the healer (Alary) or squishy (Douglas), then Invisible Passage away; use illusions / mimicry to split their focus.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="g">Shambling Mound — Sorrowroot <span class="note">CR 5 · AC 15 · HP 136 · Show A boss / B ally</span></h2>
+      <div class="strip">STR 18 (+4) · DEX 8 (−1) · CON 16 (+3) · INT 5 (−3) · WIS 10 (+0) · CHA 5 (−3)</div>
+      <p><b>Attacks:</b> Multiattack — <b>2× Slam</b> <span class="d">+7</span> (2d8+4); if <b>both hit</b> a Medium-or-smaller target it's <b>grappled (DC 14)</b> + <b>Engulf</b>ed (blinded, restrained, can't breathe; <span class="dc">Con 14</span> or 2d8+4 at the start of its turns; escape DC 14).</p>
+      <div class="flag"><span class="k">Lightning HEALS it</span> — say so before a caster commits. Resists cold &amp; fire. AC 15 / 136 HP = a grind by design.</div>
+      <ul>
+        <li><b>Grief, not malice:</b> it Engulfs to <b>stop "the axes,"</b> never chases fleers or finishes the downed (an Engulfed PC at 0 still rolls death saves).</li>
+        <li><b>Show A boss</b> — flip it any round by lowering weapons or <b>Persuasion DC 20</b>; in <b>Show B it's your ally</b> (you run it vs Sere — pull it back so it doesn't steal the kill).</li>
+      </ul>
+    </section>
+
+  </div>
+</div>
+
+<!-- ================= PAGE 6 — REINFORCEMENTS ================= -->
+<div class="page">
+  <div class="ph">
+    <h1>Reinforcements — Dial the Fight Up</h1>
+    <span class="sub">off-screen reserves · add one or two when a fight runs easy</span>
+    <span class="pg">6 / 6 · Reinforcements</span>
+  </div>
+
+  <section class="full">
+    <h2 class="b">How &amp; when to use them</h2>
+    <p>These six live in the Cockpit's <b>"⚔ Reinforcements"</b> group — <b>none auto-load</b>; you click one in mid-fight to drop it onto the board. Budget (5 PCs · Lv 3): <span class="dc">Easy 375</span> <span class="dc">Med 750</span> <span class="dc">Hard 1,125</span> <span class="dc">Deadly 2,000</span>. Add <b>one or two</b> at a time — the encounter multiplier climbs fast with more bodies, so a single Ghoul or Berserker is often the whole nudge. <b>Grove side:</b> Dire Wolf · Needle/Vine Blight. <b>Cult &amp; Withering side:</b> Shadow · Ghoul · Berserker.</p>
+  </section>
+
+  <section class="full tight">
+    <h2>Reserve quick-stats <span class="note">— you roll their attacks; announce the save + DC and let PCs roll</span></h2>
+    <table>
+      <tr><th>Reserve (reflavor)</th><th class="c">AC</th><th class="c">HP</th><th>Attack (you roll)</th><th>Save it forces</th><th>Best for</th></tr>
+      <tr><td><b>Dire Wolf</b> (Elder Bramble-Wolf)</td><td class="c mono">14</td><td class="c mono">37</td><td>Bite <span class="d">+5</span> 2d6+3. Pack Tactics = adv if ally adjacent</td><td>Str <span class="dc">13</span> or prone</td><td>S1 / any wolves</td></tr>
+      <tr><td><b>Needle Blight</b> (Thornspitter)</td><td class="c mono">12</td><td class="c mono">11</td><td><b>Needles</b> <span class="d">+3</span> 2d6+1 <i>(30/60 ft)</i> · Claws +3 2d4+1</td><td>—</td><td>Show A (ranged)</td></tr>
+      <tr><td><b>Vine Blight</b> (Snare-Root)</td><td class="c mono">12</td><td class="c mono">26</td><td>Constrict <span class="d">+4</span> 2d6+2 <i>(reach 10)</i>, grapple + restrain</td><td>Str <span class="dc">12</span> escape · Entangle Str <span class="dc">12</span></td><td>grove control</td></tr>
+      <tr><td><b>Shadow</b> (Withering Shade)</td><td class="c mono">12</td><td class="c mono">16</td><td>Str Drain <span class="d">+4</span> 2d6+2 necro <b>−1d4 STR</b> · <span class="k">resists nonmagical</span>, <span class="k">vuln radiant</span></td><td>— (STR drain, no save)</td><td>Withering / dim</td></tr>
+      <tr><td><b>Ghoul</b> (Risen Taken)</td><td class="c mono">12</td><td class="c mono">22</td><td>Claws <span class="d">+4</span> 2d4+2 · Bite +2 2d6+2</td><td>Con <span class="dc">10</span> or <b>paralyzed</b></td><td>Show B (the taken)</td></tr>
+      <tr><td><b>Berserker</b> (Poacher-Brute)</td><td class="c mono">13</td><td class="c mono"><b>67</b></td><td>Greataxe <span class="d">+5</span> 1d12+3 · <i>Reckless</i></td><td>—</td><td>S3 (heavy)</td></tr>
+    </table>
+    <p class="note">Full stat blocks live in the Cockpit — click any reserve to open it. These map to MM Dire Wolf, Needle/Vine Blight, Shadow, Ghoul, Berserker.</p>
+  </section>
+
+  <div class="cols">
+
+    <section>
+      <h2>Dire Wolf — Elder Bramble-Wolf <span class="note">CR 1 · AC 14 · HP 37</span></h2>
+      <ul>
+        <li><b>Pack Tactics is the whole plan:</b> only ever bite a target an ally is already next to → <b>advantage</b>. Never let it duel alone.</li>
+        <li><b>Prone-lock:</b> Bite forces <span class="dc">Str 13</span> or prone; a prone PC = melee adv for every wolf on them. Knock down the low-AC back line (<b>Douglas 12, Jarlaxle 15</b>), then swarm.</li>
+        <li>A pack animal, not a martyr — if isolated or bloodied it falls back to reform. Slips in cleanly beside the S1 bramble-wolves.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Needle Blight — Thornspitter <span class="note">CR 1/4 · AC 12 · HP 11</span></h2>
+      <ul>
+        <li><b>Artillery, not a duelist:</b> hang back 30–60 ft and fire <b>Needles</b> (<span class="d">+3</span> 2d6+1) at the squishiest PC each turn (Douglas / Alary). Only Claw if cornered.</li>
+        <li><b>Blindsight 60 ft</b> — it still "sees" invisible or hidden foes within 60 ft; darkness won't hide the party.</li>
+        <li><span class="k">Not fire-vulnerable</span> (only Twig Blights are) — don't over-reward Produce Flame here. 11 HP drops to one hit, so use them in pairs.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Vine Blight — Snare-Root <span class="note">CR 1/2 · AC 12 · HP 26</span></h2>
+      <ul>
+        <li><b>Ambush controller:</b> False Appearance = it lurks as a vine tangle until the party's close, then <b>Constrict</b> (reach 10) grapples + <b>restrains</b> (escape <span class="dc">Str 12</span>).</li>
+        <li><b>Pin a key PC:</b> lock down the archer/caster (Jarlaxle, Douglas) so your other reserves pile on. <b>Entangling Plants</b> (recharge 5–6) restrains a cluster (<span class="dc">Str 12</span>) + difficult terrain.</li>
+        <li>Speed 10 — it can't chase. Play it as an <b>anchor</b>, not a skirmisher.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="p">Shadow — Withering Shade <span class="note">CR 1/2 · AC 12 · HP 16</span></h2>
+      <div class="flag"><span class="k">Nonmagical weapons do HALF</span> (Tuf's greataxe, mundane arrows). <b>Radiant does DOUBLE</b> — I'Drenk's Divine Smite &amp; radiant spells wreck it. Immune necrotic &amp; poison.</div>
+      <ul>
+        <li><b>Withering flavor incarnate:</b> Strength Drain (2d6+2 necrotic) also drops the target's <b>STR by 1d4</b> until a rest — sap the bruisers (Tuf, I'Drenk) to gut their damage and Athletics.</li>
+        <li><b>Lurker:</b> Shadow Stealth = Hide as a <b>bonus action</b> in dim light; Amorphous squeezes through any gap. Run it at night/in shadow — in <b>sunlight it has disadvantage on everything</b>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="r">Ghoul — Risen Taken <span class="note">CR 1 · AC 12 · HP 22</span></h2>
+      <div class="flag"><span class="k">Paralysis chains into auto-crits.</span> Claws force <span class="dc">Con 10</span> or <b>paralyzed 1 min</b> (save each turn's end); a paralyzed PC auto-fails Str/Dex saves and any <b>melee hit within 5 ft auto-crits</b>.</div>
+      <ul>
+        <li><b>The combo:</b> one ghoul paralyzes a low-Con PC, the next (or the Overseer) steps up and auto-crits. Terrifying in pairs — the intended Showdown-B escalation.</li>
+        <li><span class="k">Jarlaxle (Drow = elf) is immune</span> to the paralysis; half-elf Alary is your call (RAW: not immune). DC 10 is low, so don't overuse it or it's a save-or-suck death spiral.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="g">Berserker — Poacher-Brute <span class="note">CR 2 · AC 13 · HP 67</span></h2>
+      <div class="win">The durable threat — <b>67 HP</b> and a Greataxe (<span class="d">+5</span> 1d12+3, avg 9), no saves to track. Pure damage + action sponge; the easiest reserve to run when the table's tired.</div>
+      <ul>
+        <li><b>Reckless is a knob:</b> at the start of its turn it can take <b>advantage on all its swings</b>, but attacks against it have <b>advantage</b> too — turn it on when the party's cruising, off when they're hurting.</li>
+        <li><b>Charge the juicy target:</b> straight at Douglas (AC 12) to force a peel-off, or at Tuf for a slugfest he can survive. Best paired with the Overseer as muscle.</li>
+      </ul>
+    </section>
+
+  </div>
+</div>
+
+</body>
+</html>

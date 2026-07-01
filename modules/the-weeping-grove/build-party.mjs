@@ -83,6 +83,7 @@ function toPartyMember(c, slug) {
     caster: !!c.caster,
     spell: c.caster ? c.spell || null : null,
     features: c.features || {},
+    wildShape: c.wildShape || null,
     portrait,
   };
 }

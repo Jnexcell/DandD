@@ -32,6 +32,11 @@ const COND_ICON = { Prone: "🛌", Grappled: "✊", Restrained: "🕸", Poisoned
 const EFFECTS = ["Reckless", "Rage", "Faerie Fire", "Vow of Enmity", "Bless", "Bane", "Hunter's Mark", "Hex", "Shield of Faith", "Barkskin"];
 const FX_ICON = { Reckless:"😤", Rage:"🔥", "Faerie Fire":"✨", "Vow of Enmity":"🎯", Bless:"🙏", Bane:"☠", "Hunter's Mark":"🏹", Hex:"👁", "Shield of Faith":"🔰", Barkskin:"🌳" };
 const condIcon = (cd) => COND_ICON[cd] || FX_ICON[cd] || "⚑";
+/* #1: spell/ability name → the EFFECTS marker it applies, so resolving a buff lights up the token
+   badge and feeds effectNotes()/advInfo(). Parentheticals in the name are stripped before lookup. */
+const NAME_FX = { "bless": "Bless", "bane": "Bane", "hunter's mark": "Hunter's Mark", "hex": "Hex", "shield of faith": "Shield of Faith", "barkskin": "Barkskin", "faerie fire": "Faerie Fire", "vow of enmity": "Vow of Enmity" };
+const fxForName = (nm) => NAME_FX[String(nm || "").toLowerCase().replace(/\s*\(.*$/, "").trim()] || null;
+const MULTI_FX = { Bless: 3, Bane: 3 };   // buffs that cover multiple creatures (drag onto each)
 /* license-safe creature silhouettes (offline, no MM art) — keyed by statblock `sil` type.
    Rendered faint behind the token label; the letter+number label remains the fallback. */
 const SIL_SVG = {
@@ -280,9 +285,24 @@ function PCDetail({ pc }) {
     .concat((pc.features && pc.features.race) || [])
     .concat((pc.features && pc.features.class) || [])
     .concat((pc.features && pc.features.background) || []);
+  const sgn = (n) => (n >= 0 ? "+" : "") + n;
   return (
     <div className="ck-pcd">
       <div className="ck-pcd-line">{[pc.race, pc.cls || pc.class, pc.background].filter(Boolean).join(" · ")}</div>
+      {pc.mods && (
+        <div className="ck-pcd-sec ck-pcd-stats">
+          <div className="ck-pcd-abils">
+            {["STR", "DEX", "CON", "INT", "WIS", "CHA"].map((k) => (
+              <div key={k} className="ck-pcd-ab">
+                <span className="ck-pcd-abk">{k}</span>
+                <span className="ck-pcd-abm">{(pc.scores ? pc.scores[k] + " " : "") + sgn(pc.mods[k])}</span>
+                {pc.saves && <span className={"ck-pcd-sv" + (pc.saves[k] !== pc.mods[k] ? " prof" : "")} title="saving throw">{"sv " + sgn(pc.saves[k])}</span>}
+              </div>
+            ))}
+          </div>
+          <div className="ck-pcd-passline">{"Init " + sgn(pc.initMod) + " · Pass. Perc " + pc.passivePerc + " · AC " + pc.ac + " · prof +" + pc.profBonus + "  —  bold save = proficient"}</div>
+        </div>
+      )}
       {pc.attacks && pc.attacks.length > 0 && (
         <div className="ck-pcd-sec">
           <h6>⚔ Attacks</h6>
@@ -358,7 +378,11 @@ function Cockpit() {
 
   /* shared combat log (board drops + dice tray write here) — in-memory, not persisted */
   const [log, setLog] = useState([]);
-  const pushLog = useCallback((entry) => setLog((l) => [{ id: uid(), ...entry }, ...l].slice(0, 24)), []);
+  /* #3: stamp each log entry with the current round + whose turn it is (via a ref, so the stable
+     pushLog callback always reads live values). Keep more history (40) for post-fight recall. */
+  const logMeta = useRef({ round: 0, turn: "" });
+  logMeta.current = { round: st.round, turn: (active && active.name) || "" };
+  const pushLog = useCallback((entry) => setLog((l) => [{ id: uid(), round: logMeta.current.round, turn: logMeta.current.turn, ...entry }, ...l].slice(0, 40)), []);
   const [lootOpen, setLootOpen] = useState(false);   // loot/rewards overlay (modal, not persisted)
 
   /* Showdown version follows the Key (3+ clues) until the DM picks one manually */
@@ -656,7 +680,7 @@ function InitRow({ c, active, fighting, rollMode, idx, total, onSetTurn, onReord
       )}
       <div className="ck-conds">
         {c.conds.map((cd) => (
-          <button key={cd} className="ck-cond" onClick={() => onPatch(c.id, (cc) => ({ conds: cc.conds.filter((x) => x !== cd) }))}>{cd} ✕</button>
+          <button key={cd} className="ck-cond" title={cd === "Concentrating" && c.concOn ? c.concOn : cd} onClick={() => onPatch(c.id, (cc) => ({ conds: cc.conds.filter((x) => x !== cd) }))}>{(cd === "Concentrating" && c.concOn ? "🧠 " + c.concOn : cd) + " ✕"}</button>
         ))}
         <button className="ck-condadd" onClick={() => setOpen((o) => !o)}>+ condition</button>
         {open && (
@@ -854,6 +878,12 @@ function DiceTray({ active, sorted, onDamage, rollMode, setRollMode, log, onLog,
   };
 
   const activeMon = active && active.side === "mon" && active.mkey ? MON[active.mkey] : null;
+  /* #3: copy the whole log (chronological, tags stripped) for a post-session recap. */
+  const copyLog = () => {
+    const txt = log.slice().reverse().map((e) => (e.round ? "R" + e.round + (e.turn ? "/" + e.turn : "") + " · " : "") + e.html.replace(/<[^>]+>/g, "")).join("\n");
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt);
+    push({ kind: "roll", html: "⧉ Log copied to clipboard" });
+  };
 
   return (
     <div className={"ck-dice" + (collapsed ? " collapsed" : "")}>
@@ -930,9 +960,34 @@ function DiceTray({ active, sorted, onDamage, rollMode, setRollMode, log, onLog,
         </div>
       )}
 
+      {(() => {
+        // #1: "Effects in play" — every tracked buff/condition and who currently holds it.
+        const rows = ["Concentrating", ...EFFECTS].map((fx) => ({ fx, who: sorted.filter((c) => (c.conds || []).includes(fx)) })).filter((r) => r.who.length);
+        return rows.length > 0 ? (
+          <div className="ck-fxplay">
+            <span className="ck-dice-lbl">Effects in play</span>
+            {rows.map((r) => (
+              <div key={r.fx} className="ck-fxplay-row">
+                <span className="ck-fxplay-ic">{condIcon(r.fx)}</span><b>{r.fx}</b>
+                <span className="ck-fxplay-who">{r.who.map((c) => c.name + (r.fx === "Concentrating" && c.concOn ? " (" + c.concOn + ")" : "")).join(", ")}</span>
+              </div>
+            ))}
+          </div>
+        ) : null;
+      })()}
+
+      <div className="ck-log-head">
+        <span className="ck-dice-lbl">Log</span>
+        {log.length > 0 && <button className="ck-log-copy" title="Copy the full log to clipboard" onClick={copyLog}>⧉ copy</button>}
+      </div>
       <div className="ck-log">
         {log.length === 0 && <span className="ck-log-empty">Rolls appear here.</span>}
-        {log.map((e) => <div key={e.id} className={"ck-logitem " + e.kind} dangerouslySetInnerHTML={{ __html: e.html }} />)}
+        {log.map((e) => (
+          <div key={e.id} className={"ck-logitem " + e.kind}>
+            {e.round ? <span className="ck-log-rd" title={e.turn ? "Round " + e.round + " · " + e.turn : "Round " + e.round}>{"R" + e.round}</span> : null}
+            <span dangerouslySetInnerHTML={{ __html: e.html }} />
+          </div>
+        ))}
       </div>
       </div>
     </div>
@@ -958,15 +1013,22 @@ function parseDmgString(s) {
 const COND_WORDS = { prone: "Prone", restrained: "Restrained", grappled: "Grappled", stunned: "Stunned", paralyzed: "Paralyzed", frightened: "Frightened", poisoned: "Poisoned", blinded: "Blinded" };
 /* spells whose NAME implies a tracked condition (monster innate/prepared spells carry no effect text) */
 const SPELL_COND = { "hold person": "Paralyzed", "hold monster": "Paralyzed", "sleep": "Stunned", "command": "Prone", "color spray": "Blinded", "blindness": "Blinded", "entangle": "Restrained", "web": "Restrained", "ensnaring strike": "Restrained", "fear": "Frightened", "cause fear": "Frightened", "ray of sickness": "Poisoned", "contagion": "Poisoned" };
+/* #4: spell names that require concentration — used to auto-tag the caster "Concentrating". */
+const CONC_SPELLS = new Set(["hold person", "hold monster", "bless", "bane", "hex", "hunter's mark", "faerie fire", "shield of faith", "entangle", "moonbeam", "barkskin", "spider climb", "web", "fog cloud", "silence", "darkness", "invisibility", "blur", "suggestion", "fear", "dominate person", "dominate beast", "dominate monster", "witch bolt", "flaming sphere", "heat metal", "spike growth", "call lightning"]);
 function parseCond(text) {
   const t = String(text || "");
+  // pull a rider save's DC + ability, e.g. "DC 11 Strength save" or "Dexterity save (DC 13)"
+  const rs = t.match(/DC\s*(\d+)\s*(Str|Dex|Con|Int|Wis|Cha)/i) || t.match(/(Str|Dex|Con|Int|Wis|Cha)[a-z]*\s+sav[a-z]*[^.)]*?DC\s*(\d+)/i);
+  let dc = null, sab = null;
+  if (rs) { const a = rs[1], b = rs[2]; if (/^\d+$/.test(a)) { dc = +a; sab = b; } else { sab = a; dc = +b; } sab = sab.charAt(0).toUpperCase() + sab.slice(1, 3).toLowerCase(); }
   for (const w in COND_WORDS) {
     if (new RegExp("\\b" + w + "\\b", "i").test(t)) {
-      return { cond: COND_WORDS[w], on: /sav(e|ing)|\bDC\b/i.test(t) ? "fail" : "hit" };
+      const on = /sav(e|ing)|\bDC\b/i.test(t) ? "fail" : "hit";
+      return { cond: COND_WORDS[w], on, dc: on === "fail" ? dc : null, ability: on === "fail" ? sab : null };
     }
   }
   const low = t.toLowerCase();
-  for (const sp in SPELL_COND) { if (low.indexOf(sp) >= 0) return { cond: SPELL_COND[sp], on: "fail" }; }
+  for (const sp in SPELL_COND) { if (low.indexOf(sp) >= 0) return { cond: SPELL_COND[sp], on: "fail", dc, ability: sab }; }
   return null;
 }
 /* conditions/actions → advantage/disadvantage on an attack, with a human reason (DM can override).
@@ -1013,6 +1075,14 @@ function effectNotes(ability, target, source) {
     if (tc.includes("Bane")) notes.push("☠ target is Baned → −1d4 to the saving throw");
   }
   if (tc.includes("Rage")) notes.push("🔥 target is Raging → physical (b/p/s) damage auto-halved on apply");
+  // #6: stat-block resist / immunity / vulnerability vs this attack's damage type (auto-applied on damage)
+  const rsb = target && target.mkey ? SB[target.mkey] : null, rdt = (ability.dmgType || "").toLowerCase();
+  if (rsb && rdt && rdt !== "spell") {
+    const hits = (f) => f && f.toLowerCase().split(/[,;]/).map((s) => s.trim()).some((w) => w && rdt.includes(w));
+    if (hits(rsb.imm)) notes.push("🛡 " + target.name + " is IMMUNE to " + rdt + " → 0 damage on apply");
+    else if (hits(rsb.resist)) notes.push("🛡 " + target.name + " RESISTS " + rdt + " → halved on apply");
+    else if (hits(rsb.vuln)) notes.push("💥 " + target.name + " is VULNERABLE to " + rdt + " → doubled on apply");
+  }
   if (tc.includes("Shield of Faith")) notes.push("🔰 target has Shield of Faith → +2 AC (adjust its AC if you haven't)");
   if (tc.includes("Barkskin")) notes.push("🌳 target has Barkskin → its AC is at least 16");
   return notes;
@@ -1031,7 +1101,7 @@ function econSlotFrom(use, dflt) {
 function pcAttackAbility(a) {
   const d = parseDmgString(a.dmg);
   const cc = parseCond(a.note || "");
-  return { name: a.name, kind: "attack", tohit: E.toNum(a.bonus), dmgExpr: d.expr, dmgType: d.type, note: a.note || a.range || "", cond: cc ? cc.cond : null, condOn: cc ? cc.on : null, econSlot: econSlotFrom(a.use, "action"), src: a };
+  return { name: a.name, kind: "attack", tohit: E.toNum(a.bonus), dmgExpr: d.expr, dmgType: d.type, note: a.note || a.range || "", cond: cc ? cc.cond : null, condOn: cc ? cc.on : null, condDC: cc ? cc.dc : null, condSaveAb: cc ? cc.ability : null, econSlot: econSlotFrom(a.use, "action"), src: a };
 }
 function pcSpellAbility(sp, s) {
   const roll = s.roll || "", eff = s.effect || "", dice = firstDice(eff);
@@ -1044,7 +1114,7 @@ function pcSpellAbility(sp, s) {
     save = { dc: sp.dc, ability: ab ? ab[1] : "" };
   }
   const cc = parseCond(eff);
-  return { name: s.name, kind, tohit, dmgExpr, dmgType, healExpr, save, note: eff, cond: cc ? cc.cond : null, condOn: cc ? cc.on : null, econSlot: econSlotFrom(s.castTime, "action"),
+  return { name: s.name, kind, tohit, dmgExpr, dmgType, healExpr, save, note: eff, concentration: !!s.concentration, cond: cc ? cc.cond : null, condOn: cc ? cc.on : null, condDC: cc ? cc.dc : null, condSaveAb: cc ? cc.ability : null, econSlot: econSlotFrom(s.castTime, "action"),
     level: s.lvl === "cantrip" ? "cantrip" : "L" + s.lvl, slotLevel: (typeof s.lvl === "number" && s.lvl >= 1) ? s.lvl : null, src: s };
 }
 function pcFeatureAbility(f) {
@@ -1058,7 +1128,7 @@ function monActionAbility(act) {
   const p = E.parseAttack(act.n, act.t);
   const kind = p.tohit != null ? "attack" : (p.save ? "save" : "utility");
   const cc = parseCond(act.t);
-  return { name: act.n, kind, tohit: p.tohit || 0, dmgExpr: p.dmgExpr, dmgType: p.dmgType, save: p.save, note: act.t, cond: cc ? cc.cond : null, condOn: cc ? cc.on : null, src: act };
+  return { name: act.n, kind, tohit: p.tohit || 0, dmgExpr: p.dmgExpr, dmgType: p.dmgType, save: p.save, note: act.t, cond: cc ? cc.cond : null, condOn: cc ? cc.on : null, condDC: cc ? cc.dc : null, condSaveAb: cc ? cc.ability : null, src: act };
 }
 /* monster spellcasting → draggable spell chips. Derive the spell list, save DC and attack
    bonus from the statblock's Spellcasting / Innate Spellcasting trait text (single source of
@@ -1090,7 +1160,7 @@ function monSpellAbilities(sb) {
         else if (SP_ATK.test(low)) { kind = "attack"; tohit = E.toNum(atk); dmgType = "spell"; }
         else if (SP_UTIL.test(low) && !cc) kind = "utility";
         else if (cc || dc) { kind = "save"; save = { dc: dc ? +dc : null, ability: cab }; }
-        out.push({ name: titleCase(name), kind, tohit, dmgExpr: null, dmgType, healExpr, save, note: name, level: lvl, cond: cc ? cc.cond : null, condOn: cc ? cc.on : "fail", src: null });
+        out.push({ name: titleCase(name), kind, tohit, dmgExpr: null, dmgType, healExpr, save, note: name, level: lvl, concentration: CONC_SPELLS.has(low), cond: cc ? cc.cond : null, condOn: cc ? cc.on : "fail", src: null });
       });
     }
   });
@@ -1171,6 +1241,10 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
   const isAoe = !!(aoeTargets && aoeTargets.length && (ability.kind === "save" || ability.kind === "attack"));
   const adv = advInfo(ability, target, source);
   const fxNotes = effectNotes(ability, target, source);
+  /* #2/#7: position-based adv/dis the DM confirms with a quick toggle (we don't auto-read the board).
+     Ranged-in-melee shows only for ranged attacks; Pack Tactics only if the attacker's block has it. */
+  const isRangedAtk = ability.kind === "attack" && /ranged|range \d|crossbow|\bbow\b|longbow|shortbow|thrown|\bdart\b|\bsling\b/i.test(ability.note || "");
+  const srcPack = !!(source && source.mkey && SB[source.mkey] && (SB[source.mkey].traits || []).some((tr) => /pack tactics/i.test(tr.n || "")));
   /* Bless/Bane on the attacker: auto-rolled into the total below (auto mode) or shown as a reminder (manual). */
   const atkFx = ability.kind === "attack" && source ? ((source.conds || []).includes("Bless") ? "Bless" : (source.conds || []).includes("Bane") ? "Bane" : null) : null;
   /* Multiattack progress (monster weapon attacks): which attack of the chain is this, and does it spend the Action? */
@@ -1184,6 +1258,22 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
   const [dmgv, setDmgv] = useState("");
   const [res, setRes] = useState(null);
   const [mode, setMode] = useState(adv.mode);   // pre-picked from conditions; DM can override
+  const [riderPhase, setRiderPhase] = useState(false);   // #5: after a hit lands, force the rider's save (prone, etc.)
+  const [concPhase, setConcPhase] = useState(false);     // #4: force a concentration save when a concentrator takes damage
+  const [concDC, setConcDC] = useState(0);
+  const [pendRider, setPendRider] = useState(false);     // a rider save still owed after the concentration save resolves
+  const [inMelee, setInMelee] = useState(false);         // #2: a hostile is within 5 ft of the ranged attacker → disadvantage
+  const [packAlly, setPackAlly] = useState(false);       // #7: an ally is within 5 ft of the target → Pack Tactics advantage
+  /* combine the condition-based adv/dis (advInfo) with the two position toggles into a suggested mode. */
+  const combined = () => {
+    let a = adv.mode === "adv", d = adv.mode === "dis";
+    const reasons = adv.reasons.slice();
+    if (packAlly) { a = true; reasons.push("Pack Tactics — ally within 5 ft → advantage"); }
+    if (isRangedAtk && inMelee) { d = true; reasons.push("hostile within 5 ft → disadvantage (ranged)"); }
+    if (a && d) reasons.push("advantage + disadvantage cancel → normal");
+    return { mode: (a && d) ? "normal" : a ? "adv" : d ? "dis" : "normal", reasons };
+  };
+  const cmb = combined();
   const roll = () => {
     if (ability.kind === "heal") { const r = E.rollExpr(ability.healExpr || "0"); setRes({ heal: r ? r.total : 0 }); return; }
     const r = E.d20(ability.tohit || 0, mode), nat = r.die, crit = r.nat20;
@@ -1198,14 +1288,62 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
     setRes({ nat, total, hit, crit, dmg, dice: r.dice, fxMod });
   };
   useEffect(() => { if (!manual) roll(); }, [mode]);
+  useEffect(() => { setMode(combined().mode); }, [inMelee, packAlly]);   // #2/#7: a toggle re-suggests adv/dis
   const applyCond = () => { if (ability.cond && onPatch) onPatch(target.id, (cc) => ({ conds: cc.conds.includes(ability.cond) ? cc.conds : [...cc.conds, ability.cond] })); };
+  /* #5: an attack whose rider imposes a condition ONLY on a failed save (e.g. "DC 11 Str save or
+     prone") must not auto-apply on hit — it forces a save step in the popover instead. */
+  const riderSave = ability.kind === "attack" && ability.cond && ability.condOn === "fail";
+  const resolveRider = (out) => {
+    if (out === "fail") applyCond();
+    onLog({ kind: out === "fail" ? "hit" : "roll", html: `${ability.name} → <b>${target.name}</b>: DC ${ability.condDC || "?"} ${ability.condSaveAb || ""} save — ${out === "fail" ? "FAILED · " + condIcon(ability.cond) + " " + ability.cond : "saved (no " + ability.cond + ")"}` });
+    onClose();
+  };
+  /* #1: apply the buff/mark EFFECT the ability's name implies (Bless→Bless, Hunter's Mark→…) to a
+     token, so its badge shows and effectNotes()/advInfo() pick it up. Returns the effect or null. */
+  const applyEffectMarker = (tok) => {
+    const fx = fxForName(ability.name), tk = tok || target;
+    if (fx && onPatch) onPatch(tk.id, (cc) => ({ conds: cc.conds.includes(fx) ? cc.conds : [...cc.conds, fx] }));
+    return fx;
+  };
+  /* #4: tag the caster as Concentrating (with what/whom) when a concentration spell resolves. */
+  const tagConc = () => {
+    if (!(ability.concentration && source && onPatch)) return;
+    const label = ability.name + (target && source.id !== target.id ? " → " + target.name : "");
+    onPatch(source.id, (cc) => ({ conds: cc.conds.includes("Concentrating") ? cc.conds : [...cc.conds, "Concentrating"], concOn: label }));
+    onLog({ kind: "roll", html: `🧠 <b>${source.name}</b> now concentrating — ${label}` });
+  };
+  /* #4: after damage lands, force a concentration save (and/or the #5 rider save) before closing.
+     Returns true if a follow-up step was opened (caller must NOT close the popover yet). */
+  const startFollowups = (amtApplied, allowRider) => {
+    const concing = amtApplied > 0 && (target.conds || []).includes("Concentrating");
+    const rider = allowRider && riderSave;
+    if (concing) { setConcDC(Math.max(10, Math.floor(amtApplied / 2))); setPendRider(rider); setConcPhase(true); return true; }
+    if (rider) { setRiderPhase(true); return true; }
+    return false;
+  };
+  const resolveConc = (out) => {
+    if (out === "fail" && onPatch) onPatch(target.id, (cc) => ({ conds: cc.conds.filter((c) => c !== "Concentrating"), concOn: null }));
+    onLog({ kind: out === "fail" ? "hit" : "roll", html: `🧠 concentration save DC ${concDC} — <b>${target.name}</b> ${out === "fail" ? "FAILED · concentration BROKEN — drop its linked spell" : "held"}` });
+    if (pendRider) { setPendRider(false); setConcPhase(false); setRiderPhase(true); return; }
+    onClose();
+  };
   /* deal damage to a token, auto-halving physical (b/p/s) damage vs a Raging target (5e resistance).
      Shared by every damage path so the rule can't diverge; returns the amount actually applied. */
   const applyDmg = (tok, amount, abil) => {
-    let amt = amount, halved = false;
-    if (amt > 0 && /bludgeoning|piercing|slashing/i.test(abil.dmgType || "") && (tok.conds || []).includes("Rage")) { amt = Math.floor(amt / 2); halved = true; }
+    let amt = amount, halved = false, note = "";
+    const dt = (abil.dmgType || "").toLowerCase();
+    // Rage: resistance to physical (b/p/s) damage
+    if (amt > 0 && /bludgeoning|piercing|slashing/i.test(dt) && (tok.conds || []).includes("Rage")) { amt = Math.floor(amt / 2); halved = true; note = "halved — Rage"; }
+    // #6: stat-block resist / immunity / vulnerability by damage type (monsters)
+    const sb = tok.mkey ? SB[tok.mkey] : null;
+    if (sb && amt > 0 && dt && dt !== "spell") {
+      const hits = (f) => f && f.toLowerCase().split(/[,;]/).map((s) => s.trim()).some((w) => w && dt.includes(w));
+      if (hits(sb.imm)) { amt = 0; note = "immune to " + dt; }
+      else if (hits(sb.resist)) { amt = Math.floor(amt / 2); halved = true; note = (note ? note + " + " : "") + "resists " + dt; }
+      else if (hits(sb.vuln)) { amt = amt * 2; note = "vulnerable to " + dt + " — doubled"; }
+    }
     if (amt) onDamage(tok.id, amt);
-    return { amt, halved };
+    return { amt, halved, note };
   };
   const condNote = ability.cond ? ` · ${condIcon(ability.cond)} ${ability.cond}` : "";
   const saveHint = (() => {
@@ -1253,28 +1391,34 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
   const applyAttack = () => {
     const isHit = hit(), dmg = dmgVal();
     const ap = isHit && dmg ? applyDmg(target, dmg, ability) : { amt: 0, halved: false };
-    if (isHit) applyCond();
-    onLog({ kind: isHit ? "hit" : "miss", html: `${ability.name} → <b>${target.name}</b> (AC ${target.ac}): d20+${ability.tohit || 0} = <b>${total()}</b> — ${isHit ? "HIT" : "miss"}${isHit && dmg ? ` · <b>${ap.amt}</b> ${ability.dmgType || ""}${crit() ? " (CRIT)" : ""}${ap.halved ? " (halved — Rage)" : ""}` : ""}${isHit ? condNote : ""}` });
+    const hitCond = ability.cond && ability.condOn !== "fail";   // on-hit condition (no save) applies now
+    if (isHit && hitCond) applyCond();
+    onLog({ kind: isHit ? "hit" : "miss", html: `${ability.name} → <b>${target.name}</b> (AC ${target.ac}): d20+${ability.tohit || 0} = <b>${total()}</b> — ${isHit ? "HIT" : "miss"}${isHit && dmg ? ` · <b>${ap.amt}</b> ${ability.dmgType || ""}${crit() ? " (CRIT)" : ""}${ap.note ? " (" + ap.note + ")" : ""}` : ""}${isHit && hitCond ? condNote : ""}` });
+    tagConc();
     spend();
+    if (isHit && startFollowups(ap.amt, true)) return;   // force a concentration and/or rider save before closing
     onClose();
   };
   const applySave = (out) => {
     const dmg = dmgVal(), full = out === "fail" ? dmg : out === "half" ? Math.floor(dmg / 2) : 0;
     const ap = full ? applyDmg(target, full, ability) : { amt: 0, halved: false };
-    if (out === "fail") applyCond();
-    onLog({ kind: out === "fail" ? "hit" : "roll", html: `${ability.name} → <b>${target.name}</b>: DC ${ability.save ? ability.save.dc : "?"} ${ability.save ? ability.save.ability : ""} save — ${out === "fail" ? "FAILED" : out === "half" ? "saved ½" : "saved"}${ap.amt ? ` · <b>${ap.amt}</b> ${ability.dmgType || ""}${ap.halved ? " (halved — Rage)" : ""}` : ""}${out === "fail" ? condNote : ""}` });
+    if (out === "fail") { applyCond(); applyEffectMarker(); }
+    onLog({ kind: out === "fail" ? "hit" : "roll", html: `${ability.name} → <b>${target.name}</b>: DC ${ability.save ? ability.save.dc : "?"} ${ability.save ? ability.save.ability : ""} save — ${out === "fail" ? "FAILED" : out === "half" ? "saved ½" : "saved"}${ap.amt ? ` · <b>${ap.amt}</b> ${ability.dmgType || ""}${ap.note ? " (" + ap.note + ")" : ""}` : ""}${out === "fail" ? condNote : ""}` });
+    tagConc();
     spend();
+    if (startFollowups(ap.amt, false)) return;   // a damaged concentrator must roll a concentration save
     onClose();
   };
-  const applyHeal = () => { const amt = healVal(); if (amt) onHeal(target.id, amt); onLog({ kind: "roll", html: `${ability.name} → <b>${target.name}</b>: healed <b>${amt}</b>` }); spend(); onClose(); };
-  const applyUtil = () => { applyCond(); onLog({ kind: "roll", html: `${ability.name} → <b>${target.name}</b>${condNote}` }); spend(); onClose(); };
+  const applyHeal = () => { const amt = healVal(); if (amt) onHeal(target.id, amt); tagConc(); onLog({ kind: "roll", html: `${ability.name} → <b>${target.name}</b>: healed <b>${amt}</b>` }); spend(); onClose(); };
+  const applyUtil = () => { applyCond(); const fx = applyEffectMarker(); tagConc(); onLog({ kind: "roll", html: `${ability.name} → <b>${target.name}</b>${fx ? " · " + condIcon(fx) + " " + fx : condNote}` }); spend(); onClose(); };
   /* AoE: apply the single shared damage roll to one caught token; spend the caster's economy/slot only once. */
   const aoeApply = (t, outcome) => {
     const dmg = dmgVal(), full = outcome === "full" ? dmg : outcome === "half" ? Math.floor(dmg / 2) : 0;
     const ap = full ? applyDmg(t, full, ability) : { amt: 0, halved: false };
     if (outcome === "full" && ability.cond && onPatch) onPatch(t.id, (cc) => ({ conds: cc.conds.includes(ability.cond) ? cc.conds : [...cc.conds, ability.cond] }));
+    if (outcome === "full") applyEffectMarker(t);
     const verb = ability.kind === "save" ? (outcome === "full" ? "FAILED" : outcome === "half" ? "saved ½" : "saved") : (outcome === "full" ? "HIT" : "miss");
-    onLog({ kind: ap.amt ? "hit" : "roll", html: `${ability.name} → <b>${t.name}</b>: ${verb}${ap.amt ? ` · <b>${ap.amt}</b> ${ability.dmgType || ""}${ap.halved ? " (halved — Rage)" : ""}` : ""}${outcome === "full" ? condNote : ""}` });
+    onLog({ kind: ap.amt ? "hit" : "roll", html: `${ability.name} → <b>${t.name}</b>: ${verb}${ap.amt ? ` · <b>${ap.amt}</b> ${ability.dmgType || ""}${ap.note ? " (" + ap.note + ")" : ""}` : ""}${outcome === "full" ? condNote : ""}` });
     if (!aoeSpent.current) { spend(); aoeSpent.current = true; }
     setAoeDone((d) => ({ ...d, [t.id]: outcome }));
   };
@@ -1287,7 +1431,31 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
     </div>
   );
   let body;
-  if (isAoe) {
+  if (concPhase) {
+    body = (
+      <div className="ck-pop-body">
+        <div className="ck-pop-rider">
+          <div className="ck-pop-save">{"🧠 Concentration save — " + target.name + ": DC " + concDC + " CON or lose concentration" + (target.concOn ? " (" + target.concOn + ")" : "")}</div>
+          <div className="ck-pop-saverow">
+            <button className="ck-pop-btn fail" onClick={() => resolveConc("fail")}>Failed → broken</button>
+            <button className="ck-pop-btn ghost" onClick={() => resolveConc("save")}>Held</button>
+          </div>
+        </div>
+      </div>
+    );
+  } else if (riderPhase) {
+    body = (
+      <div className="ck-pop-body">
+        <div className="ck-pop-rider">
+          <div className="ck-pop-save">{"⚠ Save or " + ability.cond + " — " + target.name + ": DC " + (ability.condDC || "?") + " " + (ability.condSaveAb || "") + " save"}</div>
+          <div className="ck-pop-saverow">
+            <button className="ck-pop-btn fail" onClick={() => resolveRider("fail")}>{"Failed → " + ability.cond}</button>
+            <button className="ck-pop-btn ghost" onClick={() => resolveRider("save")}>{"Saved → no " + ability.cond}</button>
+          </div>
+        </div>
+      </div>
+    );
+  } else if (isAoe) {
     const headLine = (aoeInfo ? aoeInfo.ft + "-ft " + aoeInfo.shape : "Area") + " · catches " + aoeTargets.length
       + (ability.kind === "save" ? " · DC " + (ability.save ? ability.save.dc : "?") + " " + (ability.save ? ability.save.ability : "") + " save" : " · +" + (ability.tohit || 0) + " to hit");
     body = (
@@ -1329,8 +1497,14 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
               <button key={mo} className={mode === mo ? "on" : ""} onClick={() => setMode(mo)}>{mo === "dis" ? "Dis" : mo === "adv" ? "Adv" : "Norm"}</button>
             ))}
           </div>
-          {adv.reasons.length > 0 && <span className="ck-pop-why">{adv.reasons.join(" · ")}</span>}
+          {cmb.reasons.length > 0 && <span className="ck-pop-why">{cmb.reasons.join(" · ")}</span>}
         </div>
+        {(isRangedAtk || srcPack) && (
+          <div className="ck-pop-adj">
+            {isRangedAtk && <label className="ck-pop-tog"><input type="checkbox" checked={inMelee} onChange={(e) => setInMelee(e.target.checked)} /> enemy within 5 ft (ranged → dis)</label>}
+            {srcPack && <label className="ck-pop-tog"><input type="checkbox" checked={packAlly} onChange={(e) => setPackAlly(e.target.checked)} /> ally by target (Pack Tactics → adv)</label>}
+          </div>
+        )}
         {manual ? (
           <div className="ck-pop-row">
             <label>d20</label>
@@ -1350,7 +1524,7 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
             ? <input className="ck-d20in" inputMode="numeric" placeholder={ability.dmgExpr || "#"} value={dmgv} onChange={(e) => setDmgv(e.target.value.replace(/[^0-9]/g, ""))} />
             : <span className="ck-pop-dmg">{(res && res.dmg != null ? res.dmg : "—") + " " + (ability.dmgType || "") + (ability.dmgExpr ? " (" + ability.dmgExpr + ")" : "")}</span>}
         </div>
-        {ability.cond && <div className="ck-pop-why cond">{condIcon(ability.cond) + " applies " + ability.cond + " on hit"}</div>}
+        {ability.cond && <div className="ck-pop-why cond">{riderSave ? (condIcon(ability.cond) + " on hit → DC " + (ability.condDC || "?") + " " + (ability.condSaveAb || "") + " save or " + ability.cond) : (condIcon(ability.cond) + " applies " + ability.cond + " on hit")}</div>}
         {manual && atkFx && <div className="ck-pop-why fx">{atkFx === "Bless" ? "🙏 Blessed → add +1d4 to your d20" : "☠ Baned → subtract 1d4 from your d20"}</div>}
         {fxNotes.length > 0 && <div className="ck-pop-why fx">{fxNotes.map((n, i) => <div key={i}>{n}</div>)}</div>}
         <button className="ck-pop-btn apply" onClick={applyAttack}>{hit() ? ("⚔ Apply " + dmgVal() + " dmg") : "Log miss"}</button>
@@ -1370,6 +1544,7 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
             : <span className="ck-pop-dmg">{(res && res.dmg != null ? res.dmg : "—") + " " + (ability.dmgType || "")}</span>}
           {!manual && ability.dmgExpr && <button className="ck-pop-btn ghost" onClick={roll}>🎲</button>}
         </div>
+        {fxForName(ability.name) && <div className="ck-pop-why fx">{condIcon(fxForName(ability.name)) + " on a failed save → " + fxForName(ability.name) + (MULTI_FX[fxForName(ability.name)] ? " (up to " + MULTI_FX[fxForName(ability.name)] + " targets, resolve each)" : "")}</div>}
         <div className="ck-pop-saverow">
           <button className="ck-pop-btn fail" onClick={() => applySave("fail")}>Failed — full</button>
           <button className="ck-pop-btn" onClick={() => applySave("half")}>Saved — ½</button>
@@ -1394,7 +1569,8 @@ function ResolvePopover({ ability, target, source, aoeTargets, rollMode, onDamag
     body = (
       <div className="ck-pop-body">
         <div className="ck-pop-note">{ability.note || "No roll — narrate it."}</div>
-        <button className="ck-pop-btn apply" onClick={applyUtil}>{"Log on " + target.name}</button>
+        {fxForName(ability.name) && <div className="ck-pop-why fx">{condIcon(fxForName(ability.name)) + " applies " + fxForName(ability.name) + (MULTI_FX[fxForName(ability.name)] ? " — up to " + MULTI_FX[fxForName(ability.name)] + " targets, drag onto each" : "")}</div>}
+        <button className="ck-pop-btn apply" onClick={applyUtil}>{(fxForName(ability.name) ? "Apply " + fxForName(ability.name) + " → " : "Log on ") + target.name}</button>
       </div>
     );
   }
@@ -1616,7 +1792,7 @@ function BoardView({ sorted, active, st, up, onDamage, onHeal, onPatch, onRemove
                 </span>
                 <div className="ck-tok-hp"><i className={band} style={{ width: pct + "%" }} /></div>
                 <span className="ck-tok-hpn">{c.hp + "/" + c.maxhp}</span>
-                {c.conds.length > 0 && <div className="ck-tok-conds">{c.conds.slice(0, 6).map((cd) => <span key={cd} className="ck-tok-cond" title={cd}>{condIcon(cd)}</span>)}</div>}
+                {c.conds.length > 0 && <div className="ck-tok-conds">{c.conds.slice(0, 6).map((cd) => <span key={cd} className="ck-tok-cond" title={cd === "Concentrating" && c.concOn ? "Concentrating: " + c.concOn : cd}>{condIcon(cd)}</span>)}</div>}
                 {acts.length > 0 && <div className="ck-tok-acts">{acts.map((k) => <span key={k} className="ck-tok-act" title={k}>{ACT_ICON[k]}</span>)}</div>}
                 {active && c.id === active.id && !down && <div className="ck-tok-econ">{ECON.map((a) => <span key={a.k} className={"ck-tok-econd" + ((c.econ && c.econ[a.k]) ? " used" : "")} title={a.title + (c.econ && c.econ[a.k] ? " — used" : " — available")}>{a.label}</span>)}</div>}
                 {down && <span className="ck-tok-down">{c.deaths && c.deaths.f >= 3 ? "💀" : "🩸"}</span>}
